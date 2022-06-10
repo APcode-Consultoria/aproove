@@ -1,4 +1,4 @@
-package br.com.apcode.roove.resources;
+package com.github.andrepenteado.roove.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,10 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.andrepenteado.roove.model.Paciente;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-
-import br.com.apcode.roove.model.Paciente;;
+import com.github.springtestdbunit.annotation.DatabaseSetup;;
 
 /**
  * Testes do resource {@link br.com.apcode.roove.resources.PacienteResource}

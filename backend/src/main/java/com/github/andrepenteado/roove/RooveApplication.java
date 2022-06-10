@@ -1,4 +1,4 @@
-package br.com.apcode.roove;
+package com.github.andrepenteado.roove;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

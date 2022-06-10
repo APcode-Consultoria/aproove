@@ -1,12 +1,13 @@
-package br.com.apcode.roove.services;
+package com.github.andrepenteado.roove.services;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import br.com.apcode.roove.model.Paciente;
-import br.com.apcode.roove.repositories.PacienteRepository;
+import com.github.andrepenteado.roove.model.Paciente;
+import com.github.andrepenteado.roove.repositories.PacienteRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service

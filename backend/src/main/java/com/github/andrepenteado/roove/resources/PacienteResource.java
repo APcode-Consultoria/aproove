@@ -1,4 +1,4 @@
-package br.com.apcode.roove.resources;
+package com.github.andrepenteado.roove.resources;
 
 import java.util.List;
 
@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.apcode.roove.model.Paciente;
-import br.com.apcode.roove.services.PacienteService;
+import com.github.andrepenteado.roove.model.Paciente;
+import com.github.andrepenteado.roove.services.PacienteService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

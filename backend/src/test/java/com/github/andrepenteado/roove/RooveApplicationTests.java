@@ -1,4 +1,4 @@
-package br.com.apcode.roove;
+package com.github.andrepenteado.roove;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
