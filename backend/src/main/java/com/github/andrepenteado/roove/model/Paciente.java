@@ -22,10 +22,10 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Data de cadastro é um campo obrigatório. ")
     private LocalDateTime cadastro;
 
-    @NotNull
+    @NotNull(message = "Nome do paciente é um campo obrigatório. ")
     private String nome;
 
     private Long cpf;

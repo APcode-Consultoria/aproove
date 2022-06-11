@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS Paciente (
 DROP TABLE IF EXISTS Exame;
 CREATE TABLE IF NOT EXISTS Exame (
     Id          BIGSERIAL NOT NULL,
-    Id_Paciente BIGINT NOT NULL,
-    Id_Arquivo  BIGINT NOT NULL,
-    Descricao   TEXT NOT NULL,
+    Id_Paciente BIGINT    NOT NULL,
+    Id_Arquivo  BIGINT    NOT NULL,
+    Descricao   TEXT      NOT NULL,
     CONSTRAINT PK_Exame_Paciente PRIMARY KEY (Id),
     CONSTRAINT FK_Exame_Paciente FOREIGN KEY (Id_Paciente) REFERENCES Paciente (Id),
     CONSTRAINT FK_Exame_Arquivo  FOREIGN KEY (Id_Arquivo)  REFERENCES Arquivo (Id),
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS Exame (
 DROP TABLE IF EXISTS Prontuario;
 CREATE TABLE IF NOT EXISTS Prontuario (
     Id          BIGSERIAL NOT NULL,
-    Id_Paciente BIGINT NOT NULL,
+    Id_Paciente BIGINT    NOT NULL,
     Registro    TIMESTAMP NOT NULL,
-    Atendimento TEXT NOT NULL,
+    Atendimento TEXT      NOT NULL,
     CONSTRAINT PK_Prontuario PRIMARY KEY (Id),
     CONSTRAINT FK_Prontuario_Paciente FOREIGN KEY (Id_Paciente) REFERENCES Paciente (Id)
 );

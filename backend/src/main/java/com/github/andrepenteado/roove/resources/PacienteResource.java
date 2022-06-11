@@ -2,9 +2,10 @@ package com.github.andrepenteado.roove.resources;
 
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +44,7 @@ public class PacienteResource {
 
     @GetMapping("/{id}")
     public Paciente buscar(@PathVariable Long id) {
-        log.info("Buscar paciente: " + id);
+        log.info("Buscar paciente de ID #" + id);
         try {
             return pacienteService.buscar(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID %n não encontrado", id)));
@@ -58,13 +59,13 @@ public class PacienteResource {
     }
 
     @PostMapping
-    public Paciente incluir(@RequestBody Paciente paciente) {
-        log.info("Incluir novo paciente");
+    public Paciente incluir(@Valid @RequestBody Paciente paciente, BindingResult validacao) {
+        log.info("Incluir novo paciente " + paciente);
         try {
-            return pacienteService.incluir(paciente);
+            return pacienteService.incluir(paciente, validacao);
         }
-        catch (ConstraintViolationException cvex) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, cvex.getMessage());
+        catch (ResponseStatusException rsex) {
+            throw rsex;
         }
         catch (Exception ex) {
             log.error("Erro inesperado", ex);
@@ -73,16 +74,13 @@ public class PacienteResource {
     }
 
     @PutMapping("/{id}")
-    public Paciente alterar(@RequestBody Paciente paciente, @PathVariable Long id) {
-        log.info("Alterar dados do paciente de ID: " + id);
+    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, BindingResult validacao) {
+        log.info("Alterar dados do paciente " + paciente);
         try {
-            return pacienteService.alterar(paciente, id);
+            return pacienteService.alterar(paciente, id, validacao);
         }
         catch (ResponseStatusException rsex) {
             throw rsex;
-        }
-        catch (ConstraintViolationException cvex) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, cvex.getMessage());
         }
         catch (Exception ex) {
             log.error("Erro inesperado", ex);
@@ -92,7 +90,7 @@ public class PacienteResource {
 
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
-        log.info("Excluir paciente de ID: " + id);
+        log.info("Excluir paciente de ID #" + id);
         try {
             pacienteService.excluir(id);
         }

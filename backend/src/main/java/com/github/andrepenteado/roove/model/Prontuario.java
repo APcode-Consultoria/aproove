@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,10 +19,12 @@ public class Prontuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Data do registro é um campo obrigatório")
     private LocalDateTime registro;
 
     @ManyToOne
     @JoinColumn(name = "Id_Paciente")
+    @NotNull(message = "Paciente é um campo obrigatório")
     private Paciente paciente;
 
     private String atendimento;

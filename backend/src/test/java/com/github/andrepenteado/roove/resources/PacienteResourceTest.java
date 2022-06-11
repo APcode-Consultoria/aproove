@@ -92,7 +92,7 @@ public class PacienteResourceTest {
         String json = mockMvc.perform(post("/pacientes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(null)))
+                .content(getJson(-1L)))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -105,10 +105,7 @@ public class PacienteResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
-            .andExpect(status().isUnprocessableEntity())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+            .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -133,10 +130,16 @@ public class PacienteResourceTest {
             .andExpect(status().isNotFound());
 
         mockMvc.perform(put("/pacientes/100")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(getJson(300L)))
-        .andExpect(status().isConflict());
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(getJson(300L)))
+            .andExpect(status().isConflict());
+
+        mockMvc.perform(put("/pacientes/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new Paciente())))
+            .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
