@@ -100,6 +100,15 @@ public class PacienteResourceTest {
         Paciente pacienteNovo = objectMapper.readValue(json, Paciente.class);
         assertEquals(pacienteNovo.getNome(), NOME_PACIENTE);
         assertNotNull(pacienteNovo.getId());
+
+        mockMvc.perform(post("/pacientes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new Paciente())))
+            .andExpect(status().isUnprocessableEntity())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
     }
 
     @Test
@@ -137,9 +146,10 @@ public class PacienteResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
+
         mockMvc.perform(get("/pacientes/200")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
-}
+    }
 
 }
