@@ -32,9 +32,15 @@ public class Paciente {
 
     private LocalDateTime nascimento;
 
+    private String telefone;
+
+    private Boolean whatsapp;
+
+    private String email;
+
     private Long cep;
 
-    private String rua;
+    private String logradouro;
 
     private Integer numero;
 
@@ -46,7 +52,7 @@ public class Paciente {
 
     private String profissao;
 
-    private LocalDateTime vencimento;
+    private Integer vencimento;
 
     private Integer frequencia;
 

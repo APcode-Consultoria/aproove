@@ -16,7 +16,6 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 // for Core import:
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
-import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 
@@ -52,7 +51,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     // for Router use:
     LoadingBarRouterModule,
     // for Core use:
-    LoadingBarModule
+    LoadingBarModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
