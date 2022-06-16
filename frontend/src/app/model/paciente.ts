@@ -1,7 +1,7 @@
 export class Paciente {
 
     id: number;
-    cadastro: string;
+    cadastro: Date;
     nome: string;
     cpf: number;
     nascimento: string;

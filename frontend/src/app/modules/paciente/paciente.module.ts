@@ -1,12 +1,11 @@
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../../shared/shared.module';
 
-import { PacienteRoutingModule } from './paciente-routing.module';
 import { CadastroComponent } from './cadastro/cadastro.component';
+import { PacienteRoutingModule } from './paciente-routing.module';
 import { PesquisarComponent } from './pesquisar/pesquisar.component';
-
 
 @NgModule({
   declarations: [
@@ -17,6 +16,9 @@ import { PesquisarComponent } from './pesquisar/pesquisar.component';
     CommonModule,
     PacienteRoutingModule,
     SharedModule
+  ],
+  providers: [
+    DatePipe
   ]
 })
 export class PacienteModule { }

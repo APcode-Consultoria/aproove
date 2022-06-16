@@ -1,128 +1,134 @@
 <app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Paciente']" [active_item]="'Cadastro'"></app-breadcrumb>
 
-<div class="col-12 col-md-8 offset-md-2">
-  <div class="card border border-primary rounded shadow-lg">
-    <div class="card-header">
-      <h5>Cadastro de Paciente</h5>
-      <span>Paciente desde:</span>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="form-group col-12 col-md-12">
-          <label>Nome</label>
-          <input class="form-control" type="text">
-        </div>
+<form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formEnviado}">
+  <div class="col-12 col-md-10 offset-md-1">
+    <div class="card border border-primary rounded shadow-lg">
+      <div class="card-header">
+        <h5>Cadastro de Paciente</h5>
+        <span>Paciente desde: {{ hoje }}</span>
       </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-6">
-          <label>CPF</label>
-          <input class="form-control" type="text">
-        </div>
-        <div class="form-group col-12 col-md-6">
-          <label>Data de Nascimento</label>
-          <input class="form-control" type="date">
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-4">
-          <label>Telefone</label>
-          <input class="form-control" type="tel">
-        </div>
-        <div class="form-group col-12 col-md-2">
-          <label><i class="icofont icofont-social-whatsapp"></i> WhatsApp?</label>
-          <div class="checkbox checkbox-primary">
-            <input type="checkbox">
-            <label>Sim</label>
+      <div class="card-body">
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>* Nome</label>
+            <input type="text" name="nome" formControlName="nome" class="form-control" required="">
+            <div class="invalid-feedback">Campo nome é obrigatório</div>
           </div>
         </div>
-        <div class="form-group col-12 col-md-6">
-          <label>E-mail</label>
-          <input class="form-control" type="email">
+        <div class="row">
+          <div class="form-group col-12 col-md-6">
+            <label>* CPF</label>
+            <input type="number" name="cpf" formControlName="cpf" class="form-control" required="">
+            <div class="invalid-feedback">Campo CPF é obrigatório</div>
+          </div>
+          <div class="form-group col-12 col-md-6">
+            <label>Data de Nascimento</label>
+            <input type="date" name="nascimento" formControlName="nascimento" class="form-control">
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-4">
-          <label>CEP</label>
-          <input class="form-control" type="text">
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-8">
-          <label>Logradouro</label>
-          <input class="form-control" type="text">
-        </div>
-        <div class="form-group col-12 col-md-4">
-          <label>Número</label>
-          <input class="form-control" type="number">
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-5">
-          <label>Bairro</label>
-          <input class="form-control" type="text">
-        </div>
-        <div class="form-group col-12 col-md-5">
-          <label>Cidade</label>
-          <input class="form-control" type="text">
-        </div>
-        <div class="form-group col-12 col-md-2">
-          <label>Estado</label>
-          <input class="form-control" type="text">
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-9">
-          <label>Profissão</label>
-          <input class="form-control" type="text">
-        </div>
-        <div class="form-group col-12 col-md-3">
-          <label>Dia de Vencimento</label>
-          <input class="form-control" type="number">
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-12">
-          <label>Frequência</label>
-          <div class="form-group m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
-            <div class="radio radio-primary">
-              <input type="radio">
-              <label class="mb-0">Uma vez por semana</label>
+        <div class="row">
+          <div class="form-group col-12 col-md-4">
+            <label>* Telefone</label>
+            <input type="tel" name="telefone" formControlName="telefone" class="form-control" required="">
+            <div class="invalid-feedback">Campo Telefone é obrigatório</div>
+          </div>
+          <div class="form-group col-12 col-md-2">
+            <label><i class="icofont icofont-social-whatsapp"></i> WhatsApp?</label>
+            <div class="checkbox">
+              <input type="checkbox" name="whatsapp" formControlName="whatsapp" [value]="true">
+              <label>Sim</label>
             </div>
-            <div class="radio radio-primary">
-              <input type="radio">
-              <label class="mb-0">Duas vezes por semana</label>
-            </div>
-            <div class="radio radio-primary">
-              <input type="radio">
-              <label class="mb-0">Três vezes por semana</label>
+          </div>
+          <div class="form-group col-12 col-md-6">
+            <label>E-mail</label>
+            <input type="email" name="email" formControlName="email" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-4">
+            <label>CEP</label>
+            <input type="number" name="cep" formControlName="cep" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-8">
+            <label>Logradouro</label>
+            <input type="text" name="logradouro" formControlName="logradouro" class="form-control">
+          </div>
+          <div class="form-group col-12 col-md-4">
+            <label>Número</label>
+            <input type="number" name="numero" formControlName="numero" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-5">
+            <label>Bairro</label>
+            <input type="text" name="bairro" formControlName="bairro" class="form-control">
+          </div>
+          <div class="form-group col-12 col-md-5">
+            <label>Cidade</label>
+            <input type="text" name="cidade" formControlName="cidade" class="form-control">
+          </div>
+          <div class="form-group col-12 col-md-2">
+            <label>Estado</label>
+            <input type="text" name="estado" formControlName="estado" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-9">
+            <label>Profissão</label>
+            <input type="text" name="profissao" formControlName="profissao" class="form-control">
+          </div>
+          <div class="form-group col-12 col-md-3">
+            <label>Dia de Vencimento</label>
+            <input type="number" name="vencimento" formControlName="vencimento" class="form-control">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>Frequência</label>
+            <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
+              <div class="radio">
+                <input type="radio" id="frequencia_1" name="frequencia" formControlName="frequencia" value="1">
+                <label for="frequencia_1" class="mb-0">Uma vez por semana</label>
+              </div>
+              <div class="radio">
+                <input type="radio" id="frequencia_2" name="frequencia" formControlName="frequencia" value="2">
+                <label for="frequencia_2" class="mb-0">Duas vezes por semana</label>
+              </div>
+              <div class="radio">
+                <input type="radio" id="frequencia_3" name="frequencia" formControlName="frequencia" value="3">
+                <label for="frequencia_3" class="mb-0">Três vezes por semana</label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-12">
-          <label>Queixa</label>
-          <textarea class="form-control" rows="4"></textarea>
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>* Queixa</label>
+            <textarea class="form-control" rows="4" name="queixa" formControlName="queixa" required=""></textarea>
+            <div class="invalid-feedback">Descrever a queixa do paciente é obrigatório</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>Remédios</label>
+            <textarea class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>Objetivos</label>
+            <textarea class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-12">
-          <label>Remédios</label>
-          <textarea class="form-control" rows="4"></textarea>
+      <div class="card-footer">
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit" (click)="gravar()"><i class="fa fa-save"></i> Gravar</button>
+          <input class="btn btn-light ml-1" type="reset" value="Cancelar">
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-12 col-md-12">
-          <label>Objetivos</label>
-          <textarea class="form-control" rows="4"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="text-center">
-        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Gravar</button>
-        <input class="btn btn-light ml-1" type="reset" value="Cancelar">
       </div>
     </div>
   </div>
-</div>
+</form>
