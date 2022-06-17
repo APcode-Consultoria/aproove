@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.andrepenteado.roove.model.Paciente;
+import com.github.andrepenteado.roove.models.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
 
 import lombok.RequiredArgsConstructor;

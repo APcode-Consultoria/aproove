@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.model;
+package com.github.andrepenteado.roove.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +20,7 @@ public class Prontuario {
     private Long id;
 
     @NotNull(message = "Data do registro é um campo obrigatório")
-    private LocalDateTime registro;
+    private LocalDateTime dataRegistro;
 
     @ManyToOne
     @JoinColumn(name = "Id_Paciente")

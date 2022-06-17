@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.roove.model.Paciente;
+import com.github.andrepenteado.roove.models.Paciente;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;;
 
@@ -57,8 +57,9 @@ public class PacienteResourceTest {
         Paciente paciente = new Paciente();
         if (id != null)
             paciente.setId(id);
-        paciente.setCadastro(LocalDateTime.now());
+        paciente.setDataCadastro(LocalDateTime.now());
         paciente.setNome(NOME_PACIENTE);
+        paciente.setQueixaPrincipal("Queixa principal NOT NULL");
         return objectMapper.writeValueAsString(paciente);
     }
 

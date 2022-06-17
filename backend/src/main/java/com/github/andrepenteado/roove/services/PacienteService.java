@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.andrepenteado.roove.RooveApplication;
-import com.github.andrepenteado.roove.model.Paciente;
+import com.github.andrepenteado.roove.models.Paciente;
 import com.github.andrepenteado.roove.repositories.PacienteRepository;
 
 import lombok.RequiredArgsConstructor;

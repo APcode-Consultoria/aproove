@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.model;
+package com.github.andrepenteado.roove.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+
+import com.github.andrepenteado.roove.models.enums.Parentesco;
 
 import java.time.LocalDateTime;
 
@@ -23,14 +25,14 @@ public class Paciente {
     private Long id;
 
     @NotNull(message = "Data de cadastro é um campo obrigatório. ")
-    private LocalDateTime cadastro;
+    private LocalDateTime dataCadastro;
 
     @NotNull(message = "Nome do paciente é um campo obrigatório. ")
     private String nome;
 
     private Long cpf;
 
-    private LocalDateTime nascimento;
+    private LocalDateTime dataNascimento;
 
     private String telefone;
 
@@ -38,11 +40,15 @@ public class Paciente {
 
     private String email;
 
+    private String contatoEmergencia;
+
+    private Parentesco parentescoContatoEmergencia;
+
     private Long cep;
 
     private String logradouro;
 
-    private Integer numero;
+    private Integer numeroLogradouro;
 
     private String bairro;
 
@@ -52,11 +58,14 @@ public class Paciente {
 
     private String profissao;
 
-    private Integer vencimento;
+    private Integer diaVencimento;
 
-    private Integer frequencia;
+    private Integer frequenciaSemanal;
 
-    private String queixa;
+    @NotNull(message = "Queixa principal (QP) do paciente é um campo obrigatório. ")
+    private String queixaPrincipal;
+
+    private String historiaMolestiaPregressa;
 
     private String remedios;
 

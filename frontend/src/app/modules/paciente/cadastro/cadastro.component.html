@@ -18,24 +18,24 @@
         <div class="row">
           <div class="form-group col-12 col-md-6">
             <label>* CPF</label>
-            <input type="number" name="cpf" formControlName="cpf" class="form-control" required="">
+            <input type="text" name="cpf" formControlName="cpf" class="form-control" required="" mask="000.000.000-00">
             <div class="invalid-feedback">Campo CPF é obrigatório</div>
           </div>
           <div class="form-group col-12 col-md-6">
             <label>Data de Nascimento</label>
-            <input type="date" name="nascimento" formControlName="nascimento" class="form-control">
+            <input type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-4">
             <label>* Telefone</label>
-            <input type="tel" name="telefone" formControlName="telefone" class="form-control" required="">
+            <input type="text" name="telefone" formControlName="telefone" class="form-control" required="" mask="(00) 00000-0000">
             <div class="invalid-feedback">Campo Telefone é obrigatório</div>
           </div>
           <div class="form-group col-12 col-md-2">
-            <label><i class="icofont icofont-social-whatsapp"></i> WhatsApp?</label>
+            <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
             <div class="checkbox">
-              <input type="checkbox" name="whatsapp" formControlName="whatsapp" [value]="true">
+              <input type="checkbox" name="whatsapp" formControlName="whatsapp" [value]="true"/>
               <label>Sim</label>
             </div>
           </div>
@@ -45,33 +45,48 @@
           </div>
         </div>
         <div class="row">
+          <div class="form-group col-12 col-md-6">
+            <label>Contato de Emergência</label>
+            <input type="text" name="contatoEmergencial" formControlName="contatoEmergencial" class="form-control">
+          </div>
+          <div class="form-group col-12 col-md-6">
+            <label>Parentesco</label>
+            <input type="text" name="parentescoContatoEmergencial" formControlName="parentescoContatoEmergencial" class="form-control">
+          </div>
+        </div>
+        <div class="row">
           <div class="form-group col-12 col-md-4">
             <label>CEP</label>
-            <input type="number" name="cep" formControlName="cep" class="form-control">
+            <div class="input-group">
+              <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
+              <div class="input-group-append">
+                <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-8">
             <label>Logradouro</label>
-            <input type="text" name="logradouro" formControlName="logradouro" class="form-control">
+            <input type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
           </div>
           <div class="form-group col-12 col-md-4">
             <label>Número</label>
-            <input type="number" name="numero" formControlName="numero" class="form-control">
+            <input type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-5">
             <label>Bairro</label>
-            <input type="text" name="bairro" formControlName="bairro" class="form-control">
+            <input type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
           </div>
           <div class="form-group col-12 col-md-5">
             <label>Cidade</label>
-            <input type="text" name="cidade" formControlName="cidade" class="form-control">
+            <input type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
           </div>
           <div class="form-group col-12 col-md-2">
             <label>Estado</label>
-            <input type="text" name="estado" formControlName="estado" class="form-control">
+            <input type="text" name="estado" formControlName="estado" class="form-control" readonly>
           </div>
         </div>
         <div class="row">
@@ -81,33 +96,39 @@
           </div>
           <div class="form-group col-12 col-md-3">
             <label>Dia de Vencimento</label>
-            <input type="number" name="vencimento" formControlName="vencimento" class="form-control">
+            <input type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-12">
-            <label>Frequência</label>
+            <label>Frequência Semanal</label>
             <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
               <div class="radio">
-                <input type="radio" id="frequencia_1" name="frequencia" formControlName="frequencia" value="1">
-                <label for="frequencia_1" class="mb-0">Uma vez por semana</label>
+                <input type="radio" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="1"/>
+                <label for="frequencia_1" class="mb-0">Uma vez</label>
               </div>
               <div class="radio">
-                <input type="radio" id="frequencia_2" name="frequencia" formControlName="frequencia" value="2">
-                <label for="frequencia_2" class="mb-0">Duas vezes por semana</label>
+                <input type="radio" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="2"/>
+                <label for="frequencia_2" class="mb-0">Duas vezes</label>
               </div>
               <div class="radio">
-                <input type="radio" id="frequencia_3" name="frequencia" formControlName="frequencia" value="3">
-                <label for="frequencia_3" class="mb-0">Três vezes por semana</label>
+                <input type="radio" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="3"/>
+                <label for="frequencia_3" class="mb-0">Três vezes</label>
               </div>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-12">
-            <label>* Queixa</label>
-            <textarea class="form-control" rows="4" name="queixa" formControlName="queixa" required=""></textarea>
-            <div class="invalid-feedback">Descrever a queixa do paciente é obrigatório</div>
+            <label>* Queixa Principal (QP)</label>
+            <input type="text" class="form-control" rows="4" name="queixaPrincipal" formControlName="queixaPrincipal" required="">
+            <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-12 col-md-12">
+            <label>* História Moléstia Pregressa (HMP)</label>
+            <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa"></textarea>
           </div>
         </div>
         <div class="row">

@@ -1,12 +1,14 @@
 <dataset>
     <paciente
         id="100"
-        cadastro="2022-01-01 08:00:00.0000"
+        data_cadastro="2022-01-01 08:00:00.0000"
         nome="Paciente 100"
+        queixa_principal="Queixa paciente 100"
     />
     <paciente
         id="200"
-        cadastro="2022-01-01 08:00:00.0000"
+        data_cadastro="2022-01-01 08:00:00.0000"
         nome="Paciente 200"
+        queixa_principal="Queixa paciente 200"
     />
 </dataset>
