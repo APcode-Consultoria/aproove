@@ -1,5 +1,6 @@
 package com.github.andrepenteado.roove.resources;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -37,8 +38,8 @@ public class PacienteResource {
             return pacienteService.listar();
         }
         catch (Exception ex) {
-            log.error("Erro inesperado", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
 
@@ -53,14 +54,14 @@ public class PacienteResource {
             throw rsex;
         }
         catch (Exception ex) {
-            log.error("Erro inesperado", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
 
     @PostMapping
     public Paciente incluir(@Valid @RequestBody Paciente paciente, BindingResult validacao) {
-        log.info("Incluir novo paciente " + paciente);
+        log.info("Incluir novo paciente " + paciente.toString());
         try {
             return pacienteService.incluir(paciente, validacao);
         }
@@ -68,8 +69,8 @@ public class PacienteResource {
             throw rsex;
         }
         catch (Exception ex) {
-            log.error("Erro inesperado", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
 
@@ -83,8 +84,8 @@ public class PacienteResource {
             throw rsex;
         }
         catch (Exception ex) {
-            log.error("Erro inesperado", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
 
@@ -98,8 +99,8 @@ public class PacienteResource {
             throw rsex;
         }
         catch (Exception ex) {
-            log.error("Erro inesperado", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado");
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
 

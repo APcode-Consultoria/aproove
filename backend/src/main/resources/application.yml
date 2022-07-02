@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db-server:5432/dbname-ap-roove
+    url: jdbc:postgresql://localhost:5432/dbname-ap-roove
     username: dbuser-ap-roove
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver

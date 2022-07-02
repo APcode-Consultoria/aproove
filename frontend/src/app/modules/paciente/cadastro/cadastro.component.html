@@ -5,7 +5,7 @@
     <div class="card border border-primary rounded shadow-lg">
       <div class="card-header">
         <h5>Cadastro de Paciente</h5>
-        <span>Paciente desde: {{ hoje }}</span>
+        <span>{{ dataCadastro.value | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy" }}</span>
       </div>
       <div class="card-body">
         <div class="row">
@@ -47,18 +47,20 @@
         <div class="row">
           <div class="form-group col-12 col-md-6">
             <label>Contato de Emergência</label>
-            <input type="text" name="contatoEmergencial" formControlName="contatoEmergencial" class="form-control">
+            <input type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
           </div>
           <div class="form-group col-12 col-md-6">
             <label>Parentesco</label>
-            <input type="text" name="parentescoContatoEmergencial" formControlName="parentescoContatoEmergencial" class="form-control">
+            <select name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-control">
+              <option *ngFor="let p of parentescos" [value]="p">{{ enumParentescos[p] }}</option>
+            </select>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-12 col-md-4">
             <label>CEP</label>
             <div class="input-group">
-              <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
+              <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000" (keypress.enter)="consultaCep(cep.value)">
               <div class="input-group-append">
                 <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="fa fa-search"></i></button>
               </div>
@@ -128,7 +130,8 @@
         <div class="row">
           <div class="form-group col-12 col-md-12">
             <label>* História Moléstia Pregressa (HMP)</label>
-            <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa"></textarea>
+            <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required=""></textarea>
+            <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
           </div>
         </div>
         <div class="row">
@@ -146,7 +149,9 @@
       </div>
       <div class="card-footer">
         <div class="text-center">
-          <button class="btn btn-primary" type="submit" (click)="gravar()"><i class="fa fa-save"></i> Gravar</button>
+          <button class="btn btn-primary" type="submit" (click)="gravar()">
+            <i class="fa fa-save"></i> Gravar
+          </button>
           <input class="btn btn-light ml-1" type="reset" value="Cancelar">
         </div>
       </div>

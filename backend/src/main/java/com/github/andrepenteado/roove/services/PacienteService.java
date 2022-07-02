@@ -1,5 +1,6 @@
 package com.github.andrepenteado.roove.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,9 @@ public class PacienteService {
         String erros = RooveApplication.validar(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
+        if (pacienteRepository.findByCpf(paciente.getCpf()) != null)
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "CPF de paciente já se encontra cadastrado");
+        paciente.setDataCadastro(LocalDateTime.now());
         return pacienteRepository.save(paciente);
     }
 

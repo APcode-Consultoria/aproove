@@ -5,13 +5,17 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.andrepenteado.roove.models.enums.Parentesco;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,15 +28,16 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Data de cadastro é um campo obrigatório. ")
     private LocalDateTime dataCadastro;
 
     @NotNull(message = "Nome do paciente é um campo obrigatório. ")
     private String nome;
 
+    @NotNull(message = "CPF do paciente é um campo obrigatório. ")
     private Long cpf;
 
-    private LocalDateTime dataNascimento;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataNascimento;
 
     private String telefone;
 
@@ -42,6 +47,7 @@ public class Paciente {
 
     private String contatoEmergencia;
 
+    @Enumerated(EnumType.STRING)
     private Parentesco parentescoContatoEmergencia;
 
     private Long cep;
@@ -65,6 +71,7 @@ public class Paciente {
     @NotNull(message = "Queixa principal (QP) do paciente é um campo obrigatório. ")
     private String queixaPrincipal;
 
+    @NotNull(message = "História Moléstia Pregressa do paciente é um campo obrigatório. ")
     private String historiaMolestiaPregressa;
 
     private String remedios;

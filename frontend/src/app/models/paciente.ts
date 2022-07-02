@@ -6,12 +6,12 @@ export class Paciente {
     dataCadastro: Date;
     nome: string;
     cpf: number;
-    dataNascimento: string;
+    dataNascimento: Date;
     telefone: string;
     whatsapp: boolean;
     email: string;
-    contatoEmergencial: string;
-    parentescoContatoEmergencial: Parentesco;
+    contatoEmergencia: string;
+    parentescoContatoEmergencia: Parentesco;
     cep: number;
     logradouro: string;
     numeroLogradouro: number;

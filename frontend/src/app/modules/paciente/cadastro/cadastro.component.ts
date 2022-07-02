@@ -1,10 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { Paciente } from 'src/app/models/paciente';
 import { PacienteService } from '../../../services/paciente.service';
 import { ViaCepService } from '../../../services/via-cep.service';
-import Swal from 'sweetalert2';
-import { DatePipe } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
+import { Parentesco } from 'src/app/models/enums/parentesco';
 
 @Component({
   selector: 'app-cadastro',
@@ -24,8 +25,8 @@ export class CadastroComponent implements OnInit {
   telefone = new FormControl(null, Validators.required);
   whatsapp = new FormControl(false);
   email = new FormControl(null);
-  contatoEmergencial = new FormControl(null);
-  parentescoContatoEmergencial = new FormControl(null);
+  contatoEmergencia = new FormControl(null);
+  parentescoContatoEmergencia = new FormControl(null);
   cep = new FormControl(null);
   logradouro = new FormControl(null);
   numeroLogradouro = new FormControl(null);
@@ -36,7 +37,7 @@ export class CadastroComponent implements OnInit {
   diaVencimento = new FormControl(null);
   frequenciaSemanal = new FormControl(0);
   queixaPrincipal = new FormControl(null, Validators.required);
-  historiaMolestiaPregressa = new FormControl(null);
+  historiaMolestiaPregressa = new FormControl(null, Validators.required);
   remedios = new FormControl(null);
   objetivos = new FormControl(null);
 
@@ -49,8 +50,8 @@ export class CadastroComponent implements OnInit {
     telefone: this.telefone,
     whatsapp: this.whatsapp,
     email: this.email,
-    contatoEmergencial: this.contatoEmergencial,
-    parentescoContatoEmergencial: this.parentescoContatoEmergencial,
+    contatoEmergencia: this.contatoEmergencia,
+    parentescoContatoEmergencia: this.parentescoContatoEmergencia,
     cep: this.cep,
     logradouro: this.logradouro,
     numeroLogradouro: this.numeroLogradouro,
@@ -66,22 +67,29 @@ export class CadastroComponent implements OnInit {
     objetivos: this.objetivos
   });
 
+  parentescos: string[];
+  enumParentescos = Parentesco;
+
   constructor(
     private pacienteService: PacienteService,
     private viaCepService: ViaCepService,
     private datePipe: DatePipe,
     private toastrService: ToastrService
-  ) { }
+  ) { 
+    this.parentescos = Object.keys(Parentesco);
+  }
 
   ngOnInit(): void {
   }
 
   consultaCep(cep: string) {
     cep = cep.replace("-", "");
-    this.viaCepService.consultarCep(cep)
-    .subscribe(
+    this.logradouro.setValue("");
+    this.bairro.setValue("");
+    this.cidade.setValue("");
+    this.estado.setValue("");
+    this.viaCepService.consultarCep(cep).subscribe(
       endereco => {
-        console.log(endereco);
         if (endereco.erro) {
           this.toastrService.warning('CEP não encontrado', 'Atenção');
         }
@@ -101,10 +109,20 @@ export class CadastroComponent implements OnInit {
   gravar(): void {
     this.formEnviado = true;
     if (this.formPaciente.valid) {
-      this.toastrService.success("Dados do paciente gravados com sucesso!", "Cadastro");
+      console.log(this.formPaciente.value);
+      this.pacienteService.gravar(this.formPaciente.value).subscribe(
+        paciente => {
+          this.formPaciente.reset();
+          this.formPaciente.patchValue(paciente);
+          this.toastrService.success(`Dados do paciente ${paciente.nome} gravados com sucesso`, "Cadastro");
+        },
+        objetoErro => {
+          this.toastrService.error(objetoErro.error.message, "Erro de Processamento");
+        }
+      );
     }
     else {
-      this.toastrService.error("Dados preenchidos incompletos!", "Erro");
+      this.toastrService.warning("Dados obrigatórios não foram todos preenchidos", "Atenção");
     }
   }
 

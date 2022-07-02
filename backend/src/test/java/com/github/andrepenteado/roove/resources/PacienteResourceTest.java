@@ -53,13 +53,17 @@ public class PacienteResourceTest {
 
     private final String NOME_PACIENTE = "Nome de Paciente de Testes";
 
+    private final Long CPF_PACIENTE = 12345678901L;
+
     private String getJson(Long id) throws Exception {
         Paciente paciente = new Paciente();
         if (id != null)
             paciente.setId(id);
         paciente.setDataCadastro(LocalDateTime.now());
         paciente.setNome(NOME_PACIENTE);
+        paciente.setCpf(CPF_PACIENTE);
         paciente.setQueixaPrincipal("Queixa principal NOT NULL");
+        paciente.setHistoriaMolestiaPregressa("Histório pregressa NOT NULL");
         return objectMapper.writeValueAsString(paciente);
     }
 
@@ -102,10 +106,18 @@ public class PacienteResourceTest {
         assertEquals(pacienteNovo.getNome(), NOME_PACIENTE);
         assertNotNull(pacienteNovo.getId());
 
+        // Sem dados obrigatórios
         mockMvc.perform(post("/pacientes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
+            .andExpect(status().isUnprocessableEntity());
+
+        // CPF duplicado
+        mockMvc.perform(post("/pacientes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(getJson(-1L)))
             .andExpect(status().isUnprocessableEntity());
     }
 
