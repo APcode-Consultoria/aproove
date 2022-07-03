@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS Arquivo (
 );
 
 ------------------------------------------------------------------------------
-
+-- Popular com dados de testes:
+-- insert into paciente(data_cadastro,nome,cpf,telefone,email,queixa_principal,historia_molestia_pregressa) select now(), md5(random()::text),floor(random()*(99999999999-10000000000)),floor(random()*(99999999999-10000000000)),md5(random()::text),md5(random()::text),md5(random()::text) from generate_series(1,100) id;
 DROP TABLE IF EXISTS Paciente;
 CREATE TABLE IF NOT EXISTS Paciente (
     Id                            BIGSERIAL  NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Paciente (
     Nome                          TEXT       NOT NULL,
     CPF                           BIGINT     NOT NULL,
     Data_Nascimento               DATE       NULL,
-    Telefone                      TEXT       NULL,
+    Telefone                      BIGINT     NULL,
     Whatsapp                      BOOLEAN    NULL,
     Email                         TEXT       NULL,
     Contato_Emergencia            TEXT       NULL,

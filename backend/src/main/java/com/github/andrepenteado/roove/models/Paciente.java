@@ -20,14 +20,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(of = { "nome "})
-@ToString(of = { "nome "})
+@EqualsAndHashCode(of = "nome")
+@ToString(of = "nome")
 public class Paciente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'.000'")
     private LocalDateTime dataCadastro;
 
     @NotNull(message = "Nome do paciente é um campo obrigatório. ")
@@ -39,7 +40,7 @@ public class Paciente {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
-    private String telefone;
+    private Long telefone;
 
     private Boolean whatsapp;
 

@@ -7,7 +7,7 @@ export class Paciente {
     nome: string;
     cpf: number;
     dataNascimento: Date;
-    telefone: string;
+    telefone: number;
     whatsapp: boolean;
     email: string;
     contatoEmergencia: string;

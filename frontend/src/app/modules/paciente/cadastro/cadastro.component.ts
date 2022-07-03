@@ -1,11 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Paciente } from 'src/app/models/paciente';
+import { Parentesco } from 'src/app/models/enums/parentesco';
 import { PacienteService } from '../../../services/paciente.service';
 import { ViaCepService } from '../../../services/via-cep.service';
-import { Parentesco } from 'src/app/models/enums/parentesco';
 
 @Component({
   selector: 'app-cadastro',
@@ -15,7 +15,7 @@ import { Parentesco } from 'src/app/models/enums/parentesco';
 export class CadastroComponent implements OnInit {
 
   formEnviado: boolean = false;
-  hoje: string =this.datePipe.transform(Date.now(), "EEEE, dd 'de' MMMM 'de' yyyy");
+  dataCadastroFormatada: Date = new Date();
 
   id = new FormControl(null);
   dataCadastro = new FormControl(Date.now);
@@ -71,6 +71,7 @@ export class CadastroComponent implements OnInit {
   enumParentescos = Parentesco;
 
   constructor(
+    private activedRoute: ActivatedRoute,
     private pacienteService: PacienteService,
     private viaCepService: ViaCepService,
     private datePipe: DatePipe,
@@ -80,6 +81,15 @@ export class CadastroComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.activedRoute.params.subscribe(params => {
+      const id: number = params["id"];
+      if (id) {
+        this.pacienteService.buscar(id).subscribe(paciente => {
+          this.formPaciente.patchValue(paciente)
+          this.dataCadastroFormatada = new Date(paciente.dataCadastro);
+        });
+      }
+    });
   }
 
   consultaCep(cep: string) {
@@ -100,8 +110,8 @@ export class CadastroComponent implements OnInit {
           this.estado.setValue(endereco.uf);
         }
       },
-      error => {
-        this.toastrService.error('Erro ao consultar o CEP', 'Erro inesperado');
+      () => {
+        this.toastrService.error('Erro ao consultar o CEP', 'Erro de processamento');
       }
     );
   }

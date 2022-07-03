@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(of = { "paciente", "registro" })
-@ToString(of = { "paciente", "registro" })
+@EqualsAndHashCode(of = { "paciente", "dataRegistro" })
+@ToString(of = { "paciente", "dataRegistro" })
 public class Prontuario {
 
     @Id

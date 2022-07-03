@@ -1,11 +1,11 @@
-<app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Paciente']" [active_item]="'Cadastro'"></app-breadcrumb>
+<app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Pacientes']" [active_item]="'Cadastro'"></app-breadcrumb>
 
 <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formEnviado}">
   <div class="col-12 col-md-10 offset-md-1">
     <div class="card border border-primary rounded shadow-lg">
       <div class="card-header">
         <h5>Cadastro de Paciente</h5>
-        <span>{{ dataCadastro.value | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy" }}</span>
+        <span>{{ dataCadastroFormatada | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</span>
       </div>
       <div class="card-body">
         <div class="row">
@@ -34,8 +34,8 @@
           </div>
           <div class="form-group col-12 col-md-2">
             <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
-            <div class="checkbox">
-              <input type="checkbox" name="whatsapp" formControlName="whatsapp" [value]="true"/>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp" value="true"/>
               <label>Sim</label>
             </div>
           </div>
@@ -105,16 +105,16 @@
           <div class="form-group col-12 col-md-12">
             <label>Frequência Semanal</label>
             <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
-              <div class="radio">
-                <input type="radio" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="1"/>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1"/>
                 <label for="frequencia_1" class="mb-0">Uma vez</label>
               </div>
-              <div class="radio">
-                <input type="radio" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="2"/>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2"/>
                 <label for="frequencia_2" class="mb-0">Duas vezes</label>
               </div>
-              <div class="radio">
-                <input type="radio" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" value="3"/>
+              <div class="form-check form-check-inline">
+                <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3"/>
                 <label for="frequencia_3" class="mb-0">Três vezes</label>
               </div>
             </div>
@@ -147,14 +147,11 @@
           </div>
         </div>
       </div>
-      <div class="card-footer">
-        <div class="text-center">
-          <button class="btn btn-primary" type="submit" (click)="gravar()">
-            <i class="fa fa-save"></i> Gravar
-          </button>
-          <input class="btn btn-light ml-1" type="reset" value="Cancelar">
-        </div>
-      </div>
     </div>
   </div>
+
+  <app-floating-button (click)="gravar()">
+    <i class="fa fa-save fa-lg"></i>
+  </app-floating-button>
+
 </form>

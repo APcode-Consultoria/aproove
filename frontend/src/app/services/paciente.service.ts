@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Paciente } from '../models/paciente';
+import { Api } from '../config/api';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +15,24 @@ export class PacienteService {
   ) { }
 
   public listar(): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`http://localhost:8080/pacientes`);
+    return this.http.get<Paciente[]>(`${environment.backendURL}${Api.PACIENTES}`);
   }
 
   public buscar(id: number): Observable<Paciente> {
-    return this.http.get<Paciente>(`http://localhost:8080/pacientes/${id}`);
+    return this.http.get<Paciente>(`${environment.backendURL}${Api.PACIENTES}/${id}`);
   }
 
   public gravar(paciente: Paciente): Observable<Paciente> {
     if (paciente.id > 0) {
-      return this.http.put<Paciente>(`http://localhost:8080/pacientes/${paciente.id}`, paciente);
+      return this.http.put<Paciente>(`${environment.backendURL}${Api.PACIENTES}/${paciente.id}`, paciente);
     }
     else {
-      return this.http.post<Paciente>(`http://localhost:8080/pacientes`, paciente);
+      return this.http.post<Paciente>(`${environment.backendURL}${Api.PACIENTES}`, paciente);
     }
+  }
+
+  public excluir(id: number): Observable<any> {
+    return this.http.delete(`${environment.backendURL}${Api.PACIENTES}/${id}`);
   }
 
 }

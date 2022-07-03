@@ -9,8 +9,8 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
-@EqualsAndHashCode(of = { "nome" })
-@ToString(of = { "nome" })
+@EqualsAndHashCode(of = "nome")
+@ToString(of = "nome")
 public class Arquivo {
 
     @Id

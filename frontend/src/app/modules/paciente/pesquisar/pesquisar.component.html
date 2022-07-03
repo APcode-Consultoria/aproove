@@ -1,1 +1,29 @@
-<p>pesquisar works!</p>
+<app-breadcrumb [title]="'Pesquisar Pacientes'" [items]="['Pacientes']" [active_item]="'Pesquisar'"></app-breadcrumb>
+
+<div class="col-12 col-md-12 custom-datatable">
+  <ngx-datatable
+    [rows]="lista"
+    class="bootstrap fullscreen"
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [limit]="10">
+
+    <ngx-datatable-column name="#" prop="id"></ngx-datatable-column>
+    <ngx-datatable-column name="Nome"></ngx-datatable-column>
+    <ngx-datatable-column name="Telefone"></ngx-datatable-column>
+    <ngx-datatable-column name="E-mail" prop="email"></ngx-datatable-column>
+    <ngx-datatable-column name="Opções" [sortable]="false">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <button class="btn btn-info btn-xs" (click)="editar(row)"><i class="fa fa-pencil fa-lg"></i></button>&nbsp;
+        <button class="btn btn-danger btn-xs" (click)="excluir(row)"><i class="fa fa-trash fa-lg"></i></button>
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+</div>
+
+<app-floating-button (click)="incluir()">
+  <i class="fa fa-plus fa-lg"></i>
+</app-floating-button>

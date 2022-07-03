@@ -23,7 +23,7 @@ public class PacienteService {
     private final PacienteRepository pacienteRepository;
 
     public List<Paciente> listar() {
-        return pacienteRepository.findAll();
+        return pacienteRepository.findAllByOrderByNomeAsc();
     }
 
     public Optional<Paciente> buscar(Long id) {
