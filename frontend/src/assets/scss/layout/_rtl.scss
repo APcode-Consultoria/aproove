@@ -794,7 +794,7 @@
   }
   .offer-box {
     .offer-slider {
-      .carousel-control-prev, .carousel-control-next {
+      .owl-prev, .owl-next {
         right: unset;
         left: 0;
       }
@@ -813,20 +813,20 @@
   // ecommerce dashboard css end
   .cal-date-widget {
     .cal-info {
-      .pr-3 {
+      .pe-3 {
         padding-right: 1rem !important;
       }
     }
   }
-  .mr-4, .mx-4 {
+  .me-4, .mx-4 {
     margin-left: 1.5rem !important;
     margin-right: unset !important;
   }
-  .pr-4, .px-4 {
+  .pe-4, .px-4 {
     padding-left: 1.5rem !important;
     padding-right: unset !important;
   }
-  .mr-1, .mx-1 {
+  .me-1, .mx-1 {
     margin-left: 0.25rem !important;
     margin-right: unset !important;
   }
@@ -909,10 +909,10 @@
   }
   .widget-joins {
     .row {
-      .pr-0 {
+      .pe-0 {
         padding-right: 15px !important;
       }
-      .pl-0 {
+      .ps-0 {
         padding-left: 15px !important;
       }
     }
@@ -1047,7 +1047,7 @@
           .item {
             .product-box {
               .product-details {
-                &.text-left {
+                &.text-start {
                   text-align: left !important;
                 }
               }
@@ -1125,7 +1125,7 @@
       }
     }
   }
-  .mr-0, .mx-0 {
+  .me-0, .mx-0 {
     margin-left: 0 !important;
     margin-right: unset !important;
   }
@@ -1183,14 +1183,14 @@
     margin-left: 5px;
     margin-right: unset;
   }
-  .text-left {
+  .text-start {
     text-align: right!important;
   }
   .m-r-10 {
     margin-left: 10px;
     margin-right: unset;
   }
-  .pr-3, .px-3 {
+  .pe-3, .px-3 {
     padding-left: 1rem !important;
     padding-right: unset !important;
   }
@@ -1202,35 +1202,35 @@
     margin-right: 20px !important;
     margin-left: unset !important;
   }
-  .pl-3, .px-3 {
+  .ps-3, .px-3 {
     padding-right: 1rem !important;
   }
   .b-r-light {
     border-left: 1px solid $light-color !important;
     border-right: unset !important;
   }
-  .float-right {
+  .float-end {
     float: left !important;
   }
-  .float-left {
+  .float-start {
     float: right !important;
   }
-  .text-right {
+  .text-end {
     text-align: left !important;
   }
   .border-right {
     border-left: 1px solid #dee2e6 !important;
     border-right: unset !important;
   }
-  .pr-0, .px-0 {
+  .pe-0, .px-0 {
     padding-left: 0 !important;
     padding-right: unset !important;
   }
-  .pl-0, .px-0 {
+  .ps-0, .px-0 {
     padding-right: 0 !important;
     padding-left: unset !important;
   }
-  .ml-1 {
+  .ms-1 {
     margin-left: unset !important;
     margin-right: 0.25rem !important;
   }
@@ -1286,15 +1286,15 @@
       }
     }
   }
-  .mr-3, .mx-3 {
+  .me-3, .mx-3 {
     margin-right: unset !important;
     margin-left: 1rem !important;
   }
-  .mr-5, .mx-5 {
+  .me-5, .mx-5 {
     margin-left: 3rem !important;
     margin-right: unset !important;
   }
-  .ml-3, .mx-3 {
+  .ms-3, .mx-3 {
     margin-right: 1rem !important;
     margin-left: unset !important;
   }
@@ -1310,19 +1310,19 @@
     padding-left: unset;
     padding-right: 0px;
   }
-  .pl-4 {
+  .ps-4 {
     padding-right: 1.5rem !important;
     padding-left: unset !important;
   }
-  .mr-2 {
+  .me-2 {
     margin-left: 0.5rem !important;
     margin-right: unset !important;
   }
-  .ml-2 {
+  .ms-2 {
     margin-right: 0.5rem !important;
     margin-left: unset !important;
   }
-  .pr-2 {
+  .pe-2 {
     padding-right: unset !important;
     padding-left: 0.5rem !important;
   }
@@ -1384,7 +1384,7 @@
     }
   }
   .modal-header {
-    .close {
+    .btn-close {
       margin-left: 0;
     }
   }
@@ -1792,7 +1792,7 @@
         .owl-item {
           .slide--item {
             .media {
-              .mr-3, .mx-3 {
+              .me-3, .mx-3 {
                 margin-right: 1rem !important;
                 margin-left: unset !important;
               }
@@ -1802,8 +1802,8 @@
       }
     }
   }
-  .needs-validation, .form-row {
-    .input-group > .form-control:not(:last-child), .input-group > .custom-select:not(:last-child) {
+  .needs-validation, form .row {
+    .input-group > .form-control:not(:last-child), .input-group > .form-select:not(:last-child) {
       border-top-left-radius: 0.25rem;
       border-bottom-left-radius: 0.25rem;
       border-top-right-radius: 0;
@@ -1872,7 +1872,7 @@
     }
     .email-right-aside {
       .email-body {
-        .pr-0 {
+        .pe-0 {
           padding-right: unset !important;
         }
       }
@@ -2228,7 +2228,7 @@
             margin-left: -1px;
           }
         }
-        .pl-md-radios {
+        .ps-md-radios {
           padding-right: 37px;
           padding-left: unset;
         }
@@ -2244,7 +2244,7 @@
   }
   .product-stts {
     display: inline-block;
-    .ml-1 {
+    .ms-1 {
       margin-right: 0.25rem !important;
       margin-left: unset !important;
     }
@@ -2540,7 +2540,7 @@
             }
             text-align: right;
             i {
-              &.ml-2 {
+              &.ms-2 {
                 margin-right: 0.5rem !important;
                 margin-left: unset !important;
               }
@@ -2641,7 +2641,7 @@
     }
   }
   .alert-dismissible {
-    .close {
+    .btn-close {
       left: 0;
       right: unset;
       span {
@@ -2753,7 +2753,7 @@
         .chat {
           .chat-history {
             .caller-img {
-              &.pl-0 {
+              &.ps-0 {
                 padding-left: 15px !important;
               }
             }
@@ -2788,7 +2788,7 @@
       .nav {
         padding-right: 0;
       }
-      &.pl-0 {
+      &.ps-0 {
         padding-left: 15px !important;
       }
     }
@@ -2801,7 +2801,7 @@
           }
         }
       }
-      &.pr-0 {
+      &.pe-0 {
         padding-right: 15px !important;
       }
     }
@@ -2832,7 +2832,7 @@
         .chat-menu-icons {
           padding-left: 0;
           padding-right: unset;
-          &.float-sm-right {
+          &.float-sm-end {
             float: left !important;
           }
         }
@@ -3260,7 +3260,7 @@
       padding-right: 0;
     }
   }
-  .pl-navs-inline {
+  .ps-navs-inline {
     padding-right: 30px !important;
     padding-left: 0 !important;
   }
@@ -3654,11 +3654,11 @@
   }
   // chart widget page
   .chart-widget-top {
-    .text-right {
+    .text-end {
       text-align: left !important;
     }
     .num {
-      .ml-1 {
+      .ms-1 {
         margin-right: 0.25rem !important;
       }
     }
@@ -3675,7 +3675,7 @@
         border-right: unset !important;
       }
       .num {
-        .ml-1 {
+        .ms-1 {
           margin-right: 0.25rem !important;
         }
       }
@@ -3781,7 +3781,7 @@
         border-bottom-left-radius: 0 !important;
       }
     }
-    > .form-control, > .custom-select {
+    > .form-control, > .form-select {
       &:not(:last-child) {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
@@ -4173,11 +4173,11 @@
   @media (min-width: 1200px){
     // chat page
     .chat-box {
-      .pr-xl-0, .px-xl-0 {
+      .pe-xl-0, .px-xl-0 {
         padding-left: 0 !important;
         padding-right: 15px !important;
       }
-      .pl-xl-0, .px-xl-0 {
+      .ps-xl-0, .px-xl-0 {
         padding-right: 0 !important;
         padding-left: 15px !important;
       }
@@ -4298,7 +4298,7 @@
       }
       .email-right-aside {
         .email-body {
-          .pr-0 {
+          .pe-0 {
             padding-right: unset !important;
           }
         }
@@ -4553,7 +4553,7 @@
             }
           }
         }
-        .carousel-control-prev-icon, .carousel-control-next-icon {
+        .owl-prev-icon, .owl-next-icon {
           right: unset;
           left: 20px;
         }
@@ -4561,7 +4561,7 @@
     }
   }
   @media (min-width: 768px){
-    .float-md-right {
+    .float-md-end {
       float: left !important;
     }
     .text-md-right {
@@ -4692,10 +4692,10 @@
     .text-sm-right {
       text-align: left !important;
     }
-    .float-sm-right {
+    .float-sm-end {
       float: left !important;
     }
-    .mr-sm-2, .mx-sm-2 {
+    .me-sm-2, .mx-sm-2 {
       margin-left: 0.5rem !important;
       margin-right: unset !important;
     }
@@ -4955,12 +4955,12 @@
 
 html[dir="rtl"] {
   .modal-open {
-    .mr-1 {
+    .me-1 {
       margin-right: unset !important;
       margin-left: 0.5rem !important;
     }
     .modal-header {
-      .close {
+      .btn-close {
         margin-left: unset;
         margin-right: auto;
       }

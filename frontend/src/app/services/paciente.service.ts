@@ -22,7 +22,7 @@ export class PacienteService {
     return this.http.get<Paciente>(`${environment.backendURL}${Api.PACIENTES}/${id}`);
   }
 
-  public gravar(paciente: Paciente): Observable<Paciente> {
+  public gravar(paciente: any): Observable<Paciente> {
     if (paciente.id > 0) {
       return this.http.put<Paciente>(`${environment.backendURL}${Api.PACIENTES}/${paciente.id}`, paciente);
     }

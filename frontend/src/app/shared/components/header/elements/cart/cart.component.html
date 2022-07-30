@@ -1,6 +1,6 @@
 <div class="cart-box" (click)="toggleCart()">
   <app-feather-icons [icon]="'shopping-cart'"></app-feather-icons>
-  <span class="badge badge-pill badge-primary">2</span>
+  <span class="badge rounded-pill badge-primary">2</span>
 </div>
 <ul class="cart-dropdown onhover-show-div" [class.active]="openCart">
   <li>
@@ -8,8 +8,8 @@
     <app-feather-icons [icon]="'shopping-cart'"></app-feather-icons>
   </li>
   <li class="mt-0">
-    <div class="media">
-      <img class="img-fluid rounded-circle mr-3 img-60" src="assets/images/ecommerce/01.jpg" alt="">
+    <div class="d-flex position-relative">
+      <img class="img-fluid rounded-circle me-3 img-60" src="assets/images/ecommerce/01.jpg" alt="">
       <div class="media-body">
         <span>V-Neck Shawl Collar Woman's Solid T-Shirt</span>
         <p>Yellow(#fcb102)</p>
@@ -24,7 +24,7 @@
             </span>
           </div>
         </div>
-        <h6 class="text-right text-muted">$299.00</h6>
+        <h6 class="text-end text-muted">$299.00</h6>
       </div>
       <div class="close-circle">
         <a href="#">
@@ -34,8 +34,8 @@
     </div>
   </li>
   <li class="mt-0">
-    <div class="media">
-      <img class="img-fluid rounded-circle mr-3 img-60" src="assets/images/ecommerce/03.jpg" alt="">
+    <div class="d-flex position-relative">
+      <img class="img-fluid rounded-circle me-3 img-60" src="assets/images/ecommerce/08.jpg" alt="">
       <div class="media-body">
         <span>V-Neck Shawl Collar Woman's Solid T-Shirt</span>
         <p>Yellow(#fcb102)</p>
@@ -50,7 +50,7 @@
             </span>
           </div>
         </div>
-        <h6 class="text-right text-muted">$299.00</h6>
+        <h6 class="text-end text-muted">$299.00</h6>
       </div>
       <div class="close-circle">
         <a href="#">
@@ -65,9 +65,9 @@
     </div>
   </li>
   <li>
-    <a class="btn btn-block btn-primary view-cart" href="#">
+    <a class="btn w-100 btn-primary view-cart" href="#">
       Go to shoping bag
     </a>
-    <a class="btn btn-block btn-secondary view-cart" href="#">Checkout</a>
+    <a class="btn w-100 btn-secondary view-cart" href="#">Checkout</a>
   </li>
 </ul>

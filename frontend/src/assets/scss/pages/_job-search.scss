@@ -4,7 +4,7 @@
 .filter-cards-view {
   .job-filter {
     &:first-child {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
   }
 
@@ -159,13 +159,6 @@
 @media only screen and (max-width: 991px) {
   .filter-cards-view {
     padding: 20px !important;
-
-    .job-filter {
-      &:first-child {
-        margin-bottom: 20px;
-      }
-    }
-
     .checkbox-animated {
       margin-top: 20px;
       margin-bottom: 20px;

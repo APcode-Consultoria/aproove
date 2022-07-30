@@ -3,7 +3,9 @@
 ==========================**/
 .badge {
   padding: $badge-padding;
-
+  &:hover{
+    color: $white;
+  }
   &+.badge {
     margin-left: 5px;
   }

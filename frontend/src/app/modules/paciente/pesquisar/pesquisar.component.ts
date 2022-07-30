@@ -25,10 +25,10 @@ export class PesquisarComponent implements OnInit {
   }
 
   pesquisar(): void {
-    this.pacienteService.listar().subscribe(
-      listaPacientes => this.lista = listaPacientes,
-      () => this.toastrService.error("Erro ao pesquisar pacientes", "Erro de processamento")
-     );
+    this.pacienteService.listar().subscribe({
+      next: listaPacientes => this.lista = listaPacientes,
+      error: () => this.toastrService.error("Erro ao pesquisar pacientes", "Erro de processamento")
+    });
   }
 
   incluir(): void {

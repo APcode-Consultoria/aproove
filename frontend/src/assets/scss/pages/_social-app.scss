@@ -25,6 +25,13 @@
   .market-tabs {
     .nav {
       margin-top: 0;
+      box-shadow: 0 0 40px rgb(8 21 66 / 5%);
+      .nav-link{
+        border: none !important;
+        &.active{
+          
+        }
+      }
     }
   }
   .border-tab {
@@ -397,6 +404,9 @@
           margin-right: 0;
         }
         .add-friend{
+          img{
+            width: 60px;
+          }
           h6{
             margin-top: 3px;
           }

@@ -134,7 +134,12 @@
     background-color: $linkedin;
   }
 }
-
+.form-control{
+  color: inherit;
+  &:focus{
+    color: inherit;
+  }
+}
 .form-inline {
   display: -webkit-inline-box;
 

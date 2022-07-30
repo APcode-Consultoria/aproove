@@ -14,11 +14,12 @@ import { ViaCepService } from '../../../services/via-cep.service';
 })
 export class CadastroComponent implements OnInit {
 
-  formEnviado: boolean = false;
+  abaAtiva = 'top';
+  formEnviado = false;
   dataCadastroFormatada: Date = new Date();
 
   id = new FormControl(null);
-  dataCadastro = new FormControl(Date.now);
+  dataCadastro = new FormControl(new Date(Date.now()));
   nome = new FormControl(null, Validators.required);
   cpf = new FormControl(null, Validators.required);
   dataNascimento = new FormControl(null);
@@ -82,57 +83,56 @@ export class CadastroComponent implements OnInit {
 
   ngOnInit(): void {
     this.activedRoute.params.subscribe(params => {
-      const id: number = params["id"];
+      const id: number = params.id;
       if (id) {
         this.pacienteService.buscar(id).subscribe(paciente => {
-          this.formPaciente.patchValue(paciente)
+          this.formPaciente.patchValue(paciente);
           this.dataCadastroFormatada = new Date(paciente.dataCadastro);
         });
       }
     });
   }
 
-  consultaCep(cep: string) {
-    cep = cep.replace("-", "");
-    this.logradouro.setValue("");
-    this.bairro.setValue("");
-    this.cidade.setValue("");
-    this.estado.setValue("");
-    this.viaCepService.consultarCep(cep).subscribe(
-      endereco => {
+  consultaCep = (cep: string) => {
+    cep = cep.replace('-', '');
+    this.logradouro.setValue('');
+    this.bairro.setValue('');
+    this.cidade.setValue('');
+    this.estado.setValue('');
+    this.viaCepService.consultarCep(cep).subscribe({
+      next: endereco => {
         if (endereco.erro) {
           this.toastrService.warning('CEP não encontrado', 'Atenção');
-        }
-        else {
+        } else {
           this.logradouro.setValue(endereco.logradouro);
           this.bairro.setValue(endereco.bairro);
           this.cidade.setValue(endereco.localidade);
           this.estado.setValue(endereco.uf);
         }
       },
-      () => {
+      error: () => {
         this.toastrService.error('Erro ao consultar o CEP', 'Erro de processamento');
       }
-    );
+    });
   }
 
   gravar(): void {
     this.formEnviado = true;
     if (this.formPaciente.valid) {
       console.log(this.formPaciente.value);
-      this.pacienteService.gravar(this.formPaciente.value).subscribe(
-        paciente => {
+      this.pacienteService.gravar(this.formPaciente.value).subscribe({
+        next: paciente => {
           this.formPaciente.reset();
           this.formPaciente.patchValue(paciente);
-          this.toastrService.success(`Dados do paciente ${paciente.nome} gravados com sucesso`, "Cadastro");
+          this.toastrService.success(`Dados do paciente ${paciente.nome} gravados com sucesso`, 'Cadastro');
         },
-        objetoErro => {
-          this.toastrService.error(objetoErro.error.message, "Erro de Processamento");
+        error: objetoErro => {
+          this.toastrService.error(objetoErro.error.message, 'Erro de Processamento');
         }
-      );
+      });
     }
     else {
-      this.toastrService.warning("Dados obrigatórios não foram todos preenchidos", "Atenção");
+      this.toastrService.warning('Dados obrigatórios não foram todos preenchidos', 'Atenção');
     }
   }
 

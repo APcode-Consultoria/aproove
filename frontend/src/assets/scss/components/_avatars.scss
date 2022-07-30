@@ -2,6 +2,10 @@
     80. avatars CSS start
 ==========================**/
 .avatars{
+    &.square{
+        display: flex;
+        min-height: 100px;
+    }
     .avatar{
         display: inline-block;
         margin-right: 10px;
@@ -24,6 +28,8 @@
         &.ratio{
             img{
                 width: auto;
+                border: 1px solid $light-gray;
+                height: auto;
             }
         }        
         .status{
@@ -36,12 +42,12 @@
         }
         .status{
             position: absolute;
-            height: 12%;
-            width: 12%;
+            height: 10px;
+            width: 10px;
             background-color: $success-color;
             border-radius: 100%;
-            bottom: 12%;
-            right: 4%;
+            top: 12%;
+            left: 4%;
         }
     }
 }
@@ -75,11 +81,6 @@
 }
 .avatar-showcase{
     margin-bottom: -10px;
-    .avatars{
-        .avatar{
-            margin-bottom: 10px;
-        }
-    }
     .avatar-group{
         margin-bottom: 10px;
     }

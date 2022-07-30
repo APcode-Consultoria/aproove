@@ -406,13 +406,11 @@ $warning-color;
 
   .badge-#{$var} {
     background-color: nth($badge-color, $i);
-
-    @if($badge-name=="light") {
-      color: $theme-body-font-color !important;
-    }
   }
 }
-
+.badge-light {
+  color: $theme-body-font-color !important;
+}
 .badge-primary {
   background-color: var(--theme-deafult) !important;
 }
@@ -567,7 +565,12 @@ $btn-color in (primary, $primary-color),
   background-color: var(--theme-secondary) !important;
   border-color: var(--theme-secondary) !important;
 }
-
+.btn-info{
+  color: $white;
+  &:hover {
+    color: $white;
+  }
+}
 /*======= Button-color css ends  ======= */
 @each $btn-name,
 $btn-color in (primary, $primary-color),
@@ -1057,6 +1060,130 @@ button {
   }
 }
 
+.media {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+.row{
+  > div{ 
+    position: relative;
+   }
+}
+.form{
+  .row{
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+}
+
+
+.form-group {
+  margin-bottom: 1rem;
+  .form-select{
+    width: 100%;
+  }
+  .ng-dropdown-panel .scroll-host{
+    > div{
+      background-color: $white;
+      padding: 10px 15px;
+    }
+  }
+
+  .ng-select-searchable,.ng-input{
+    .ng-placeholder{
+      line-height: 2.5;
+      padding-left: 15px;
+    }
+  }
+  .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    padding: 1px 8px;
+    margin: 5px;
+    border-radius: 5px;
+  }
+
+  .ng-select{
+    background-color: $white;
+    
+    &.ng-select-multiple .ng-select-container{      
+        border-radius: 5px;      
+      .ng-value-container .ng-placeholder{
+        position: relative;
+        line-height: 1.5;
+        top: unset;
+        padding: 0.375rem 0.75rem;
+        width: 100%;
+      }
+    }
+  }
+}
+.custom-file{
+  input[type='file']{
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 5px;
+    width: 100%;
+  }
+  .was-validated .form-select:invalid{
+    border-color: #dc3545;
+  }
+}
+span.ng-star-inserted{
+  color: var(--theme-deafult);
+}
+.swal2-html-container{
+  button{
+    margin-bottom: 10px;
+  }
+}
+ngx-dropzone{
+  border: 1px dashed var(--theme-deafult) !important;
+  background-color: rgba($primary-color, 0.1) !important;
+  i{
+    font-size: 48px !important;
+    color: var(--theme-deafult);
+  }
+}
+.dz-message{
+  h4{
+    font-weight: 200;
+    margin-top: 20px;
+  }
+}
+.accordion-header {  
+  .accordion-button{
+    color: $theme-body-font-color;
+    &:not(.collapsed){
+      color: var(--theme-deafult);
+      background-color: rgba($primary-color, 0.1) !important;
+    }
+    // &::after{
+    //   background: none;
+    //   content: "\eb73";
+    //   font-family: IcoFont;
+    // }
+  }
+}
+.btn-group-toggle{
+  padding: 0 5px;
+  label{
+    margin-bottom: 0;
+    padding: 5px 10px;
+  }
+}
+.cal-month-view .cal-open-day-events{
+  background-color: rgba($primary-color, 0.1) !important;
+  box-shadow: none !important;
+}
+.cal-month-view .cal-day-badge {
+  background-color:var(--theme-secondary) !important;
+  color: $white !important;
+}
 /**=====================
      Reset css Ends
 ==========================**/

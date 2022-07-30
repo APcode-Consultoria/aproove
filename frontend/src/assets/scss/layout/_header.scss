@@ -24,6 +24,7 @@
   svg {
     width: $header-wrapper-nav-icon-size;
     vertical-align: middle ;
+    stroke: $theme-font-color;
   }
 
   &:before {
@@ -35,7 +36,7 @@
     border-radius: 100%;
     left: -11px;
     z-index: -2;
-    top: -8px;
+    top: -8px;    
     transform: scale(0);
     transition: all 0.3s ease;
   }
@@ -101,7 +102,6 @@
       transition: all 0.3s ease;
       color: var(--theme-secondary);
       margin-left: 10px;
-
       &.active {
         background-color: var(--theme-secondary);
         color: $white;
@@ -111,7 +111,6 @@
           stroke: $white;
         }
       }
-
       svg {
         height: 18px;
         margin-right: 5px;
@@ -200,23 +199,33 @@
       border-radius: 5px;
       background-color: rgba($primary-color, 0.15);
       transition: all 0.3s ease;
-
-      &.active {
-        transition: all 0.3s ease;
-        color: $white;
-        background-color: var(--theme-deafult);
+      span{
+        color: var(--theme-deafult);
       }
-
+      &.active {
+        transition: all 0.3s ease;        
+        background-color: var(--theme-deafult);
+        span{
+          color: $white;
+        }
+        svg {
+          color: $white;
+        }
+      }
       .according-menu {
         display: none;
       }
-
       svg {
         height: 18px;
         margin-right: 5px;
         vertical-align: middle;
+        color: var(--theme-deafult);
       }
     }
+  }
+
+  .nav-link {
+     padding: .5rem 1rem;
   }
 
   .mega-menu-container {

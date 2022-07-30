@@ -1,157 +1,172 @@
 <app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Pacientes']" [active_item]="'Cadastro'"></app-breadcrumb>
 
-<form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formEnviado}">
-  <div class="col-12 col-md-10 offset-md-1">
-    <div class="card border border-primary rounded shadow-lg">
-      <div class="card-header">
-        <h5>Cadastro de Paciente</h5>
-        <span>{{ dataCadastroFormatada | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</span>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>* Nome</label>
-            <input type="text" name="nome" formControlName="nome" class="form-control" required="">
-            <div class="invalid-feedback">Campo nome é obrigatório</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-6">
-            <label>* CPF</label>
-            <input type="text" name="cpf" formControlName="cpf" class="form-control" required="" mask="000.000.000-00">
-            <div class="invalid-feedback">Campo CPF é obrigatório</div>
-          </div>
-          <div class="form-group col-12 col-md-6">
-            <label>Data de Nascimento</label>
-            <input type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-4">
-            <label>* Telefone</label>
-            <input type="text" name="telefone" formControlName="telefone" class="form-control" required="" mask="(00) 00000-0000">
-            <div class="invalid-feedback">Campo Telefone é obrigatório</div>
-          </div>
-          <div class="form-group col-12 col-md-2">
-            <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp" value="true"/>
-              <label>Sim</label>
+<div class="d-flex">
+  <ul ngbNav #nav="ngbNav" activeId="dados-cadastrais" animation="true" class="nav-pills" orientation="vertical">
+    <li ngbNavItem="dados-cadastrais">
+      <a ngbNavLink>Dados Cadastrais</a>
+      <ng-template ngbNavContent>
+        <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formEnviado}">
+          <div class="card border border-primary rounded shadow-lg">
+            <div class="card-header">
+              <h5>Cadastro de Paciente</h5>
+              <span>{{ dataCadastroFormatada | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</span>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Nome</label>
+                  <input type="text" name="nome" formControlName="nome" class="form-control" required="">
+                  <div class="invalid-feedback">Campo nome é obrigatório</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-6">
+                  <label>* CPF</label>
+                  <input type="text" name="cpf" formControlName="cpf" class="form-control" required="" mask="000.000.000-00">
+                  <div class="invalid-feedback">Campo CPF é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>Data de Nascimento</label>
+                  <input type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-4">
+                  <label>* Telefone</label>
+                  <input type="text" name="telefone" formControlName="telefone" class="form-control" required="" mask="(00) 00000-0000">
+                  <div class="invalid-feedback">Campo Telefone é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                  <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp" value="true"/>
+                    <label>Sim</label>
+                  </div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>E-mail</label>
+                  <input type="email" name="email" formControlName="email" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-6">
+                  <label>Contato de Emergência</label>
+                  <input type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>Parentesco</label>
+                  <select name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-control">
+                    <option *ngFor="let p of parentescos" [value]="p">{{ enumParentescos[p] }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-4">
+                  <label>CEP</label>
+                  <div class="input-group">
+                    <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000" (keypress.enter)="consultaCep(cep.value)">
+                    <div class="input-group-append">
+                      <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="fa fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-8">
+                  <label>Logradouro</label>
+                  <input type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-4">
+                  <label>Número</label>
+                  <input type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-5">
+                  <label>Bairro</label>
+                  <input type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-5">
+                  <label>Cidade</label>
+                  <input type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                  <label>Estado</label>
+                  <input type="text" name="estado" formControlName="estado" class="form-control" readonly>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-9">
+                  <label>Profissão</label>
+                  <input type="text" name="profissao" formControlName="profissao" class="form-control">
+                </div>
+                <div class="form-group col-12 col-md-3">
+                  <label>Dia de Vencimento</label>
+                  <input type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>Frequência Semanal</label>
+                  <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1"/>
+                      <label for="frequencia_1" class="mb-0">Uma vez</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2"/>
+                      <label for="frequencia_2" class="mb-0">Duas vezes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3"/>
+                      <label for="frequencia_3" class="mb-0">Três vezes</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Queixa Principal (QP)</label>
+                  <input type="text" class="form-control" rows="4" name="queixaPrincipal" formControlName="queixaPrincipal" required="">
+                  <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>* História Moléstia Pregressa (HMP)</label>
+                  <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required=""></textarea>
+                  <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>Remédios</label>
+                  <textarea class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>Objetivos</label>
+                  <textarea class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravar()"><i class="fa fa-save fa-lg"></i> Gravar</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="form-group col-12 col-md-6">
-            <label>E-mail</label>
-            <input type="email" name="email" formControlName="email" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-6">
-            <label>Contato de Emergência</label>
-            <input type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
-          </div>
-          <div class="form-group col-12 col-md-6">
-            <label>Parentesco</label>
-            <select name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-control">
-              <option *ngFor="let p of parentescos" [value]="p">{{ enumParentescos[p] }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-4">
-            <label>CEP</label>
-            <div class="input-group">
-              <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000" (keypress.enter)="consultaCep(cep.value)">
-              <div class="input-group-append">
-                <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="fa fa-search"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-8">
-            <label>Logradouro</label>
-            <input type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
-          </div>
-          <div class="form-group col-12 col-md-4">
-            <label>Número</label>
-            <input type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-5">
-            <label>Bairro</label>
-            <input type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
-          </div>
-          <div class="form-group col-12 col-md-5">
-            <label>Cidade</label>
-            <input type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
-          </div>
-          <div class="form-group col-12 col-md-2">
-            <label>Estado</label>
-            <input type="text" name="estado" formControlName="estado" class="form-control" readonly>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-9">
-            <label>Profissão</label>
-            <input type="text" name="profissao" formControlName="profissao" class="form-control">
-          </div>
-          <div class="form-group col-12 col-md-3">
-            <label>Dia de Vencimento</label>
-            <input type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>Frequência Semanal</label>
-            <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
-              <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1"/>
-                <label for="frequencia_1" class="mb-0">Uma vez</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2"/>
-                <label for="frequencia_2" class="mb-0">Duas vezes</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3"/>
-                <label for="frequencia_3" class="mb-0">Três vezes</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>* Queixa Principal (QP)</label>
-            <input type="text" class="form-control" rows="4" name="queixaPrincipal" formControlName="queixaPrincipal" required="">
-            <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>* História Moléstia Pregressa (HMP)</label>
-            <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required=""></textarea>
-            <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>Remédios</label>
-            <textarea class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-12 col-md-12">
-            <label>Objetivos</label>
-            <textarea class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </form>
+      </ng-template>
+    </li>
+    <li ngbNavItem="prontuario">
+      <a ngbNavLink>Prontuário</a>
+      <ng-template ngbNavContent>
+        <p>Prontuário</p>
+      </ng-template>
+    </li>
+  </ul>
 
-  <app-floating-button (click)="gravar()">
-    <i class="fa fa-save fa-lg"></i>
-  </app-floating-button>
-
-</form>
+  <div [ngbNavOutlet]="nav" class="ms-4 col-10"></div>
+</div>

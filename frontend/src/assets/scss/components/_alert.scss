@@ -26,7 +26,7 @@
   p{
     margin-bottom: 0;
   }
-  .close{
+  .btn-close{
     opacity: 1;
     span{
       font-size: 24px;
@@ -40,16 +40,19 @@
   }
 }
 .alert-dismissible {
-  .close {
+  .btn-close {
     padding: 10px 1.25rem;
-    top:4px;
+    top:7px;
     padding-right: 13px;
-    opacity: 0.5;
+    opacity: 0.7;
     transition: all 0.3s ease;
     &:hover{
       transition: all 0.3s ease;
       opacity: 1;
       color: inherit;
+    }
+    &:focus{
+      box-shadow: none;
     }
   }
 }
@@ -117,6 +120,9 @@ $dark-color;
     .alert-link{
       color: nth($alert-color, $i);
       @if($var == "light"){
+        color: $dark-color;
+      }
+      @if($var == "primary"){
         color: $dark-color;
       }
     }

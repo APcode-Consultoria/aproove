@@ -83,7 +83,11 @@
   }
 }
 
-
+.btn-outline-primary{
+  &:disabled{
+    color: $primary-color;
+  }
+}
 @mixin btn-squre($border-radius){
   border-radius:$border-radius+px;
 }

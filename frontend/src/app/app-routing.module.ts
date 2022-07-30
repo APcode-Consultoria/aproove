@@ -6,10 +6,20 @@ import { full } from "./shared/routes/full.routes";
 import { content } from "./shared/routes/routes";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '', component: ContentComponent, children: content },
-  { path: '', component: FullComponent, children: full },
-  { path: '**', redirectTo: '' }
+  {
+    path: '',
+    redirectTo: 'sample-page',
+    pathMatch: 'full'
+  },
+  {
+    path: '',
+    component: ContentComponent,
+    children: content
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
 ];
 
 @NgModule({

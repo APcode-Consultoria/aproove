@@ -488,7 +488,7 @@
             width: 100%;
             text-align: center;
 
-            .mr-3 {
+            .me-3 {
               margin-right: 0 !important;
             }
           }
@@ -516,7 +516,7 @@
         .email-top {
           line-height: 50px;
 
-          .float-right {
+          .float-end {
             display: none !important;
           }
 
@@ -536,7 +536,7 @@
               width: 100%;
               text-align: center;
 
-              .mr-3 {
+              .me-3 {
                 margin-right: 0 !important;
               }
             }
@@ -3081,7 +3081,7 @@
       display: block;
     }
 
-    .mr-4 {
+    .me-4 {
       margin-right: 0 !important;
     }
   }
@@ -3382,7 +3382,7 @@
       width: 270px;
     }
     .ngb-dp-navigation-select {
-      .custom-select {
+      .form-select {
         width: 87px;
       }
     }
@@ -4138,7 +4138,7 @@
             padding-bottom: 0;
           }
 
-          .float-right {
+          .float-end {
             float: left !important;
           }
         }
@@ -4348,7 +4348,7 @@
       }
     }
 
-    .text-right {
+    .text-end {
       text-align: left !important;
     }
   }
@@ -5132,7 +5132,7 @@
       display: none;
     }
 
-    .pl-0 {
+    .ps-0 {
       padding-left: 15px !important;
     }
 
@@ -5675,7 +5675,7 @@
   }
 
   .date-picker {
-    .text-right {
+    .text-end {
       text-align: left !important;
     }
   }
@@ -6025,7 +6025,7 @@
   }
 
   .alert {
-    .close {
+    .btn-close {
       height: 100%;
     }
   }
@@ -6985,7 +6985,7 @@
 
   // alert page
   .alert-dismissible {
-    .close {
+    .btn-close {
       top: -1px;
 
       span {
@@ -7175,7 +7175,7 @@
       width: 248px;
     }
     .ngb-dp-navigation-select {
-      .custom-select {
+      .form-select {
         width: 75px;
       }
     }
@@ -7189,7 +7189,7 @@
       }
     }
     .ngb-dp-navigation-select {
-      .custom-select {
+      .form-select {
         width: 82px;
       }
     }
@@ -7198,7 +7198,7 @@
   // job search page
   .job-input-datepicker {
     .ngb-dp-navigation-select {
-      .custom-select {
+      .form-select {
         width: 67px;
       }
     }

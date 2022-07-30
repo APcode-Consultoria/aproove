@@ -81,7 +81,7 @@
     }
   }
   .ngb-dp-navigation-select {
-    .custom-select {
+    .form-select {
       width: 100px;
       &:first-child {
         margin-right: 15px;
@@ -180,7 +180,7 @@
     }
   }
   .ngb-dp-navigation-select {
-    .custom-select {
+    .form-select {
       width: 100px;
       &:first-child {
         margin-right: 15px;
@@ -228,16 +228,18 @@
         .btn {
           background-color: #e9ecef;
           border: 1px solid #ced4da;
+          line-height: 1.7;
         }
       }
     }
   }
 }
 select {
-  &.custom-select {
+  &.form-select {
     font-size: 14px;
     width: auto;
     margin: 6px 6px 0 0;
+    color: $theme-body-font-color;
   }
 }
 .time-picker-custom {
@@ -279,6 +281,13 @@ bs-datepicker-container, bs-daterangepicker-container {
     }
   }
 }
+.ngb-tp-input-container {
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+
 /**=====================
    52. Datepicker CSS End
 ==========================**/

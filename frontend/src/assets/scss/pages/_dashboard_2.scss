@@ -193,33 +193,54 @@ $activity-dot-color in (primary, var(--theme-deafult)),
     border-radius: 15px;
     height: 200px;
     width: 100%;
-
-    .carousel-control-prev {
+    .owl-nav{
+      position: absolute;
+    bottom: 70px;
+    right: 30px;
+      .owl-next{
+        &:before{
+            content: "\e649";
+            font-family: 'themify';
+          }
+        }
+      }
+    .owl-prev {
       right: 0;
       left: unset;
+      &:before{
+        content: "\e64a";
+        font-family: 'themify';
+      }
     }
 
-    .carousel-control-prev-icon {
+    .owl-prev-icon {
       top: 116px;
       position: absolute;
     }
 
-    .carousel-control-next-icon {
+    .owl-next-icon {
       top: 75px;
       position: absolute;
     }
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
+    .owl-prev-icon,
+    .owl-next-icon {
       width: 12px;
       height: 12px;
       background-color: rgba($white, 0.1);
       border-radius: 10px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
-      width: 10%;
+    .owl-prev,
+    .owl-next {
+      color: var(--theme-deafult);
+      background-color: $white;   
+      opacity: 0.8;   
+      &:hover{
+        color: var(--theme-deafult);
+        background-color: $white;      
+        opacity: 1;
+      }
     }
 
     .selling-slide {
@@ -802,8 +823,8 @@ $activity-dot-color in (primary, var(--theme-deafult)),
         }
       }
 
-      .carousel-control-prev-icon,
-      .carousel-control-next-icon {
+      .owl-prev-icon,
+      .owl-next-icon {
         right: 20px;
       }
     }

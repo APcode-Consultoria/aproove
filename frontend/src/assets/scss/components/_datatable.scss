@@ -80,6 +80,14 @@ table{
       color: $light-text;
     }
   }
+  button{
+    outline: none;
+    border: none;
+    background-color: transparent;
+    color: $primary-color;
+    font-size: 18px;
+    margin-bottom: -5px;
+  }
   .datatable-icon-right {
     &:before {
       content: "\f054";

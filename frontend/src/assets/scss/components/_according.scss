@@ -27,6 +27,21 @@
     }
 }
 .default-according{
+    .accordion-header{
+        svg{
+            margin-right: 10px;
+        }
+        .accordion-button{
+            color: $theme-body-font-color;
+            &[aria-expanded=true]{
+                color: $primary-color;
+                background-color: rgba(115, 102, 255, 0.15);
+            }
+        }
+    }
+    .accordion-button:not(.collapsed)::after{
+          display: none;  
+    }
     .card{
         margin-bottom: 0;
         box-shadow: none;
@@ -59,7 +74,9 @@
         .card-body {
             border: $card-border-color;
             border-top: none;
+            padding: 25px 20px;
         }
+
     }
 }
 .default-according.style-1{

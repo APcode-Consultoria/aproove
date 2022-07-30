@@ -12,6 +12,11 @@
     }
   }
 }
+.nav-tabs{
+  .nav-link{
+    color: var(--theme-deafult);
+  }
+}
 
 .nav-pills {
   .nav-link.active, .show > .nav-link {
@@ -20,7 +25,7 @@
 }
 .nav{
   i{
-    margin-right: 10px;
+    margin-right: 2px;
   }
 }
 

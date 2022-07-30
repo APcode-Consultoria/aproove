@@ -123,11 +123,11 @@
     .nav-link {
       border: none;
       padding: 0.7rem 1.5rem;
-      opacity: 0.5;
+      color: var(--theme-deafult);
+      opacity: 0.7;
 
       &.active {
-        background-color: rgba($primary-color, 0.1);
-        color: var(--theme-deafult);
+        background-color: rgba($primary-color, 0.1);        
         opacity: 1;
       }
     }

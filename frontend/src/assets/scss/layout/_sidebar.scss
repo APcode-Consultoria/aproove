@@ -315,8 +315,7 @@
               border-radius: 10px;
               overflow: hidden;
               box-shadow: 0 0 20px rgba(89, 102, 122, 0.1);
-              width: 220px;
-              height: 240px;
+              width: 220px;              
 
               button {
                 background-color: $transparent-color;
@@ -525,12 +524,32 @@
 
         .cart-dropdown {
           li {
+            .qty-box{
+              display: inline-block;
+              margin-top: 7px;
+            }
+            img {
+              height: 60px;
+            }
+            .media{
+              h6{
+                display: inline-block;
+                float: right;
+                margin-bottom: 0;
+                margin-top: 7px;
+              }
+            }
             .media {
               align-items: center;
             }
-
             &+li {
               padding-bottom: 10px;
+            }
+            &:last-child{
+              text-align: center;
+              a{
+                margin-bottom: 7px;
+              }
             }
           }
 
@@ -557,24 +576,19 @@
           right: -20px !important;
           left: unset;
 
-          li {
+          li {  
+            i{
+              margin-right: 5px;
+            }
             &+li {
               padding-top: 8px;
-
               p {
                 margin-bottom: 8px;
               }
             }
-
             &:last-child {
               text-align: center;
               border-top: 1px solid #ecf3fa;
-            }
-
-            p {
-              span {
-                color: $light-font;
-              }
             }
           }
 
@@ -1438,7 +1452,7 @@
                   &:hover {
                     >a {
                       &:hover {
-                        background-color: rgba($primary-color, 0.12%);
+                        background-color: rgba($primary-color, 12%);
                         transition: all 0.3s ease;
                       }
                     }
@@ -1711,6 +1725,7 @@
                     svg {
                       color: var(--theme-deafult);
                       transition: all 0.3s ease;
+                      stroke: var(--theme-deafult);
                     }
 
                     span {

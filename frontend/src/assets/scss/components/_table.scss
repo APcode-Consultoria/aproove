@@ -19,6 +19,9 @@
 	[class*='bg-']{
 		color: $white;
 	}
+	[class*='bg-'] th{
+		color: $white;
+	}
 	.bg-light{
 		color: $theme-body-font-color;
 	}

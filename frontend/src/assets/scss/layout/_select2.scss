@@ -8,6 +8,9 @@
   }
   .ng-select-container {
     background-color: $transparent-color;
+    .ng-value-container .ng-input>input{
+      height: 45px;
+    }
   }
   &.rtl {
     .ng-select-container {

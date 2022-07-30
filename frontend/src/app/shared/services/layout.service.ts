@@ -22,7 +22,7 @@ export class LayoutService {
     if(this.config.settings.layout_type == 'rtl')
       document.getElementsByTagName('html')[0].setAttribute('dir', this.config.settings.layout_type);
 
-    document.documentElement.style.setProperty('--theme-default', this.config.color.primary_color);
+    document.documentElement.style.setProperty('--theme-deafult', this.config.color.primary_color);
     document.documentElement.style.setProperty('--theme-secondary', this.config.color.secondary_color);
   }
 

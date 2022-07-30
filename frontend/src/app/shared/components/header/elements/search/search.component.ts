@@ -64,13 +64,11 @@ export class SearchComponent implements OnInit {
 
   addFix() {
     this.searchResult = true;
-    document.getElementsByTagName('body')[0].classList.add('offcanvas');
   }
 
   removeFix() {
     this.searchResult = false;
     this.text = "";
-    document.getElementsByTagName('body')[0].classList.remove('offcanvas');
   }
 
 }

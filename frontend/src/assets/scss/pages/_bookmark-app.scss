@@ -299,8 +299,7 @@
 
             p,
             h6 {
-              margin-top: 0;
-              display: inline-block;
+              margin-top: 0;              
             }
 
             h6 {
@@ -453,7 +452,7 @@
 
 @media only screen and (max-width: 767px) {
   .form-bookmark {
-    .form-row {
+    form .row {
       .form-group {
         &:last-child {
           margin-top: 15px;

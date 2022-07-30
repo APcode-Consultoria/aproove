@@ -1,29 +1,31 @@
 <app-breadcrumb [title]="'Pesquisar Pacientes'" [items]="['Pacientes']" [active_item]="'Pesquisar'"></app-breadcrumb>
 
-<div class="col-12 col-md-12 custom-datatable">
-  <ngx-datatable
-    [rows]="lista"
-    class="bootstrap fullscreen"
-    [columnMode]="'force'"
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="'auto'"
-    [limit]="10">
-
-    <ngx-datatable-column name="#" prop="id"></ngx-datatable-column>
-    <ngx-datatable-column name="Nome"></ngx-datatable-column>
-    <ngx-datatable-column name="Telefone"></ngx-datatable-column>
-    <ngx-datatable-column name="E-mail" prop="email"></ngx-datatable-column>
-    <ngx-datatable-column name="Opções" [sortable]="false">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        <button class="btn btn-info btn-xs" (click)="editar(row)"><i class="fa fa-pencil fa-lg"></i></button>&nbsp;
-        <button class="btn btn-danger btn-xs" (click)="excluir(row)"><i class="fa fa-trash fa-lg"></i></button>
-      </ng-template>
-    </ngx-datatable-column>
-
-  </ngx-datatable>
+<div class="col-12 col-md-12">
+  <div class="card border border-primary rounded shadow-lg">
+    <div class="card-body custom-datatable table-responsive table-border-radius">
+      <table class="table table-styling">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Telefone</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let paciente of this.lista ">
+            <td>{{ paciente.id }}</td>
+            <td>{{ paciente.nome }}</td>
+            <td>{{ paciente.telefone }}</td>
+            <td>{{ paciente.email }}</td>
+            <td>
+              <button (click)="editar(paciente)"><i class="fa fa-pencil"></i></button>
+              <button (click)="excluir(paciente)"><i class="fa fa-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-
-<app-floating-button (click)="incluir()">
-  <i class="fa fa-plus fa-lg"></i>
-</app-floating-button>

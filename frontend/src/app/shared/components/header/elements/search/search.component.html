@@ -1,5 +1,5 @@
 <form class="form-inline search-full" [class.open]="navServices.search">
-  <div class="form-group w-100">
+  <div class="form-group w-100 mb-0">
     <input class="form-control-plaintext" [(ngModel)]="text" [ngModelOptions]="{standalone: true}"
            (keyup)="searchTerm(text)" type="text" autocomplete="off" placeholder="Search..">
     <app-feather-icons [icon]="'x'" class="close-search" (click)="searchToggle()"></app-feather-icons>

@@ -188,7 +188,7 @@ $badge-light-color in (primary, $primary-color),
           line-height: 36px;
           font-weight: 500;
           margin: 0;
-
+          font-size: 1rem;
         }
 
         p {
@@ -891,7 +891,6 @@ $badge-light-color in (primary, $primary-color),
           display: flex;
           align-items: center;
           justify-content: center;
-
           svg {
             width: 20px;
             color: var(--theme-deafult);
@@ -919,10 +918,20 @@ $badge-light-color in (primary, $primary-color),
   }
 }
 
-.default-datepicker {
+.custom-datepicker{
+  .ngb-dp-navigation-select .form-select {   
+    font-size: 18px;
+    font-weight: 600;
+    height: 40px;
+    padding: 0 15px;
+  }
+}
+
+
+.default-datepicker { 
   ngb-datepicker {
     width: 100% !important;
-    box-shadow: none;
+    box-shadow: none;    
     .btn {
       &:focus {
         outline: none;
@@ -2647,7 +2656,7 @@ footer {
       }
     }
     .ngb-dp-navigation-select {
-      .custom-select {
+      .form-select {
         width: 75px !important;
       }
     }

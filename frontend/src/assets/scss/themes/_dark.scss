@@ -3,10 +3,53 @@
 ==========================**/
 
 body {
+
 	.dark-only {
 		color: $dark-all-font-color;
 		background-color: $dark-body-background;
-
+		.table > :not(caption) > * > * {
+			background-color: $dark-body-background;
+		}
+		.table-styling .table-primary, .table-styling.table-primary {
+			border: 3px solid $dark-card-border;
+		}
+		.table-hover > tbody > tr:hover > * {
+			--bs-table-accent-bg: #262932;		
+		}
+		.table-striped > tbody > tr:nth-of-type(odd) > * {
+			--bs-table-accent-bg: #262932;					
+		}
+		.input-group-text {
+			background-color: $dark-card-background;
+			border: 1px solid $dark-body-background;
+		}
+		.accordion-item {
+			background-color: $dark-body-background;			
+		}
+		.accordion-header .accordion-button {
+			color: $dark-all-font-color;
+			background-color: $dark-card-background;
+		}
+		.email-wrap .email-app-sidebar ul li a > .title {			
+			color: $dark-all-font-color;
+		}
+		.ngb-tp-input-container {
+			border-color: $dark-card-border;		
+		}
+		.table{
+			> :not(:first-child){
+				border-color: $dark-card-border;
+			}
+			thead, tbody, tfoot, tr, td, th{
+				border-color: $dark-card-border;
+			}
+		}
+		.btn-close{
+			color: rgba($white, 0.7);
+		}
+		.prooduct-details-box .media{
+			border-color: $dark-card-border;
+		}
 		.btn-light, .form-control-plaintext {
 			color: $dark-all-font-color;
 		}
@@ -823,7 +866,7 @@ body {
 		.blockquote {
 			border-left: 4px solid $dark-card-border;
 
-			&.text-right {
+			&.text-end {
 				border-right: 4px solid $dark-card-border;
 				border-left: none;
 			}
@@ -1505,16 +1548,28 @@ body {
 		// datepicker
 		.custom-datepicker,
 		.mutliple-datepicker {
+			.ngb-dp-day{
+				.btn-light{
+					background-color: $dark-body-background !important;
+					color: $dark-all-font-color !important;
+				}
+			}
+			.ngb-dp-month,.ngb-dp-week{
+				background-color: $dark-card-background;
+				.ngb-dp-weekday{
+					color: $dark-all-font-color;
+				}
+			}
 			.ngb-dp-navigation-select {
-				.custom-select {
+				.form-select {
 					background-color: $white !important;
 				}
 			}
-			.custom-select,
+			.form-select,
 			.custom-file-label {
 				color: $theme-body-font-color !important;
 			}
-			.custom-select {
+			.form-select {
 				&:disabled {
 					color: #6c757d !important;
 					background-color: #e9ecef !important;
@@ -1540,7 +1595,7 @@ body {
 				border: none !important;
 			}
 			.align-content-between {
-				.custom-select {
+				.form-select {
 					color: $dark-all-font-color !important;
 					border: 1px solid $dark-border-color !important;
 				}
@@ -2441,7 +2496,7 @@ body {
 					.card:not(.email-body) {
 						background-color: $dark-card-background;
 						box-shadow: 1px 1px 2px 1px rgba(29, 28, 28, 0.08);
-						border: 1px solid $dark-card-border;
+						// border: 1px solid $dark-card-border;
 
 						.chart-block {
 							#bar-chart2 {
@@ -2743,8 +2798,13 @@ body {
 						}
 
 						.custom-datepicker {
-							.text-muted {
-								color: $theme-body-font-color !important;
+							.ngb-dp-arrow{
+								.btn-link{
+									color: $dark-all-font-color;
+								}
+							}
+							.ngb-dp-header{
+								background-color: $dark-card-background;
 							}
 						}
 
@@ -3808,7 +3868,7 @@ body {
 					.form-control {
 						background-color: $dark-body-background;
 						color: $dark-all-font-color;
-						border: 1px solid $dark-border-color;
+						border: 1px solid $dark-card-border;
 
 					}
 
@@ -4173,11 +4233,13 @@ body {
 					border-top: 1px solid $dark-body-background;
 					background-color: $dark-card-background;
 				}
-
-				.custom-select,
+				.form-select{
+					border-color: $dark-card-border;
+				}
+				.form-select,
 				.custom-file-label {
-					background: $dark-body-background;
-					color: $dark-all-font-color;
+					background: $dark-body-background !important;
+					color: $dark-all-font-color !important;
 				}
 
 				.footer-fix {
@@ -4540,7 +4602,7 @@ body {
 				.modal-header {
 					border-bottom: 1px solid $dark-border-color;
 
-					.close {
+					.btn-close {
 						color: $dark-small-font-color;
 					}
 				}
@@ -5727,7 +5789,7 @@ body {
 			.modal-header {
 				border-bottom: 1px solid $dark-card-border;
 
-				.close {
+				.btn-close {
 					color: $dark-all-font-color;
 					font-weight: 400;
 				}

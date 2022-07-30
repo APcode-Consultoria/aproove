@@ -7,6 +7,9 @@
   line-height: 25px;
 }
 .email-wrap{
+  .media-size-email{
+
+  }
   .row{
     .col-xl-3{
       &+ .col-xl-3{
@@ -52,6 +55,7 @@
         > {
           .title {
             width: 100%;
+            color: $theme-body-font-color;
           }
           .badge {
             align-self: center;
@@ -74,6 +78,9 @@
       .inbox {
       overflow: auto;
       height: 631px;
+      .rounded-circle{
+        height: 50px;
+      }
       .media {
         padding: 20px;
         align-items: center;
@@ -86,8 +93,7 @@
       }
     }
     }
-    .radius-left{
-      border-radius: 8px;
+    .radius-left{      
       height: 100%;
     }
   }
