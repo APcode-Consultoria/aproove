@@ -8,6 +8,7 @@ import {CoreModule} from '../core/core.module';
 import {CadastroComponent} from './cadastro/cadastro.component';
 import {PacienteRoutingModule} from './paciente-routing.module';
 import {PesquisarComponent} from './pesquisar/pesquisar.component';
+import {DataTablesModule} from 'angular-datatables';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -21,7 +22,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PacienteRoutingModule,
     SharedModule,
     NgxMaskModule.forRoot(),
-    CoreModule
+    CoreModule,
+    DataTablesModule
   ],
   providers: [
     DatePipe
