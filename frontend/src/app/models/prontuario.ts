@@ -3,7 +3,7 @@ import { Paciente } from "./paciente";
 export class Prontuario {
 
     id: number;
-    registro: string;
+    dataRegistro: Date;
     paciente: Paciente;
     atendimento: string;
 

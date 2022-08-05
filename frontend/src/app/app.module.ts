@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from "./shared/shared.module";
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrModule } from 'ngx-toastr';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
@@ -38,10 +37,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true
-    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -56,7 +51,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     // for Core use:
     LoadingBarModule
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'pt' },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

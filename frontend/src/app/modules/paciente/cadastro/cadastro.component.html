@@ -1,11 +1,11 @@
 <app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Pacientes']" [active_item]="'Cadastro'"></app-breadcrumb>
 
 <div class="d-flex">
-  <ul ngbNav #nav="ngbNav" activeId="dados-cadastrais" animation="true" class="nav-pills" orientation="vertical">
+  <ul ngbNav #nav="ngbNav" animation="true" class="nav-pills" orientation="vertical">
     <li ngbNavItem="dados-cadastrais">
       <a ngbNavLink>Dados Cadastrais</a>
       <ng-template ngbNavContent>
-        <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formEnviado}">
+        <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formPacienteEnviado}">
           <div class="card border border-primary rounded shadow-lg">
             <div class="card-header">
               <h5>Cadastro de Paciente</h5>
@@ -152,7 +152,7 @@
               </div>
               <div class="row">
                 <div class="col-12 text-center">
-                  <button class="btn btn-primary" (click)="gravar()"><i class="fa fa-save fa-lg"></i> Gravar</button>
+                  <button class="btn btn-primary" (click)="gravarPaciente()"><i class="fa fa-save fa-lg"></i> Gravar</button>
                 </div>
               </div>
             </div>
@@ -163,10 +163,42 @@
     <li ngbNavItem="prontuario">
       <a ngbNavLink>Prontuário</a>
       <ng-template ngbNavContent>
-        <p>Prontuário</p>
+        <form [formGroup]="formProntuario" [ngClass]="{'was-validated': !formProntuario.valid && formProntuarioEnviado}">
+          <div class="card border border-primary rounded shadow-lg">
+            <div class="card-header">
+              <h5>Prontuário do Paciente</h5>
+              <span>{{ this.nome.getRawValue() }}</span>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Atendimento</label>
+                  <textarea name="atendimento" formControlName="atendimento" class="form-control" required="" rows="6"></textarea>
+                  <div class="invalid-feedback">Preencher a descrição do atendimento é obrigatório</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravarProntuario()"><i class="fa fa-save fa-lg"></i> Gravar</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div *ngFor="let prontuario of this.prontuarios">
+                <p class="text-muted">{{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</p>
+                <p class="text-break">{{ prontuario.atendimento }}</p>
+                <br>
+              </div>
+            </div>
+          </div>
+        </form>
       </ng-template>
     </li>
   </ul>
 
   <div [ngbNavOutlet]="nav" class="ms-4 col-10"></div>
 </div>
+
+<ngb-toast header="{{ this.headerMensagem }}" *ngIf="this.exibirMensagem" (hidden)="this.exibirMensagem = false" class="{{ this.estiloMensagem }} toast-container position-fixed top-0 end-0 mt-4 me-4">
+  {{ this.textoMensagem }}
+</ngb-toast>

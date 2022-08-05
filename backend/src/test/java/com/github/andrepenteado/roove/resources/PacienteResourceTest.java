@@ -31,7 +31,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;;
 
 /**
- * Testes do resource {@link br.com.apcode.roove.resources.PacienteResource}
+ * Testes do resource {@link com.github.andrepenteado.roove.resources.PacienteResource}
  */
 @SpringBootTest
 @AutoConfigureMockMvc
