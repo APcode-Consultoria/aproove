@@ -19,4 +19,12 @@ export class ProntuarioService {
     return this.http.get<Prontuario[]>(`${environment.backendURL}${Api.PRONTUARIOS}/${idPaciente}`);
   }
 
+  public incluir(prontuario: any): Observable<Prontuario> {
+    return this.http.post<Prontuario>(`${environment.backendURL}${Api.PRONTUARIOS}`, prontuario);
+  }
+
+  public excluir(id: number): Observable<any> {
+    return this.http.delete(`${environment.backendURL}${Api.PRONTUARIOS}/${id}`);
+  }
+
 }

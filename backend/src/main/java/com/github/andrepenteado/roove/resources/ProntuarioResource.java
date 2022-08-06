@@ -1,16 +1,16 @@
 package com.github.andrepenteado.roove.resources;
 
+import com.github.andrepenteado.roove.models.Paciente;
 import com.github.andrepenteado.roove.models.Prontuario;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,4 +32,35 @@ public class ProntuarioResource {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
     }
+
+    @PostMapping
+    public Prontuario incluir(@Valid @RequestBody Prontuario prontuario, BindingResult validacao) {
+        log.info("Incluir novo prontuário " + prontuario.toString());
+        try {
+            return prontuarioService.incluir(prontuario, validacao);
+        }
+        catch (ResponseStatusException rsex) {
+            throw rsex;
+        }
+        catch (Exception ex) {
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluir(@PathVariable Long id) {
+        log.info("Excluir paciente de ID #" + id);
+        try {
+            prontuarioService.excluir(id);
+        }
+        catch (ResponseStatusException rsex) {
+            throw rsex;
+        }
+        catch (Exception ex) {
+            log.error("Erro no processamento", ex);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
+        }
+    }
+
 }

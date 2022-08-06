@@ -1,16 +1,10 @@
 package com.github.andrepenteado.roove.resources;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.andrepenteado.roove.models.Paciente;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -24,11 +18,15 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.roove.models.Paciente;
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseSetup;;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+;
 
 /**
  * Testes do resource {@link com.github.andrepenteado.roove.resources.PacienteResource}
@@ -55,7 +53,7 @@ public class PacienteResourceTest {
 
     private final Long CPF_PACIENTE = 12345678901L;
 
-    private String getJson(Long id) throws Exception {
+    private Paciente getPaciente(Long id) {
         Paciente paciente = new Paciente();
         if (id != null)
             paciente.setId(id);
@@ -64,7 +62,11 @@ public class PacienteResourceTest {
         paciente.setCpf(CPF_PACIENTE);
         paciente.setQueixaPrincipal("Queixa principal NOT NULL");
         paciente.setHistoriaMolestiaPregressa("Histório pregressa NOT NULL");
-        return objectMapper.writeValueAsString(paciente);
+        return paciente;
+    }
+
+    private String getJsonPaciente(Long id) throws Exception {
+        return objectMapper.writeValueAsString(getPaciente(id));
     }
 
     @Test
@@ -97,7 +99,7 @@ public class PacienteResourceTest {
         String json = mockMvc.perform(post("/pacientes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(-1L)))
+                .content(getJsonPaciente(-1L)))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -117,7 +119,7 @@ public class PacienteResourceTest {
         mockMvc.perform(post("/pacientes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(-1L)))
+                .content(getJsonPaciente(-1L)))
             .andExpect(status().isUnprocessableEntity());
     }
 
@@ -127,7 +129,7 @@ public class PacienteResourceTest {
         String json = mockMvc.perform(put("/pacientes/100")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(100L)))
+                .content(getJsonPaciente(100L)))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -139,13 +141,13 @@ public class PacienteResourceTest {
         mockMvc.perform(put("/pacientes/300")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(100L)))
+                .content(getJsonPaciente(100L)))
             .andExpect(status().isNotFound());
 
         mockMvc.perform(put("/pacientes/100")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(getJson(300L)))
+                .content(getJsonPaciente(300L)))
             .andExpect(status().isConflict());
 
         mockMvc.perform(put("/pacientes/100")
@@ -163,7 +165,7 @@ public class PacienteResourceTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        mockMvc.perform(get("/pacientes/200")
+        mockMvc.perform(delete("/pacientes/999")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
     }

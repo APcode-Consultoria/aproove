@@ -161,11 +161,11 @@ export class CadastroComponent implements OnInit {
             "Gravar Paciente"
           )
         error: objetoErro => {
-            this.exibeMensagem.show(
-              "Não foi possível gravar os dados do paciente",
-              DecoracaoMensagem.ERRO,
-              "Erro de processamento"
-            )
+          this.exibeMensagem.show(
+            `Não foi possível gravar os dados do paciente: ${objetoErro.value.error()}`,
+            DecoracaoMensagem.ERRO,
+            "Erro de processamento"
+          )
         }
       }
     });
@@ -182,11 +182,25 @@ export class CadastroComponent implements OnInit {
   gravarProntuario(): void {
     this.formProntuarioEnviado = true;
     if (this.formProntuario.valid) {
-      this.exibeMensagem.show(
-        "Dados do atendimento incluído ao prontuário com sucesso",
-        DecoracaoMensagem.SUCESSO,
-        "Gravar Prontuário"
-      )
+      console.log(this.formProntuario.value);
+      this.prontuarioService.incluir(this.formProntuario.value).subscribe({
+        next: prontuario => {
+          this.formProntuario.reset();
+          this.formProntuario.patchValue(prontuario);
+          this.exibeMensagem.show(
+            "Dados do atendimento incluído ao prontuário com sucesso",
+            DecoracaoMensagem.SUCESSO,
+            "Gravar Prontuário"
+          )
+          error: objetoErro => {
+            this.exibeMensagem.show(
+              `Não foi possível gravar os dados do prontuário: ${objetoErro.value.error()}`,
+              DecoracaoMensagem.ERRO,
+              "Erro de processamento"
+            )
+          }
+        }
+      })
     }
     else {
       this.exibeMensagem.show(
