@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-floating-button',
+  selector: 'ap-floating-button',
   template: `
     <button class="btn btn-primary float-button" [disabled]="disabled">
       <ng-content></ng-content>

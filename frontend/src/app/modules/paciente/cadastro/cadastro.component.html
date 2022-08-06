@@ -199,6 +199,4 @@
   <div [ngbNavOutlet]="nav" class="ms-4 col-10"></div>
 </div>
 
-<ngb-toast header="{{ this.headerMensagem }}" *ngIf="this.exibirMensagem" (hidden)="this.exibirMensagem = false" class="{{ this.estiloMensagem }} toast-container position-fixed top-0 end-0 mt-4 me-4">
-  {{ this.textoMensagem }}
-</ngb-toast>
+<ap-exibe-mensagem #exibeMensagem></ap-exibe-mensagem>

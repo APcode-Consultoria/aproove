@@ -1,13 +1,12 @@
-import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { Parentesco } from 'src/app/models/enums/parentesco';
-import { PacienteService } from '../../../services/paciente.service';
-import { ViaCepService } from '../../../services/via-cep.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Parentesco} from 'src/app/models/enums/parentesco';
+import {PacienteService} from '../../../services/paciente.service';
+import {ViaCepService} from '../../../services/via-cep.service';
 import {Prontuario} from '../../../models/prontuario';
 import {ProntuarioService} from '../../../services/prontuario.service';
+import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/exibe-mensagem.component';
 
 @Component({
   selector: 'app-cadastro',
@@ -16,14 +15,16 @@ import {ProntuarioService} from '../../../services/prontuario.service';
 })
 export class CadastroComponent implements OnInit {
 
+  @ViewChild("exibeMensagem")
+  exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
+
   formPacienteEnviado = false;
   formProntuarioEnviado = false;
+
   dataCadastroFormatada: Date = new Date();
 
-  exibirMensagem = false;
-  textoMensagem = "";
-  headerMensagem = "";
-  estiloMensagem = "bg-primary";
+  parentescos: string[];
+  enumParentescos = Parentesco;
 
   prontuarios: Prontuario[] = [];
 
@@ -87,9 +88,6 @@ export class CadastroComponent implements OnInit {
     atendimento: this.atendimento
   });
 
-  parentescos: string[];
-  enumParentescos = Parentesco;
-
   constructor(
     private activedRoute: ActivatedRoute,
     private pacienteService: PacienteService,
@@ -127,10 +125,11 @@ export class CadastroComponent implements OnInit {
     this.viaCepService.consultarCep(cep).subscribe({
       next: endereco => {
         if (endereco.erro) {
-          this.headerMensagem = "Atenção"
-          this.textoMensagem = "CEP não encontrado ou incorreto"
-          this.estiloMensagem = "bg-warning";
-          this.exibirMensagem = true;
+          this.exibeMensagem.show(
+            "CEP não encontrado ou incorreto",
+            DecoracaoMensagem.INFO,
+            "Pesquisar CEP",
+          );
         } else {
           this.logradouro.setValue(endereco.logradouro);
           this.bairro.setValue(endereco.bairro);
@@ -139,10 +138,11 @@ export class CadastroComponent implements OnInit {
         }
       },
       error: () => {
-        this.headerMensagem = "Erro de processamento"
-        this.textoMensagem = "Erro ao consultar o CEP"
-        this.estiloMensagem = "bg-danger";
-        this.exibirMensagem = true;
+        this.exibeMensagem.show(
+          "Não foi possível consultar o CEP",
+          DecoracaoMensagem.ERRO,
+          "Erro de processamento"
+        )
       }
     });
   }
@@ -155,40 +155,45 @@ export class CadastroComponent implements OnInit {
         next: paciente => {
           this.formPaciente.reset();
           this.formPaciente.patchValue(paciente);
-          this.headerMensagem = "Paciente";
-          this.textoMensagem = `Dados do paciente ${paciente.nome} gravados com sucesso`;
-          this.estiloMensagem = "bg-success";
-          this.exibirMensagem = true;
+          this.exibeMensagem.show(
+            `Dados do paciente ${paciente.nome} gravados com sucesso`,
+            DecoracaoMensagem.SUCESSO,
+            "Gravar Paciente"
+          )
         error: objetoErro => {
-          this.headerMensagem = "Erro de processamento"
-          this.textoMensagem = "Erro ao gravar os dados do paciente"
-          this.estiloMensagem = "bg-danger";
-          this.exibirMensagem = true;
+            this.exibeMensagem.show(
+              "Não foi possível gravar os dados do paciente",
+              DecoracaoMensagem.ERRO,
+              "Erro de processamento"
+            )
         }
       }
     });
     }
     else {
-      this.headerMensagem = "Atenção"
-      this.textoMensagem = "Dados obrigatórios não foram todos preenchidos"
-      this.estiloMensagem = "bg-warning";
-      this.exibirMensagem = true;
+      this.exibeMensagem.show(
+        "Preencha todos os dados obrigatórios antes de gravar os dados",
+        DecoracaoMensagem.PRIMARIO,
+        "Dados Obrigatórios"
+      )
     }
   }
 
-  gravarProntuario() {
+  gravarProntuario(): void {
     this.formProntuarioEnviado = true;
     if (this.formProntuario.valid) {
-      this.headerMensagem = "Prontuário";
-      this.textoMensagem = "Dados do atendimento incluído ao prontuário com sucesso";
-      this.estiloMensagem = "bg-success";
-      this.exibirMensagem = true;
+      this.exibeMensagem.show(
+        "Dados do atendimento incluído ao prontuário com sucesso",
+        DecoracaoMensagem.SUCESSO,
+        "Gravar Prontuário"
+      )
     }
     else {
-      this.headerMensagem = "Prontuário";
-      this.textoMensagem = "Dados obrigatórios não foram todos preenchidos";
-      this.estiloMensagem = "bg-warning";
-      this.exibirMensagem = true;
+      this.exibeMensagem.show(
+        "Preencha todos os dados obrigatórios antes de gravar os dados",
+        DecoracaoMensagem.PRIMARIO,
+        "Dados Obrigatórios"
+      )
     }
   }
 }
