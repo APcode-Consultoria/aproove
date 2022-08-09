@@ -36,7 +36,7 @@ public class PacienteService {
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
         if (pacienteRepository.findByCpf(paciente.getCpf()) != null)
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "CPF de paciente já se encontra cadastrado");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, String.format("CPF %n já se encontra cadastrado"));
         paciente.setDataCadastro(LocalDateTime.now());
         return pacienteRepository.save(paciente);
     }

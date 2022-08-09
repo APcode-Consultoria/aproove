@@ -7,6 +7,7 @@ import {ViaCepService} from '../../../services/via-cep.service';
 import {Prontuario} from '../../../models/prontuario';
 import {ProntuarioService} from '../../../services/prontuario.service';
 import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/exibe-mensagem.component';
+import {Paciente} from '../../../models/paciente';
 
 @Component({
   selector: 'app-cadastro',
@@ -28,8 +29,10 @@ export class CadastroComponent implements OnInit {
 
   prontuarios: Prontuario[] = [];
 
+  objetoPaciente: Paciente;
+
   id = new FormControl(null);
-  dataCadastro = new FormControl(new Date(Date.now()));
+  dataCadastro = new FormControl(null);
   nome = new FormControl(null, Validators.required);
   cpf = new FormControl(null, Validators.required);
   dataNascimento = new FormControl(null);
@@ -51,10 +54,6 @@ export class CadastroComponent implements OnInit {
   historiaMolestiaPregressa = new FormControl(null, Validators.required);
   remedios = new FormControl(null);
   objetivos = new FormControl(null);
-
-  idProntuario = new FormControl(null);
-  dataRegistro = new FormControl(new Date(Date.now()));
-  atendimento = new FormControl(null, Validators.required);
 
   formPaciente = new FormGroup({
     id: this.id,
@@ -82,10 +81,16 @@ export class CadastroComponent implements OnInit {
     objetivos: this.objetivos
   });
 
+  idProntuario = new FormControl(null);
+  dataRegistro = new FormControl(null);
+  atendimento = new FormControl(null, Validators.required);
+  paciente = new FormControl(null);
+
   formProntuario = new FormGroup({
     id: this.idProntuario,
     dataRegistro: this.dataRegistro,
-    atendimento: this.atendimento
+    atendimento: this.atendimento,
+    paciente: this.paciente
   });
 
   constructor(
@@ -102,6 +107,7 @@ export class CadastroComponent implements OnInit {
       const id: number = params.id;
       if (id) {
         this.pacienteService.buscar(id).subscribe(paciente => {
+          this.objetoPaciente = paciente;
           this.formPaciente.patchValue(paciente);
           this.dataCadastroFormatada = new Date(paciente.dataCadastro);
           this.prontuarioService.listarPorPaciente(paciente.id).subscribe(
@@ -150,25 +156,27 @@ export class CadastroComponent implements OnInit {
   gravarPaciente(): void {
     this.formPacienteEnviado = true;
     if (this.formPaciente.valid) {
+      this.formPaciente.controls.dataCadastro.setValue(new Date());
       console.log(this.formPaciente.value);
       this.pacienteService.gravar(this.formPaciente.value).subscribe({
         next: paciente => {
+          this.objetoPaciente = paciente;
           this.formPaciente.reset();
           this.formPaciente.patchValue(paciente);
           this.exibeMensagem.show(
             `Dados do paciente ${paciente.nome} gravados com sucesso`,
             DecoracaoMensagem.SUCESSO,
             "Gravar Paciente"
-          )
+          );
+        },
         error: objetoErro => {
           this.exibeMensagem.show(
-            `Não foi possível gravar os dados do paciente: ${objetoErro.value.error()}`,
+            `${objetoErro.error.message}`,
             DecoracaoMensagem.ERRO,
             "Erro de processamento"
           )
         }
-      }
-    });
+      });
     }
     else {
       this.exibeMensagem.show(
@@ -182,25 +190,29 @@ export class CadastroComponent implements OnInit {
   gravarProntuario(): void {
     this.formProntuarioEnviado = true;
     if (this.formProntuario.valid) {
+      this.formProntuario.controls.dataRegistro.setValue(new Date());
+      this.formProntuario.controls.paciente.setValue(this.objetoPaciente);
       console.log(this.formProntuario.value);
       this.prontuarioService.incluir(this.formProntuario.value).subscribe({
         next: prontuario => {
+          this.prontuarios.unshift(prontuario);
           this.formProntuario.reset();
-          this.formProntuario.patchValue(prontuario);
+          this.formProntuarioEnviado = false;
           this.exibeMensagem.show(
             "Dados do atendimento incluído ao prontuário com sucesso",
             DecoracaoMensagem.SUCESSO,
             "Gravar Prontuário"
-          )
-          error: objetoErro => {
-            this.exibeMensagem.show(
-              `Não foi possível gravar os dados do prontuário: ${objetoErro.value.error()}`,
-              DecoracaoMensagem.ERRO,
-              "Erro de processamento"
-            )
-          }
+          );
+        },
+        error: objetoErro => {
+          console.log("teste");
+          this.exibeMensagem.show(
+            `${objetoErro.error.message}`,
+            DecoracaoMensagem.ERRO,
+            "Erro de processamento"
+          );
         }
-      })
+      });
     }
     else {
       this.exibeMensagem.show(

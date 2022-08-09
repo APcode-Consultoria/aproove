@@ -160,10 +160,10 @@
         </form>
       </ng-template>
     </li>
-    <li ngbNavItem="prontuario">
+    <li ngbNavItem="prontuario" [disabled]="this.objetoPaciente == null || this.objetoPaciente.id <= 0">
       <a ngbNavLink>Prontuário</a>
       <ng-template ngbNavContent>
-        <form [formGroup]="formProntuario" [ngClass]="{'was-validated': !formProntuario.valid && formProntuarioEnviado}">
+        <form [formGroup]="formProntuario" [ngClass]="{ 'was-validated': !formProntuario.valid && formProntuarioEnviado }">
           <div class="card border border-primary rounded shadow-lg">
             <div class="card-header">
               <h5>Prontuário do Paciente</h5>

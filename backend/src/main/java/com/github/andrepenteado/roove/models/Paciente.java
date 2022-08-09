@@ -28,7 +28,7 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'.000'")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataCadastro;
 
     @NotNull(message = "Nome do paciente é um campo obrigatório. ")

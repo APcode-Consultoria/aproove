@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -113,14 +112,16 @@ public class PacienteResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("do paciente é um campo obrigatório")));
 
         // CPF duplicado
         mockMvc.perform(post("/pacientes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(-1L)))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("já se encontra cadastrado")));
     }
 
     @Test
@@ -142,19 +143,22 @@ public class PacienteResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(100L)))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("não encontrado")));
 
         mockMvc.perform(put("/pacientes/100")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(300L)))
-            .andExpect(status().isConflict());
+            .andExpect(status().isConflict())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("porém enviado dados do paciente")));
 
         mockMvc.perform(put("/pacientes/100")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("do paciente é um campo obrigatório")));
     }
 
     @Test

@@ -22,7 +22,7 @@ public class Prontuario {
     private Long id;
 
     @NotNull(message = "Data do registro é um campo obrigatório")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'.000'")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataRegistro;
 
     @ManyToOne
@@ -30,7 +30,7 @@ public class Prontuario {
     @NotNull(message = "Paciente é um campo obrigatório")
     private Paciente paciente;
 
-    @NotBlank
+    @NotBlank(message = "Descrição do atendimento é um campo obrigatório")
     private String atendimento;
 
 }
