@@ -6,13 +6,15 @@ import { FloatingButtonComponent } from './components/floating-button.component'
 import { HomeComponent } from './components/home.component';
 import { ExibeMensagemComponent } from './components/exibe-mensagem.component';
 import {NgbToastModule} from '@ng-bootstrap/ng-bootstrap';
+import { PhonePipe } from './phone.pipe';
 
 
 @NgModule({
   declarations: [
     FloatingButtonComponent,
     HomeComponent,
-    ExibeMensagemComponent
+    ExibeMensagemComponent,
+    PhonePipe
   ],
   imports: [
     CommonModule,
@@ -21,7 +23,8 @@ import {NgbToastModule} from '@ng-bootstrap/ng-bootstrap';
   ],
   exports: [
     FloatingButtonComponent,
-    ExibeMensagemComponent
+    ExibeMensagemComponent,
+    PhonePipe
   ]
 })
 export class CoreModule { }

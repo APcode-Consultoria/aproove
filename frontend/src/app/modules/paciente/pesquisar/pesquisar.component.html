@@ -17,7 +17,7 @@
           <tr *ngFor="let paciente of this.lista ">
             <td>{{ paciente.id }}</td>
             <td>{{ paciente.nome }}</td>
-            <td>{{ paciente.telefone }}</td>
+            <td>{{ paciente.telefone | phone: 'BR' }} <i *ngIf="paciente.whatsapp" class="icofont icofont-brand-whatsapp"></i></td>
             <td>{{ paciente.email }}</td>
             <td>
               <button (click)="editar(paciente)"><i class="fa fa-pencil"></i></button>
@@ -29,3 +29,5 @@
     </div>
   </div>
 </div>
+
+<ap-exibe-mensagem #exibeMensagem></ap-exibe-mensagem>

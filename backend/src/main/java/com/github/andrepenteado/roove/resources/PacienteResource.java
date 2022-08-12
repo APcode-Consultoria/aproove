@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.github.andrepenteado.roove.services.ProntuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PacienteResource {
 
     private final PacienteService pacienteService;
+
+    private final ProntuarioService prontuarioService;
 
     @GetMapping
     public List<Paciente> listar() {
@@ -93,6 +96,8 @@ public class PacienteResource {
     public void excluir(@PathVariable Long id) {
         log.info("Excluir paciente de ID #" + id);
         try {
+            if (!prontuarioService.listarProntuariosPorPaciente(id).isEmpty())
+                throw new ResponseStatusException(HttpStatus.FOUND, "Existe registros no prontuário do paciente");
             pacienteService.excluir(id);
         }
         catch (ResponseStatusException rsex) {

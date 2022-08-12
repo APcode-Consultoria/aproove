@@ -15,4 +15,18 @@
         queixa_principal="Queixa paciente 200"
         historia_molestia_pregressa="Moléstia paciente 200"
     />
+    <paciente
+        id="300"
+        data_cadastro="2022-01-01 08:00:00.0000"
+        nome="Paciente 300"
+        cpf="30030030033"
+        queixa_principal="Queixa paciente 300"
+        historia_molestia_pregressa="Moléstia paciente 300"
+    />
+    <prontuario
+        id="1000"
+        id_paciente="300"
+        data_registro="2022-01-01 08:00:00.0000"
+        atendimento="Atendimento #1000 do paciente #300"
+    />
 </dataset>

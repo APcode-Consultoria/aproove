@@ -90,6 +90,11 @@ export class NavService implements OnDestroy {
 
 	MEGAMENUITEMS: Menu[] = [
 		{
+			title: 'Início', type: 'sub', active: true, children: [
+				{ path: '/home', title: 'Página Inicial', type: 'link' },
+			]
+		},
+		{
 			title: 'Pacientes', type: 'sub', active: true, children: [
 				{ path: '/paciente/pesquisar', title: 'Pesquisar pacientes', type: 'link' },
 				{ path: '/paciente/cadastro', title: 'Novo paciente', type: 'link' }

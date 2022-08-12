@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { Paciente } from 'src/app/models/paciente';
 import { PacienteService } from 'src/app/services/paciente.service';
 import Swal from 'sweetalert2';
 import {Subject} from 'rxjs';
 import {Core} from '../../../config/core';
+import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/exibe-mensagem.component';
 
 @Component({
   selector: 'app-pesquisar',
@@ -14,6 +14,9 @@ import {Core} from '../../../config/core';
 })
 export class PesquisarComponent implements OnInit, OnDestroy {
 
+  @ViewChild("exibeMensagem")
+  exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
+
   dtOptions: DataTables.Settings = Core.DATATABLES_OPTIONS;
   dtTrigger: Subject<any> = new Subject<any>();
 
@@ -21,8 +24,7 @@ export class PesquisarComponent implements OnInit, OnDestroy {
 
   constructor(
     private pacienteService: PacienteService,
-    private router: Router,
-    private toastrService: ToastrService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -40,7 +42,13 @@ export class PesquisarComponent implements OnInit, OnDestroy {
         this.lista = listaPacientes,
         this.dtTrigger.next(null);
       },
-      error: () => this.toastrService.error("Erro ao pesquisar pacientes", "Erro de processamento")
+      error: objetoErro => {
+        this.exibeMensagem.show(
+          `${objetoErro.error.message}`,
+          DecoracaoMensagem.ERRO,
+          "Erro de processamento"
+        );
+      }
     });
   }
 
@@ -63,11 +71,17 @@ export class PesquisarComponent implements OnInit, OnDestroy {
       cancelButtonText: "Cancelar"
     }).then((resposta) => {
       if (resposta.value) {
-        this.pacienteService.excluir(paciente.id).subscribe(() => {
-          this.pesquisar();
+        this.pacienteService.excluir(paciente.id).subscribe({
+          next: () => this.pesquisar(),
+          error: objetoErro => {
+            this.exibeMensagem.show(
+              `${objetoErro.error.message}`,
+              DecoracaoMensagem.ERRO,
+              "Erro de processamento"
+            )
+          }
         });
       }
     });
   }
-
 }

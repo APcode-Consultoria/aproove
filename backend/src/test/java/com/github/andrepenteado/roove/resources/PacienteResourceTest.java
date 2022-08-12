@@ -78,7 +78,7 @@ public class PacienteResourceTest {
             .getResponse()
             .getContentAsString();
         List<Paciente> lista = objectMapper.readValue(json, new TypeReference<List<Paciente>>() {});
-        assertEquals(lista.size(), 2);
+        assertEquals(lista.size(), 3);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class PacienteResourceTest {
         assertEquals(pacienteAlterado.getNome(), NOME_PACIENTE);
         assertEquals(pacienteAlterado.getId(), 100);
 
-        mockMvc.perform(put("/pacientes/300")
+        mockMvc.perform(put("/pacientes/999")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(100L)))
@@ -172,6 +172,11 @@ public class PacienteResourceTest {
         mockMvc.perform(delete("/pacientes/999")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
+
+        mockMvc.perform(delete("/pacientes/300")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isFound())
+            .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("Existe registros no prontuário do paciente")));
     }
 
 }
