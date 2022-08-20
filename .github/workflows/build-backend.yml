@@ -21,9 +21,9 @@ jobs:
         cache: 'maven'
 
     - name: Compilar e Testar
-      run: mvn -B clean package --file backend/pom.xml
+      run: mvn -B clean package --file backend/pom.xml -DskipTests
 
     - name: Publicar Pacote ho GITHUB
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --file backend/pom.xml
+      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --file backend/pom.xml -DskipTests
       env:
         GITHUB_TOKEN: ${{ github.token }}
