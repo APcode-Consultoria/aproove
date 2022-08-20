@@ -9,6 +9,14 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      db-server:
+        image: postgres:14
+        env:
+          POSTGRES_DB: dbname-ap-roove
+          POSTGRES_USER: dbuser-ap-roove
+          POSTGRES_PASSWORD: ***REMOVED***
+
     steps:
     - name: Checkout do projeto
       uses: actions/checkout@v3
@@ -21,9 +29,4 @@ jobs:
         cache: 'maven'
 
     - name: Compilar e Testar
-      run: mvn -B clean package --file backend/pom.xml -DskipTests
-
-    - name: Publicar Pacote ho GITHUB
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --file backend/pom.xml -DskipTests
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+      run: mvn -B clean package --file backend/pom.xml
