@@ -48,6 +48,6 @@ jobs:
       with:
         context: ./backend
         push: true
-        tags:
+        tags: |
           ghcr.io/andrepenteado/ap-roove/backend:latest
           ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
