@@ -5,9 +5,10 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-java-backend:
 
     runs-on: ubuntu-latest
+    name: Compilar e testar o backend
 
     services:
 
@@ -32,16 +33,20 @@ jobs:
         distribution: 'corretto'
         cache: 'maven'
 
-    - name: Compilar e Testar
+    - name: Compilar e testar
       run: mvn -B clean package --file backend/pom.xml -DskipTests
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
-    - run: ls -la
+  push-docker-image-backend:
 
-    - run: ls -la ./backend/
-    
+    runs-on: ubuntu-latest
+    name: Gerar a imagem docker do backend
+    needs: build-java-backend
+
+    steps:
+
     - name: Logar no registry do github
       uses: docker/login-action@v2
       with:
@@ -49,4 +54,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - run: docker build -t ghcr.io/andrepenteado/ap-roove/backend:latest .
+    - name: Build da imagem docker
+      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest ./backend
+    
+    - name: Push da imagem docker
+      run: docker push ghcr.io/andrepenteado/ap-roove/backend:latest
