@@ -34,7 +34,7 @@ jobs:
       run: mvn -B clean package --file backend/pom.xml
 
     - name: Buscar versão atual
-      run: echo "VERSAO=$(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
     - name: Logar no registry do github
       uses: docker/login-action@v2
@@ -44,9 +44,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da Imagem Docker
-      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend -t ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }} .
+      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend .
 
     - name: Push da Imagem Docker
       run: docker push ghcr.io/andrepenteado/ap-roove/backend
 
-    - run: docker push ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
+#    - run: docker push ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
