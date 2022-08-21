@@ -44,5 +44,6 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
+        file: backend/Dockerfile
         tags: ghcr.io/andrepenteado/ap-roove/backend
         context: .
