@@ -35,12 +35,6 @@ jobs:
     - name: Compilar e Testar
       run: mvn -B clean package --file backend/pom.xml
 
-  push-image:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
@@ -51,12 +45,13 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build da Imagem Docker
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: docker/Dockerfile-backend
-        push: true
-        tags: |
-          ghcr.io/andrepenteado/ap-roove/backend:latest
-          ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
+    - run: docker build -f docker/Dockerfile-backend -t ghcr.io/andrepenteado/ap-roove/backend:latest .
+#    - name: Build da Imagem Docker
+#      uses: docker/build-push-action@v2
+#      with:
+#        context: .
+#        file: docker/Dockerfile-backend
+#        push: true
+#        tags: |
+#          ghcr.io/andrepenteado/ap-roove/backend:latest
+#          ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
