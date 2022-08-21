@@ -55,7 +55,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest ./backend
+      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest .
     
     - name: Push da imagem docker
       run: docker push ghcr.io/andrepenteado/ap-roove/backend:latest
