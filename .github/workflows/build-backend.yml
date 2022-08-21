@@ -10,12 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db-server:
+      db-server-test:
         image: postgres:14
         env:
           POSTGRES_DB: dbname-ap-roove
           POSTGRES_USER: dbuser-ap-roove
           POSTGRES_PASSWORD: ***REMOVED***
+        ports:
+          54320:5432
 
     steps:
     - name: Checkout do projeto
