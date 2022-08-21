@@ -36,6 +36,9 @@ jobs:
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
+    - name: Checar versão
+      run: echo ${{ env.VERSAO }}
+
     - name: Logar no registry do github
       uses: docker/login-action@v2
       with:
@@ -44,7 +47,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da Imagem Docker
-      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend .
+      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend .
 
     - name: Push da Imagem Docker
       run: docker push ghcr.io/andrepenteado/ap-roove/backend
