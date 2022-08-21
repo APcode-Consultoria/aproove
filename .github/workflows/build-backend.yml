@@ -37,7 +37,7 @@ jobs:
       run: mvn -B clean package --file backend/pom.xml -DskipTests
 
     - name: Buscar versão atual
-      run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)" >> $GITHUB_ENV
 
     - name: Logar no registry do github
       uses: docker/login-action@v2
