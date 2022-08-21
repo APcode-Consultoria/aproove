@@ -47,6 +47,6 @@ jobs:
       run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend -t ghcr.io/andrepenteado/ap-roove/backend:$VERSAO .
 
     - name: Push da Imagem Docker
-      run: |
-        docker push ghcr.io/andrepenteado/ap-roove/backend
-	      docker push ghcr.io/andrepenteado/ap-roove/backend:$VERSAO
+      run: docker push ghcr.io/andrepenteado/ap-roove/backend
+
+    - run: docker push ghcr.io/andrepenteado/ap-roove/backend:$VERSAO
