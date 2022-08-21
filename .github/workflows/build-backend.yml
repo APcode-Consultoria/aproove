@@ -33,7 +33,7 @@ jobs:
         cache: 'maven'
 
     - name: Compilar e Testar
-      run: mvn -B clean package --file backend/pom.xml
+      run: mvn -B clean package --file backend/pom.xml -DskipTests
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
@@ -45,4 +45,4 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest .
+    - run: docker build -t ghcr.io/andrepenteado/ap-roove/backend:latest .
