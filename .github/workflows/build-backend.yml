@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+
       db-server-test:
         image: postgres:14
         env:
@@ -20,6 +21,7 @@ jobs:
           - 54320:5432
 
     steps:
+
     - name: Checkout do projeto
       uses: actions/checkout@v3
 
@@ -32,6 +34,12 @@ jobs:
 
     - name: Compilar e Testar
       run: mvn -B clean package --file backend/pom.xml
+
+  push-image:
+
+    runs-on: ubuntu-latest
+
+    steps:
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
@@ -47,6 +55,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./backend
+        file: docker/Dockerfile-backend
         push: true
         tags: |
           ghcr.io/andrepenteado/ap-roove/backend:latest
