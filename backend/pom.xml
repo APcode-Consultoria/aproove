@@ -83,6 +83,7 @@
     </dependencies>
 
     <build>
+        <finalName>ap-roove</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
