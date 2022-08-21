@@ -33,6 +33,9 @@ jobs:
     - name: Compilar e Testar
       run: mvn -B clean package --file backend/pom.xml
 
+    - name: Buscar versão atual
+      run: echo ::set-env name=VERSAO::$(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
     - name: Logar no registry do github
       uses: docker/login-action@v2
       with:
@@ -40,10 +43,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build e Push da Imagem Docker
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        file: backend/Dockerfile
-        tags: ghcr.io/andrepenteado/ap-roove/backend
-        context: .
+    - name: Build da Imagem Docker
+      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend -t ghcr.io/andrepenteado/ap-roove/backend:$VERSAO .
+
+    - name: Push da Imagem Docker
+      run: |
+        docker push ghcr.io/andrepenteado/ap-roove/backend
+	      docker push ghcr.io/andrepenteado/ap-roove/backend:$VERSAO
