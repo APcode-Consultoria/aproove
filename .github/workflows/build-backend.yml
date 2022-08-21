@@ -54,6 +54,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - run: ls -la
+    - run: ls -la ./backend
+    
     - name: Build da imagem docker
       run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest .
     
