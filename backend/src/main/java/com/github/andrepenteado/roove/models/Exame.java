@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,11 +24,14 @@ public class Exame {
     @NotNull(message = "Paciente é um campo obrigatório")
     private Paciente paciente;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "Id_Arquivo")
     @NotNull(message = "Exame é um campo obrigatório")
     private Arquivo arquivo;
 
+    private LocalDateTime dataUpload;
+
+    @NotBlank(message = "Descrição é um campo obrigatório")
     private String descricao;
 
 }

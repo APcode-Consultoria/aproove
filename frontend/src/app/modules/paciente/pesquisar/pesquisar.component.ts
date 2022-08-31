@@ -14,7 +14,7 @@ import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/e
 })
 export class PesquisarComponent implements OnInit, OnDestroy {
 
-  @ViewChild("exibeMensagem")
+  @ViewChild('exibeMensagem')
   exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
 
   dtOptions: DataTables.Settings = Core.DATATABLES_OPTIONS;
@@ -46,7 +46,7 @@ export class PesquisarComponent implements OnInit, OnDestroy {
         this.exibeMensagem.show(
           `${objetoErro.error.message}`,
           DecoracaoMensagem.ERRO,
-          "Erro de processamento"
+          'Erro de processamento'
         );
       }
     });
@@ -62,13 +62,13 @@ export class PesquisarComponent implements OnInit, OnDestroy {
 
   excluir(paciente): void {
     Swal.fire({
-      title: "Excluir?",
+      title: 'Excluir?',
       text: `Confirma a exclusão do paciente ${paciente.nome}`,
-      icon: "question",
+      icon: 'question',
       showCloseButton: true,
       showCancelButton: true,
-      confirmButtonText: "<i class='fa fa-trash'></i> Sim, Excluir",
-      cancelButtonText: "Cancelar"
+      confirmButtonText: '<i class=\'fa fa-trash\'></i> Sim, Excluir',
+      cancelButtonText: 'Cancelar'
     }).then((resposta) => {
       if (resposta.value) {
         this.pacienteService.excluir(paciente.id).subscribe({
@@ -77,8 +77,8 @@ export class PesquisarComponent implements OnInit, OnDestroy {
             this.exibeMensagem.show(
               `${objetoErro.error.message}`,
               DecoracaoMensagem.ERRO,
-              "Erro de processamento"
-            )
+              'Erro de processamento'
+            );
           }
         });
       }

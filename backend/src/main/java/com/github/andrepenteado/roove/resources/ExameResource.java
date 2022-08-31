@@ -1,7 +1,8 @@
 package com.github.andrepenteado.roove.resources;
 
+import com.github.andrepenteado.roove.models.Exame;
 import com.github.andrepenteado.roove.models.Prontuario;
-import com.github.andrepenteado.roove.services.ProntuarioService;
+import com.github.andrepenteado.roove.services.ExameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,18 +14,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/prontuarios")
+@RequestMapping("/exames")
 @RequiredArgsConstructor
 @Slf4j
-public class ProntuarioResource {
+public class ExameResource {
 
-    private final ProntuarioService prontuarioService;
+    private final ExameService exameService;
 
     @GetMapping("/{idPaciente}")
-    public List<Prontuario> listarPorPaciente(@PathVariable Long idPaciente) {
-        log.info("Listar prontuário do paciente #" + idPaciente);
+    public List<Exame> listarPorPaciente(@PathVariable Long idPaciente) {
+        log.info("Listar exames do paciente #" + idPaciente);
         try {
-            return prontuarioService.listarProntuariosPorPaciente(idPaciente);
+            return exameService.listarProntuariosPorPaciente(idPaciente);
         }
         catch (Exception ex) {
             log.error("Erro no processamento", ex);
@@ -33,10 +34,10 @@ public class ProntuarioResource {
     }
 
     @PostMapping
-    public Prontuario incluir(@Valid @RequestBody Prontuario prontuario, BindingResult validacao) {
-        log.info("Incluir novo prontuário " + prontuario.toString());
+    public Exame incluir(@Valid @RequestBody Exame exame, BindingResult validacao) {
+        log.info("Incluir novo exame " + exame.toString());
         try {
-            return prontuarioService.incluir(prontuario, validacao);
+            return exameService.incluir(exame, validacao);
         }
         catch (ResponseStatusException rsex) {
             throw rsex;
@@ -49,9 +50,9 @@ public class ProntuarioResource {
 
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
-        log.info("Excluir prontuário de ID #" + id);
+        log.info("Excluir exame de ID #" + id);
         try {
-            prontuarioService.excluir(id);
+            exameService.excluir(id);
         }
         catch (ResponseStatusException rsex) {
             throw rsex;

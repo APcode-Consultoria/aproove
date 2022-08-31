@@ -2,10 +2,12 @@
 
 DROP TABLE IF EXISTS Arquivo CASCADE;
 CREATE TABLE IF NOT EXISTS Arquivo (
-    Id         BIGSERIAL NOT NULL,
-    Nome       TEXT      NOT NULL,
-    Tipo       TEXT      NOT NULL,
-    Conteudo   BYTEA     NOT NULL,
+    Id          BIGSERIAL NOT NULL,
+    Nome        TEXT      NOT NULL,
+    Tipo_Mime   TEXT      NOT NULL,
+    Modificado  BIGINT    NOT NULL,
+    Tamanho     BIGINT    NOT NULL,
+    Base64      TEXT      NOT NULL,
     CONSTRAINT PK_Arquivo PRIMARY KEY (Id)
 );
 
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS Exame (
     Id_Paciente BIGINT    NOT NULL,
     Id_Arquivo  BIGINT    NOT NULL,
     Descricao   TEXT      NOT NULL,
+    Data_Upload TIMESTAMP NOT NULL,
     CONSTRAINT PK_Exame_Paciente PRIMARY KEY (Id),
     CONSTRAINT FK_Exame_Paciente FOREIGN KEY (Id_Paciente) REFERENCES Paciente (Id),
     CONSTRAINT FK_Exame_Arquivo  FOREIGN KEY (Id_Arquivo)  REFERENCES Arquivo (Id),

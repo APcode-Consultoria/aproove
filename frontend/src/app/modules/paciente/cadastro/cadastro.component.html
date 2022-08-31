@@ -8,21 +8,21 @@
         <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formPacienteEnviado}">
           <div class="card border border-primary rounded shadow-lg">
             <div class="card-header">
-              <h5>Cadastro de Paciente</h5>
+              <h5>Dados Cadastrais</h5>
               <span>{{ dataCadastroFormatada | date: "'Paciente desde' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</span>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="form-group col-12 col-md-12">
                   <label>* Nome</label>
-                  <input type="text" name="nome" formControlName="nome" class="form-control" required="">
+                  <input type="text" name="nome" formControlName="nome" class="form-control" required="true">
                   <div class="invalid-feedback">Campo nome é obrigatório</div>
                 </div>
               </div>
               <div class="row">
                 <div class="form-group col-12 col-md-6">
                   <label>* CPF</label>
-                  <input type="text" name="cpf" formControlName="cpf" class="form-control" required="" mask="000.000.000-00">
+                  <input type="text" name="cpf" formControlName="cpf" class="form-control" required="true" mask="000.000.000-00">
                   <div class="invalid-feedback">Campo CPF é obrigatório</div>
                 </div>
                 <div class="form-group col-12 col-md-6">
@@ -33,7 +33,7 @@
               <div class="row">
                 <div class="form-group col-12 col-md-4">
                   <label>* Telefone</label>
-                  <input type="text" name="telefone" formControlName="telefone" class="form-control" required="" mask="(00) 00000-0000">
+                  <input type="text" name="telefone" formControlName="telefone" class="form-control" required="true" mask="(00) 00000-0000">
                   <div class="invalid-feedback">Campo Telefone é obrigatório</div>
                 </div>
                 <div class="form-group col-12 col-md-2">
@@ -127,15 +127,15 @@
               <div class="row">
                 <div class="form-group col-12 col-md-12">
                   <label>* Queixa Principal (QP)</label>
-                  <input type="text" class="form-control" rows="4" name="queixaPrincipal" formControlName="queixaPrincipal" required="">
+                  <input type="text" class="form-control" name="queixaPrincipal" formControlName="queixaPrincipal" required="true">
                   <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
                 </div>
               </div>
               <div class="row">
                 <div class="form-group col-12 col-md-12">
                   <label>* História Moléstia Pregressa (HMP)</label>
-                  <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required=""></textarea>
-                  <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+                  <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required="true"></textarea>
+                  <div class="invalid-feedback">Descrever a história moléstia pregressa do paciente é obrigatório</div>
                 </div>
               </div>
               <div class="row">
@@ -160,6 +160,51 @@
         </form>
       </ng-template>
     </li>
+    <li ngbNavItem="exames" [disabled]="this.objetoPaciente == null || this.objetoPaciente.id <= 0">
+      <a ngbNavLink>Exames</a>
+      <ng-template ngbNavContent>
+        <form [formGroup]="formExames" [ngClass]="{ 'was-validated': !formExames.valid && formExamesEnviado }">
+          <div class="card border border-primary rounded shadow-lg">
+            <div class="card-header">
+              <h5>Exames</h5>
+              <span>Paciente: {{ this.nome.getRawValue() }}</span>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-12 col-md-6">
+                  <label>* Descrição</label>
+                  <input type="text" formControlName="descricao" name="descricao" class="form-control" required="true"/>
+                  <div class="invalid-feedback">Preencher a descrição do exame é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>* Upload do Arquivo</label>
+                  <input type="file" (change)="selecionarArquivo($event)" formControlName="arquivoExame" name="arquivoExame" class="form-control" required="true"/>
+                  <div class="invalid-feedback">Selecionar o arquivo do exame é obrigatório</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravarExame()"><i class="fa fa-save fa-lg"></i> Gravar</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div *ngFor="let exame of this.exames">
+                <p class="text-break">
+                  <a href="javascript:void(0)" (click)="downloadArquivo(exame)">
+                    <i class="fa fa-download" aria-hidden="true"></i> {{ exame.descricao }}
+                  </a>
+                  <small class="form-text text-muted fst-italic"> {{ exame.arquivo.tamanho / 1024 | number: '1.0-0' }} KB</small>
+                  &nbsp;
+                  <a href="javascript:void(0)" (click)="excluirExame(exame)"><i class="fa fa-trash text-danger fs-6"></i></a>
+                </p>
+                <br>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </li>
     <li ngbNavItem="prontuario" [disabled]="this.objetoPaciente == null || this.objetoPaciente.id <= 0">
       <a ngbNavLink>Prontuário</a>
       <ng-template ngbNavContent>
@@ -167,13 +212,13 @@
           <div class="card border border-primary rounded shadow-lg">
             <div class="card-header">
               <h5>Prontuário do Paciente</h5>
-              <span>{{ this.nome.getRawValue() }}</span>
+              <span>Paciente: {{ this.nome.getRawValue() }}</span>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="form-group col-12 col-md-12">
                   <label>* Atendimento</label>
-                  <textarea name="atendimento" formControlName="atendimento" class="form-control" required="" rows="6"></textarea>
+                  <textarea name="atendimento" formControlName="atendimento" class="form-control" required="true" rows="6"></textarea>
                   <div class="invalid-feedback">Preencher a descrição do atendimento é obrigatório</div>
                 </div>
               </div>
@@ -185,7 +230,11 @@
             </div>
             <div class="card-footer">
               <div *ngFor="let prontuario of this.prontuarios">
-                <p class="text-muted">{{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}</p>
+                <p class="text-muted">
+                  #{{ prontuario.id }} {{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
+                  &nbsp;
+                  <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)"><i class="fa fa-trash text-danger fs-6"></i></a>
+                </p>
                 <p class="text-break">{{ prontuario.atendimento }}</p>
                 <br>
               </div>

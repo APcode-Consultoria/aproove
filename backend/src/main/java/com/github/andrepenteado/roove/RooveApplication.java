@@ -7,6 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import java.util.Arrays;
+
 @SpringBootApplication
 public class RooveApplication {
 
@@ -31,7 +33,11 @@ public class RooveApplication {
     public class CorsConfiguration extends WebMvcConfigurationSupport {  
         @Override
         public void addCorsMappings(CorsRegistry registry) {
-            registry.addMapping("/**").allowedOrigins("http://localhost:4200").allowedMethods("*").allowCredentials(true);
+            registry
+                .addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("*")
+                .allowCredentials(true);
         }
     }
 

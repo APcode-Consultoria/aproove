@@ -2,7 +2,9 @@ export class Arquivo {
 
     id: number;
     nome: string;
-    tipo: string;
-    conteudo: string;
+    tipoMime: string;
+    tamanho: number;
+    modificado: number;
+    base64: string;
 
 }

@@ -19,7 +19,7 @@ ng g m --routing <nome-do-módulo>
 Entidades de dados
 
 ```
-cd src/main/angular/src/app/entities
+cd frontend/src/app/entities
 ng g class --skip-tests <nome-da-entidade> 
 ```
 
@@ -28,7 +28,7 @@ ng g class --skip-tests <nome-da-entidade>
 Serviços de acesso a APIs
 
 ```
-cd src/main/angular/src/app/services
+cd frontend/src/app/services
 ng g service --skip-tests <nome-do-serviço> 
 ```
 
@@ -37,7 +37,7 @@ ng g service --skip-tests <nome-do-serviço>
 Componentes complexos com separação entre controller e view
 
 ```
-cd src/main/angular/src/app/components
+cd frontend/src/app/components
 ng g c --skip-tests -s <nome-do-componente> 
 ```
 
@@ -46,7 +46,7 @@ ng g c --skip-tests -s <nome-do-componente>
 Componentes simples do frontend
 
 ```
-cd src/main/angular/src/app/views
+cd frontend/src/app/views
 ng g c --skip-tests --flat -s -t <nome-do-componente>
 ```
 
