@@ -10,6 +10,6 @@ RUN npm install && npm run build --prod
 # Stage 2
 FROM nginx:alpine
 
-COPY --from=build-frontend /usr/local/ap-roove/dist /usr/share/nginx/html
+COPY --from=build-frontend /usr/local/ap-roove/dist/ap-roove /usr/share/nginx/html
 
 EXPOSE 80

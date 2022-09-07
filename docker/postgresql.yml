@@ -1,6 +1,6 @@
 services:
   db-server:
-    image: postgres:14
+    image: postgres:14.5
     container_name: dbserver-ap-roove
     environment:
       - POSTGRES_DB=dbname-ap-roove
@@ -12,7 +12,7 @@ services:
       - ./postgresql/:/var/lib/postgresql/data/
 
   db-server-test:
-    image: postgres:14
+    image: postgres:14.5
     container_name: dbserver-ap-roove-test
     environment:
       - POSTGRES_DB=dbname-ap-roove-test

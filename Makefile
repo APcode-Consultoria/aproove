@@ -15,3 +15,18 @@ build-frontend:
 	docker push ghcr.io/andrepenteado/ap-roove/frontend
 	docker push ghcr.io/andrepenteado/ap-roove/frontend:$(VERSAO_FRONTEND)
 	docker logout ghcr.io
+
+start:
+	docker compose -f docker/docker-compose.yml up -d
+
+stop:
+	docker compose -f docker/docker-compose.yml down
+
+update:
+	$(MAKE) stop
+	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
+	docker image pull postgres:14.5
+	docker image pull ghcr.io/andrepenteado/ap-roove/backend
+	docker image pull ghcr.io/andrepenteado/ap-roove/frontend
+	docker logout ghcr.io
+	$(MAKE) start

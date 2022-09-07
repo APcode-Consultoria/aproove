@@ -1,4 +1,4 @@
 .idea/
 .vscode/
-.docker/postgresql
-.docker/postgresql-test
+docker/postgresql
+docker/postgresql-test
