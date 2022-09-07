@@ -35,4 +35,8 @@ export class PacienteService {
     return this.http.delete(`${environment.backendURL}${Api.PACIENTES}/${id}`);
   }
 
+  public total(): Observable<number> {
+    return this.http.get<number>(`${environment.backendURL}${Api.PACIENTES}/total`);
+  }
+
 }

@@ -1,11 +1,9 @@
 package com.github.andrepenteado.roove.resources;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import com.github.andrepenteado.roove.services.ProntuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.github.andrepenteado.roove.models.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
+import com.github.andrepenteado.roove.services.ProntuarioService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +106,13 @@ public class PacienteResource {
             log.error("Erro no processamento", ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
+    }
+
+    @GetMapping("/total")
+    public Integer total() {
+        Integer total = pacienteService.total();
+        log.info("Total de pacientes: " + total);
+        return total;
     }
 
 }

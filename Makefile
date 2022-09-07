@@ -30,3 +30,7 @@ update:
 	docker image pull ghcr.io/andrepenteado/ap-roove/frontend
 	docker logout ghcr.io
 	$(MAKE) start
+
+dev-backend:
+	docker compose -f docker/postgresql.yml up -d
+	mvn -f backend/pom.xml clean spring-boot:run -Dspring-boot.run.profiles=dev

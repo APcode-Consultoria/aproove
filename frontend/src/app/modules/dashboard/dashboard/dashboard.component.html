@@ -1,0 +1,47 @@
+<app-breadcrumb [title]="'Dashboard'" [items]="['Inicio']" [active_item]="'Dashboard'"></app-breadcrumb>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6 col-xl-4 col-lg-6">
+      <div class="card o-hidden">
+        <div class="bg-primary b-r-4 card-body">
+          <div class="media static-top-widget">
+            <div class="align-self-center text-center">
+              <app-feather-icons [icon]="'user'"></app-feather-icons>
+            </div>
+            <div class="media-body"><span class="m-0">Pacientes</span>
+              <h4 class="mb-0 counter" [CountTo]="totalPacientes" [from]="0" [duration]="1">{{ totalPacientes }}</h4><i class="icon-bg" data-feather="user"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-4 col-lg-6">
+      <div class="card o-hidden">
+        <div class="bg-secondary b-r-4 card-body">
+          <div class="media static-top-widget">
+            <div class="align-self-center text-center">
+              <app-feather-icons [icon]="'smile'"></app-feather-icons>
+            </div>
+            <div class="media-body"><span class="m-0">Atendimentos</span>
+              <h4 class="mb-0 counter" [CountTo]="totalAtendimentos" [from]="0" [duration]="1">{{ totalAtendimentos }}</h4><i class="icon-bg" data-feather="smile"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-4 col-lg-6">
+        <div class="card o-hidden">
+          <div class="bg-info b-r-4 card-body">
+            <div class="media static-top-widget">
+              <div class="align-self-center text-center">
+                <app-feather-icons [icon]="'paperclip'"></app-feather-icons>
+              </div>
+              <div class="media-body"><span class="m-0">Exames</span>
+                <h4 class="mb-0 counter" [CountTo]="totalExames" [from]="0" [duration]="1">{{ totalExames }}</h4><i class="icon-bg" data-feather="paperclip"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>

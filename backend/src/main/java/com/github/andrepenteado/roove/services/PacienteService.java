@@ -62,4 +62,8 @@ public class PacienteService {
         }
     }
 
+    public Integer total() {
+        return pacienteRepository.total();
+    }
+
 }

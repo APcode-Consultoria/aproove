@@ -26,4 +26,8 @@ export class ProntuarioService {
     return this.http.delete(`${environment.backendURL}${Api.PRONTUARIOS}/${id}`);
   }
 
+  public total(): Observable<number> {
+    return this.http.get<number>(`${environment.backendURL}${Api.PRONTUARIOS}/total`);
+  }
+
 }

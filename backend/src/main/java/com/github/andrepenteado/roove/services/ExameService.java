@@ -40,4 +40,8 @@ public class ExameService {
         }
     }
 
+    public Integer total() {
+        return exameRepository.total();
+    }
+
 }

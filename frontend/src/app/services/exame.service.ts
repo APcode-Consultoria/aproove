@@ -26,4 +26,8 @@ export class ExameService {
     return this.http.delete(`${environment.backendURL}${Api.EXAMES}/${id}`);
   }
 
+  public total(): Observable<number> {
+    return this.http.get<number>(`${environment.backendURL}${Api.EXAMES}/total`);
+  }
+
 }

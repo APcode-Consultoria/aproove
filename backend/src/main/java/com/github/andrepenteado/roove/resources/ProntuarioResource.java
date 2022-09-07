@@ -62,4 +62,11 @@ public class ProntuarioResource {
         }
     }
 
+    @GetMapping("/total")
+    public Integer total() {
+        Integer total = prontuarioService.total();
+        log.info("Total de atendimentos: " + total);
+        return total;
+    }
+
 }

@@ -42,4 +42,8 @@ public class ProntuarioService {
         }
     }
 
+    public Integer total() {
+        return prontuarioRepository.total();
+    }
+
 }

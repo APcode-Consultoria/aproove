@@ -1,17 +1,25 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.models.Exame;
-import com.github.andrepenteado.roove.models.Prontuario;
-import com.github.andrepenteado.roove.services.ExameService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import java.util.List;
 
 import javax.validation.Valid;
-import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.github.andrepenteado.roove.models.Exame;
+import com.github.andrepenteado.roove.services.ExameService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/exames")
@@ -61,6 +69,13 @@ public class ExameResource {
             log.error("Erro no processamento", ex);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
         }
+    }
+
+    @GetMapping("/total")
+    public Integer total() {
+        Integer total = exameService.total();
+        log.info("Total de exames: " + total);
+        return total;
     }
 
 }
