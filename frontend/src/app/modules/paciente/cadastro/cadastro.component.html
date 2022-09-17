@@ -191,7 +191,7 @@
             <div class="card-footer">
               <div *ngFor="let exame of this.exames">
                 <p class="text-break">
-                  <a href="javascript:void(0)" (click)="downloadArquivo(exame)">
+                  <a href="javascript:void(0)" (click)="downloadArquivo(exame)" class="link-primary fs-5">
                     <i class="fa fa-download" aria-hidden="true"></i> {{ exame.descricao }}
                   </a>
                   <small class="form-text text-muted fst-italic"> {{ exame.arquivo.tamanho / 1024 | number: '1.0-0' }} KB</small>
@@ -235,7 +235,7 @@
                   &nbsp;
                   <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)"><i class="fa fa-trash text-danger fs-6"></i></a>
                 </p>
-                <p class="text-break">{{ prontuario.atendimento }}</p>
+                <p class="text-break fs-5">{{ prontuario.atendimento }}</p>
                 <br>
               </div>
             </div>
