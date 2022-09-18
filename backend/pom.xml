@@ -15,7 +15,7 @@
 
     <groupId>br.com.apcode</groupId>
     <artifactId>ap-roove</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>ap-roove</name>
     <description>Sistema de gestão de prontuários de pacientes</description>
 
