@@ -55,6 +55,8 @@ public class Paciente {
 
     private String logradouro;
 
+    private String complemento;
+
     private Integer numeroLogradouro;
 
     private String bairro;

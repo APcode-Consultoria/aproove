@@ -51,6 +51,7 @@ export class CadastroComponent implements OnInit {
   parentescoContatoEmergencia = new FormControl(null);
   cep = new FormControl(null);
   logradouro = new FormControl(null);
+  complemento = new FormControl(null);
   numeroLogradouro = new FormControl(null);
   bairro = new FormControl(null);
   cidade = new FormControl(null);
@@ -75,6 +76,7 @@ export class CadastroComponent implements OnInit {
     parentescoContatoEmergencia: this.parentescoContatoEmergencia,
     cep: this.cep,
     logradouro: this.logradouro,
+    complemento: this.complemento,
     numeroLogradouro: this.numeroLogradouro,
     bairro: this.bairro,
     cidade: this.cidade,

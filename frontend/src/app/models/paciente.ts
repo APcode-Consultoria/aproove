@@ -14,6 +14,7 @@ export class Paciente {
     parentescoContatoEmergencia: Parentesco;
     cep: number;
     logradouro: string;
+    complemento: string;
     numeroLogradouro: number;
     bairro: string;
     cidade: string;
