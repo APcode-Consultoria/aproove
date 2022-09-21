@@ -1,8 +1,9 @@
-package com.github.andrepenteado.roove.services;
+package com.github.andrepenteado.roove.services.impl;
 
 import com.github.andrepenteado.roove.RooveApplication;
 import com.github.andrepenteado.roove.models.Exame;
 import com.github.andrepenteado.roove.repositories.ExameRepository;
+import com.github.andrepenteado.roove.services.IExameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -15,15 +16,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ExameService {
+public class ExameServiceImpl implements IExameService {
 
     private final ExameRepository exameRepository;
 
+    @Override
     public List<Exame> listarProntuariosPorPaciente(Long idPaciente) {
         return exameRepository.findByPacienteIdOrderByDescricao(idPaciente);
     }
 
-    public Exame incluir(Exame exame, BindingResult validacao) throws Exception {
+    @Override
+    public Exame incluir(Exame exame, BindingResult validacao) {
         String erros = RooveApplication.validar(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
@@ -31,6 +34,7 @@ public class ExameService {
         return exameRepository.save(exame);
     }
 
+    @Override
     public void excluir(Long id) {
         try {
             exameRepository.deleteById(id);
@@ -40,6 +44,7 @@ public class ExameService {
         }
     }
 
+    @Override
     public Integer total() {
         return exameRepository.total();
     }

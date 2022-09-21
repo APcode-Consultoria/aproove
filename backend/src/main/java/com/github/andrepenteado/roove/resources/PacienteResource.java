@@ -1,27 +1,17 @@
 package com.github.andrepenteado.roove.resources;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.github.andrepenteado.roove.models.Paciente;
-import com.github.andrepenteado.roove.services.PacienteService;
-import com.github.andrepenteado.roove.services.ProntuarioService;
-
+import com.github.andrepenteado.roove.services.IPacienteService;
+import com.github.andrepenteado.roove.services.IProntuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pacientes")
@@ -29,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PacienteResource {
 
-    private final PacienteService pacienteService;
+    private final IPacienteService pacienteService;
 
-    private final ProntuarioService prontuarioService;
+    private final IProntuarioService prontuarioService;
 
     @GetMapping
     public List<Paciente> listar() {

@@ -1,10 +1,10 @@
-package com.github.andrepenteado.roove.services;
+package com.github.andrepenteado.roove.services.impl;
 
 import com.github.andrepenteado.roove.RooveApplication;
 import com.github.andrepenteado.roove.models.Prontuario;
 import com.github.andrepenteado.roove.repositories.ProntuarioRepository;
+import com.github.andrepenteado.roove.services.IProntuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,19 +13,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProntuarioService {
+public class ProntuarioServiceImpl implements IProntuarioService {
 
     private final ProntuarioRepository prontuarioRepository;
 
+    @Override
     public List<Prontuario> listarProntuariosPorPaciente(Long idPaciente) {
         return prontuarioRepository.findByPacienteIdOrderByDataRegistroDesc(idPaciente);
     }
 
-    public Prontuario incluir(Prontuario prontuario, BindingResult validacao) throws Exception {
+    @Override
+    public Prontuario incluir(Prontuario prontuario, BindingResult validacao) {
         String erros = RooveApplication.validar(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
@@ -33,6 +34,7 @@ public class ProntuarioService {
         return prontuarioRepository.save(prontuario);
     }
 
+    @Override
     public void excluir(Long id) {
         try {
             prontuarioRepository.deleteById(id);
@@ -42,6 +44,7 @@ public class ProntuarioService {
         }
     }
 
+    @Override
     public Integer total() {
         return prontuarioRepository.total();
     }

@@ -1,9 +1,10 @@
-package com.github.andrepenteado.roove.services;
+package com.github.andrepenteado.roove.services.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
+import com.github.andrepenteado.roove.RooveApplication;
+import com.github.andrepenteado.roove.models.Paciente;
+import com.github.andrepenteado.roove.repositories.PacienteRepository;
+import com.github.andrepenteado.roove.services.IPacienteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -11,27 +12,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.andrepenteado.roove.RooveApplication;
-import com.github.andrepenteado.roove.models.Paciente;
-import com.github.andrepenteado.roove.repositories.PacienteRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PacienteService {
+public class PacienteServiceImpl implements IPacienteService {
 
     private final PacienteRepository pacienteRepository;
 
+    @Override
     public List<Paciente> listar() {
         return pacienteRepository.findAllByOrderByNomeAsc();
     }
 
+    @Override
     public Optional<Paciente> buscar(Long id) {
         return pacienteRepository.findById(id);
     }
 
-    public Paciente incluir(Paciente paciente, BindingResult validacao) throws Exception {
+    @Override
+    public Paciente incluir(Paciente paciente, BindingResult validacao) {
         String erros = RooveApplication.validar(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
@@ -41,7 +43,8 @@ public class PacienteService {
         return pacienteRepository.save(paciente);
     }
 
-    public Paciente alterar(Paciente paciente, Long id, BindingResult validacao) throws Exception {
+    @Override
+    public Paciente alterar(Paciente paciente, Long id, BindingResult validacao) {
         String erros = RooveApplication.validar(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
@@ -53,6 +56,7 @@ public class PacienteService {
         return pacienteRepository.save(paciente);
     }
 
+    @Override
     public void excluir(Long id) {
         try {
             pacienteRepository.deleteById(id);
@@ -62,6 +66,7 @@ public class PacienteService {
         }
     }
 
+    @Override
     public Integer total() {
         return pacienteRepository.total();
     }

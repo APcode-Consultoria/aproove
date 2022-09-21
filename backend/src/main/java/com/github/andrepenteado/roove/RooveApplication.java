@@ -16,7 +16,7 @@ public class RooveApplication {
 		SpringApplication.run(RooveApplication.class, args);
 	}
 
-	public static String validar(BindingResult validacao) throws Exception {
+	public static String validar(BindingResult validacao) {
         String result = null;
         if (validacao.hasErrors()) {
             var erros = new StringBuilder();
