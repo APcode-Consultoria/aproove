@@ -1,0 +1,48 @@
+name: Buildar e gerar imagem do frontend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-java-backend:
+
+    runs-on: ubuntu-latest
+    name: Buildar e gerar imagem do frontend
+
+    steps:
+
+    - name: Checkout do projeto
+      uses: actions/checkout@v3
+
+    - name: Usar NodeJS 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'npm'
+
+    - name: Instalar dependências
+      run: npm --omit=dev install
+      working-directory: frontend
+
+    - name: Build
+      run: npm run build --prod
+      working-directory: fromtend
+
+    - name: Buscar versão atual
+      run: echo "VERSAO=$(npm --prefix ./frontend pkg get version | sed 's/"//g')" >> $GITHUB_ENV
+
+    - name: Logar no registry do github
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build da imagem docker
+      run: docker build -f frontend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/frontend:latest -t ghcr.io/andrepenteado/ap-roove/frontend:${{ env.VERSAO }} .
+    
+    - name: Push da imagem docker
+      run: |
+        docker push ghcr.io/andrepenteado/ap-roove/frontend:latest
+        docker push ghcr.io/andrepenteado/ap-roove/frontend:${{ env.VERSAO }}

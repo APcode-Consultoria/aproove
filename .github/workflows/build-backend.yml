@@ -1,4 +1,4 @@
-name: Compilar e Testar o Backend
+name: Compilar, testar e buildar o backend
 
 on:
   push:
@@ -8,7 +8,7 @@ jobs:
   build-java-backend:
 
     runs-on: ubuntu-latest
-    name: Compilar e testar o backend
+    name: Buildar, testar e gerar imagem do backend
 
     services:
 
