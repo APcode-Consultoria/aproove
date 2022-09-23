@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build-java-backend:
+  build-angular-frontend:
 
     runs-on: ubuntu-latest
     name: Buildar e gerar imagem do frontend
