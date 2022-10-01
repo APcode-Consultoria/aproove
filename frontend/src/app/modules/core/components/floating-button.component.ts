@@ -11,8 +11,9 @@ import { Component, Input, OnInit } from '@angular/core';
     .float-button {
       position: fixed;
       height: 70px;
-      bottom: 10px;
-      right: 10px;
+      bottom: 20px;
+      right: 20px;
+      padding-left: 25px;
       line-height: 0px;
       border-radius: 50px;
       border: 0px;
