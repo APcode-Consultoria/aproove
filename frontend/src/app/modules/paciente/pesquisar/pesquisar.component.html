@@ -1,4 +1,7 @@
-<app-breadcrumb [title]="'Pesquisar Pacientes'" [items]="['Pacientes']" [active_item]="'Pesquisar'"></app-breadcrumb>
+<app-loader [show]="this.aguardar "></app-loader>
+<ap-floating-button (click)="incluir()"><i class="fa fa-plus fa-2x"></i></ap-floating-button>
+
+<app-breadcrumb [title]="'Pesquisar Pacientes'" [active_item]="'Pacientes'"></app-breadcrumb>
 
 <div class="col-12 col-md-12">
   <div class="card border border-primary rounded shadow-lg">

@@ -1,4 +1,8 @@
-<app-breadcrumb [title]="'Cadastro de Paciente'" [items]="['Pacientes']" [active_item]="'Cadastro'"></app-breadcrumb>
+<app-breadcrumb
+  [title]="'Cadastro de Paciente'"
+  [items]="[ ['Pacientes','/paciente/pesquisar'] ]"
+  [active_item]="'Cadastro'">
+</app-breadcrumb>
 
 <div class="d-flex">
   <ul ngbNav #nav="ngbNav" animation="true" class="nav-pills" orientation="vertical">
@@ -64,7 +68,7 @@
                 <div class="form-group col-12 col-md-4">
                   <label>CEP</label>
                   <div class="input-group">
-                    <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000" (keypress.enter)="consultaCep(cep.value)">
+                    <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
                     <div class="input-group-append">
                       <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="fa fa-search"></i></button>
                     </div>

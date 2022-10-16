@@ -17,6 +17,8 @@ export class PesquisarComponent implements OnInit, OnDestroy {
   @ViewChild('exibeMensagem')
   exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
 
+  aguardar: boolean = true;
+
   dtOptions: DataTables.Settings = Core.DATATABLES_OPTIONS;
   dtTrigger: Subject<any> = new Subject<any>();
 
@@ -50,6 +52,7 @@ export class PesquisarComponent implements OnInit, OnDestroy {
         );
       }
     });
+    this.aguardar = false;
   }
 
   incluir(): void {
