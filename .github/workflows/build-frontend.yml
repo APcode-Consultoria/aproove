@@ -26,8 +26,12 @@ jobs:
       run: npm --omit=dev install
       working-directory: frontend
 
+    - name: Instalar Angular/CLI
+      run: npm install -g @angular/cli@latest
+      working-directory: frontend
+
     - name: Build
-      run: npm run build --prod
+      run: npm run build --omit=dev
       working-directory: frontend
 
     - name: Buscar versão atual
