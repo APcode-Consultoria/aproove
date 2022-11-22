@@ -10,6 +10,23 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  security:
+    oauth2:
+      client:
+        registration:
+          ap-roove-oidc:
+            provider: spring
+            client-id: com.github.andrepenteado.aproove
+            client-secret: ***REMOVED***
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/ap-roove-oidc"
+            scope: openid
+            client-name: ap-roove-oidc
+        provider:
+          spring:
+            issuer-uri: http://localhost:30000
+
 server:
   error:
     include-message: always
