@@ -29,7 +29,7 @@ public class RooveApplication {
         return result;
     }
 
-    @Configuration
+    /*@Configuration
     public class CorsConfiguration extends WebMvcConfigurationSupport {  
         @Override
         public void addCorsMappings(CorsRegistry registry) {
@@ -39,6 +39,6 @@ public class RooveApplication {
                 .allowedMethods("*")
                 .allowCredentials(true);
         }
-    }
+    }*/
 
 }
