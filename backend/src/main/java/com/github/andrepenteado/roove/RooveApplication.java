@@ -2,12 +2,18 @@ package com.github.andrepenteado.roove;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.Arrays;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @SpringBootApplication
 public class RooveApplication {
@@ -29,16 +35,26 @@ public class RooveApplication {
         return result;
     }
 
-    /*@Configuration
-    public class CorsConfiguration extends WebMvcConfigurationSupport {  
-        @Override
-        public void addCorsMappings(CorsRegistry registry) {
-            registry
-                .addMapping("/**")
-                .allowedOriginPatterns("*")
-                .allowedMethods("*")
-                .allowCredentials(true);
-        }
-    }*/
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((authorize) -> {
+                    try {
+                        authorize
+                            .requestMatchers("/home").permitAll()
+                            .anyRequest().authenticated()
+                            .and()
+                            .oauth2Login()
+                            .and()
+                            .csrf().disable();
+                    }
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            );
+
+        return http.build();
+    }
 
 }

@@ -20,7 +20,7 @@ spring:
             client-secret: ***REMOVED***
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
-            redirect-uri: "http://aproove:30002/login/oauth2/code/aproove-oidc"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope: openid
             client-name: aproove-oidc
         provider:
