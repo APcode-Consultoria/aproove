@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgresql:5432/dbname-ap-roove
-    username: dbuser-ap-roove
+    url: jdbc:postgresql://aproove-db:50002/aproove-dbname
+    username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -14,18 +14,18 @@ spring:
     oauth2:
       client:
         registration:
-          ap-roove-oidc:
+          aproove-oidc:
             provider: spring
             client-id: com.github.andrepenteado.aproove
             client-secret: ***REMOVED***
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:8080/login/oauth2/code/ap-roove-oidc"
+            redirect-uri: "http://aproove:30002/login/oauth2/code/aproove-oidc"
             scope: openid
-            client-name: ap-roove-oidc
+            client-name: aproove-oidc
         provider:
           spring:
-            issuer-uri: http://localhost:30000
+            issuer-uri: http://apsso:30000
 
 server:
   error:

@@ -2,24 +2,18 @@ services:
 
   backend:
     image: ghcr.io/andrepenteado/ap-roove/backend
-    container_name: backend-ap-roove
+    container_name: aproove-backend
     ports:
-      - 8080:8080
+      - 30002:8080
 
-  frontend:
-    image: ghcr.io/andrepenteado/ap-roove/frontend
-    container_name: frontend-ap-roove
-    ports:
-      - 80:80
-
-  postgresql:
+  aproove-db:
     image: postgres:14.5
-    container_name: dbserver-ap-roove
+    container_name: aproove-db
     environment:
-      - POSTGRES_DB=dbname-ap-roove
-      - POSTGRES_USER=dbuser-ap-roove
+      - POSTGRES_DB=aproove-dbname
+      - POSTGRES_USER=aproove-dbuser
       - POSTGRES_PASSWORD=***REMOVED***
     ports:
-      - 5432:5432
+      - 50002:5432
     volumes:
       - ./postgresql/:/var/lib/postgresql/data/

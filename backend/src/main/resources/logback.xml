@@ -3,7 +3,7 @@
 <configuration>
 
     <!-- Nome da aplicação -->
-    <contextName>AP-roove</contextName>
+    <contextName>AProove</contextName>
 
     <!-- Log para console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

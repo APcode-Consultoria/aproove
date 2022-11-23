@@ -1,22 +1,23 @@
 services:
-  db-server:
+
+  aproove-db:
     image: postgres:14.5
-    container_name: dbserver-ap-roove
+    container_name: aproove-db
     environment:
-      - POSTGRES_DB=dbname-ap-roove
-      - POSTGRES_USER=dbuser-ap-roove
+      - POSTGRES_DB=aproove-dbname
+      - POSTGRES_USER=aproove-dbuser
       - POSTGRES_PASSWORD=***REMOVED***
     ports:
-      - 5432:5432
+      - 50002:5432
     volumes:
       - ./postgresql/:/var/lib/postgresql/data/
 
-  db-server-test:
+  aproove-db-test:
     image: postgres:14.5
-    container_name: dbserver-ap-roove-test
+    container_name: aproove-db-test
     environment:
-      - POSTGRES_DB=dbname-ap-roove-test
-      - POSTGRES_USER=dbuser-ap-roove
+      - POSTGRES_DB=aproove-dbname
+      - POSTGRES_USER=aproove-dbuser
       - POSTGRES_PASSWORD=***REMOVED***
     ports:
       - 54320:5432

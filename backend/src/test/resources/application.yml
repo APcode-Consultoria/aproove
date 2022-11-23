@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:54320/dbname-ap-roove-test
-    username: dbuser-ap-roove
+    url: jdbc:postgresql://localhost:54320/aproove-dbname
+    username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
   jpa:

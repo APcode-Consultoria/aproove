@@ -1,4 +1,4 @@
 FROM openjdk:17-jdk
-COPY backend/target/ap-roove.jar ap-roove.jar
+COPY backend/target/aproove.jar ROOT.jar
 EXPOSE 8080
-ENTRYPOINT [ "java", "-jar", "/ap-roove.jar" ]
+ENTRYPOINT [ "java", "-jar", "/ROOT.jar" ]

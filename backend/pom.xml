@@ -20,11 +20,11 @@
     </properties>
 
     <groupId>br.com.apcode</groupId>
-    <artifactId>ap-roove</artifactId>
+    <artifactId>aproove</artifactId>
     <version>2.0.0</version>
 
-    <name>ap-roove</name>
-    <description>Sistema de gestão de prontuários de pacientes</description>
+    <name>AProove</name>
+    <description>Sistema de gestão de pacientes e prontuários</description>
 
     <organization>
         <name>APcode</name>
@@ -103,7 +103,7 @@
     </dependencies>
 
     <build>
-        <finalName>ap-roove</finalName>
+        <finalName>aproove</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
