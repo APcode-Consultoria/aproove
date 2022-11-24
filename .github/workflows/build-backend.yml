@@ -12,11 +12,11 @@ jobs:
 
     services:
 
-      db-server-test:
-        image: postgres:14
+      aproove-db-test:
+        image: postgres:14.5
         env:
-          POSTGRES_DB: dbname-ap-roove-test
-          POSTGRES_USER: dbuser-ap-roove
+          POSTGRES_DB: aproove-dbname
+          POSTGRES_USER: aproove-dbuser
           POSTGRES_PASSWORD: ***REMOVED***
         ports:
           - 54320:5432
@@ -34,7 +34,7 @@ jobs:
         cache: 'maven'
 
     - name: Compilar e testar
-      run: mvn -B clean package --file backend/pom.xml -DskipTests
+      run: mvn -B clean test --file backend/pom.xml
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)" >> $GITHUB_ENV
@@ -47,9 +47,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/backend:latest -t ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }} .
+      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/app:latest -t ghcr.io/andrepenteado/ap-roove/app:${{ env.VERSAO }} .
     
     - name: Push da imagem docker
       run: |
-        docker push ghcr.io/andrepenteado/ap-roove/backend:latest
-        docker push ghcr.io/andrepenteado/ap-roove/backend:${{ env.VERSAO }}
+        docker push ghcr.io/andrepenteado/ap-roove/app:latest
+        docker push ghcr.io/andrepenteado/ap-roove/app:${{ env.VERSAO }}
