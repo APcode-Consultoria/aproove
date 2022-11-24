@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Buildar, testar e gerar imagem
 
-    services:
-
+#    services:
 #      aproove-db-test:
 #        image: postgres:14.5
 #        env:
