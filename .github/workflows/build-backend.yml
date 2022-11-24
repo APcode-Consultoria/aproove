@@ -12,14 +12,14 @@ jobs:
 
     services:
 
-      aproove-db-test:
-        image: postgres:14.5
-        env:
-          POSTGRES_DB: aproove-dbname
-          POSTGRES_USER: aproove-dbuser
-          POSTGRES_PASSWORD: ***REMOVED***
-        ports:
-          - 54320:5432
+#      aproove-db-test:
+#        image: postgres:14.5
+#        env:
+#          POSTGRES_DB: aproove-dbname
+#          POSTGRES_USER: aproove-dbuser
+#          POSTGRES_PASSWORD: ***REMOVED***
+#        ports:
+#          - 54320:5432
 
     steps:
 
@@ -47,7 +47,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f backend/Dockerfile -t ghcr.io/andrepenteado/ap-roove/app:latest -t ghcr.io/andrepenteado/ap-roove/app:${{ env.VERSAO }} .
+      run: docker build -f docker/Dockerfile -t ghcr.io/andrepenteado/ap-roove/aproove:latest -t ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }} .
     
     - name: Push da imagem docker
       run: |
