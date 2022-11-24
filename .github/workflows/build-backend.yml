@@ -46,9 +46,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f docker/Dockerfile -t ghcr.io/andrepenteado/ap-roove/aproove:latest -t ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }} .
+      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/aproove:latest -t ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }} .
     
     - name: Push da imagem docker
       run: |
-        docker push ghcr.io/andrepenteado/ap-roove/app:latest
-        docker push ghcr.io/andrepenteado/ap-roove/app:${{ env.VERSAO }}
+        docker push ghcr.io/andrepenteado/ap-roove/aproove:latest
+        docker push ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }}

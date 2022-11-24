@@ -2,10 +2,10 @@ VERSAO_APP := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceS
 #VERSAO_FRONTEND := $(shell cd frontend && npm pkg get version | sed 's/"//g')
 
 build-image:
-	docker build -f docker/Dockerfile -t ghcr.io/andrepenteado/ap-roove/app -t ghcr.io/andrepenteado/ap-roove/app:$(VERSAO_APP) .
+	docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/aproove -t ghcr.io/andrepenteado/ap-roove/aproove:$(VERSAO_APP) .
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
-	docker push ghcr.io/andrepenteado/ap-roove/app
-	docker push ghcr.io/andrepenteado/ap-roove/app:$(VERSAO_APP)
+	docker push ghcr.io/andrepenteado/ap-roove/aproove
+	docker push ghcr.io/andrepenteado/ap-roove/aproove:$(VERSAO_APP)
 	docker logout ghcr.io
 
 start:
@@ -18,7 +18,7 @@ update:
 	$(MAKE) stop
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
 	docker image pull postgres:14.5
-	docker image pull ghcr.io/andrepenteado/ap-roove/app
+	docker image pull ghcr.io/andrepenteado/ap-roove/aproove
 	docker logout ghcr.io
 	$(MAKE) start
 
