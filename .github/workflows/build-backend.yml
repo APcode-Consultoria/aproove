@@ -1,4 +1,4 @@
-name: Compilar, testar e buildar o backend
+name: Compilar, testar e buildar
 
 on:
   push:
@@ -8,7 +8,7 @@ jobs:
   build-java-backend:
 
     runs-on: ubuntu-latest
-    name: Buildar, testar e gerar imagem do backend
+    name: Buildar, testar e gerar imagem
 
     services:
 
@@ -33,8 +33,8 @@ jobs:
         distribution: 'corretto'
         cache: 'maven'
 
-    - name: Compilar e testar
-      run: mvn -B clean test --file backend/pom.xml
+#    - name: Compilar e testar
+#      run: mvn -B clean test --file backend/pom.xml
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)" >> $GITHUB_ENV
