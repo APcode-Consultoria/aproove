@@ -1,9 +1,11 @@
 spring:
+
   datasource:
     url: jdbc:postgresql://aproove-db:50002/aproove-dbname
     username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
+
   jpa:
     open-in-view: false
     properties:
@@ -28,5 +30,6 @@ spring:
             issuer-uri: http://apsso:30000
 
 server:
+  port: 30002
   error:
     include-message: always

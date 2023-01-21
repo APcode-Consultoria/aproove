@@ -17,5 +17,4 @@ RUN mvn -U clean package --file backend/pom.xml -DskipTests
 # Build app 
 FROM openjdk:17-jdk
 COPY --from=build-backend /aproove/backend/target/aproove.jar ROOT.jar
-EXPOSE 8080
-ENTRYPOINT [ "java", "-jar", "/ROOT.jar" ]
+ENTRYPOINT [ "java", "-jar", "-Dserver.port=30002", "/ROOT.jar" ]

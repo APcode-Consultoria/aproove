@@ -5,20 +5,20 @@ on:
     branches: [main]
 
 jobs:
-  build-java-backend:
+  build:
 
     runs-on: ubuntu-latest
     name: Buildar, testar e gerar imagem
 
-#    services:
-#      aproove-db-test:
-#        image: postgres:14.5
-#        env:
-#          POSTGRES_DB: aproove-dbname
-#          POSTGRES_USER: aproove-dbuser
-#          POSTGRES_PASSWORD: ***REMOVED***
-#        ports:
-#          - 54320:5432
+    services:
+      aproove-db-test:
+        image: postgres:14.5
+        env:
+          POSTGRES_DB: aproove-dbname
+          POSTGRES_USER: aproove-dbuser
+          POSTGRES_PASSWORD: ***REMOVED***
+        ports:
+          - 54320:5432
 
     steps:
 
@@ -32,8 +32,8 @@ jobs:
         distribution: 'corretto'
         cache: 'maven'
 
-#    - name: Compilar e testar
-#      run: mvn -B clean test --file backend/pom.xml
+    - name: Compilar e testar
+      run: mvn -B clean test --file backend/pom.xml
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)" >> $GITHUB_ENV
@@ -46,9 +46,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f Dockerfile -t ghcr.io/andrepenteado/ap-roove/aproove:latest -t ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }} .
+      run: docker build -f Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/aproove:latest -t ghcr.io/andrepenteado/aproove/aproove:${{ env.VERSAO }} .
     
     - name: Push da imagem docker
       run: |
-        docker push ghcr.io/andrepenteado/ap-roove/aproove:latest
-        docker push ghcr.io/andrepenteado/ap-roove/aproove:${{ env.VERSAO }}
+        docker push ghcr.io/andrepenteado/aproove/aproove:latest
+        docker push ghcr.io/andrepenteado/aproove/aproove:${{ env.VERSAO }}

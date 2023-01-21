@@ -1,0 +1,3 @@
+FROM openjdk:17-jdk
+COPY ./backend/target/aproove.jar ROOT.jar
+ENTRYPOINT [ "java", "-jar", "-Dserver.port=30002", "/ROOT.jar" ]

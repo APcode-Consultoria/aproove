@@ -1,4 +1,4 @@
-# AP-roove: Gestão de pacientes
+# AProove: Gestão de pacientes
 
 Sistema de controle e registro de acesso na portaria do câmpus
 
@@ -55,5 +55,5 @@ ng g c --skip-tests --flat -s -t <nome-do-componente>
 Não esquecer da barra (/) final
 
 ```
-ng build --watch --base-href /ap-roove/
+ng build --watch --base-href /aproove/
 ```

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ap-roove": {
+    "aproove": {
       "projectType": "application",
       "schematics": {
       },
@@ -118,18 +118,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ap-roove:build"
+            "browserTarget": "aproove:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ap-roove:build:production"
+              "browserTarget": "aproove:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ap-roove:build"
+            "browserTarget": "aproove:build"
           }
         },
         "test": {
@@ -153,18 +153,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ap-roove:serve"
+            "devServerTarget": "aproove:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ap-roove:serve:production"
+              "devServerTarget": "aproove:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "ap-roove",
+  "defaultProject": "aproove",
   "cli": {
     "analytics": false
   },

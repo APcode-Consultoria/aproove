@@ -10,7 +10,7 @@ services:
     ports:
       - 50002:5432
     volumes:
-      - ./postgresql/:/var/lib/postgresql/data/
+      - aproove-pgdata:/var/lib/postgresql/data/
 
   aproove-db-test:
     image: postgres:14.5
@@ -22,4 +22,8 @@ services:
     ports:
       - 54320:5432
     volumes:
-      - ./postgresql-test/:/var/lib/postgresql/data/
+      - aproove-test-pgdata:/var/lib/postgresql/data/
+
+volumes:
+  aproove-pgdata:
+  aproove-test-pgdata:
