@@ -1,7 +1,7 @@
 services:
 
   aproove-db:
-    image: postgres:14.5
+    image: postgres:15.2
     container_name: aproove-db
     environment:
       - POSTGRES_DB=aproove-dbname
@@ -13,7 +13,7 @@ services:
       - aproove-pgdata:/var/lib/postgresql/data/
 
   aproove-db-test:
-    image: postgres:14.5
+    image: postgres:15.2
     container_name: aproove-db-test
     environment:
       - POSTGRES_DB=aproove-dbname

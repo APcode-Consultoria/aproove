@@ -33,7 +33,7 @@ jobs:
         cache: 'maven'
 
     - name: Compilar e testar
-      run: mvn -B clean test --file backend/pom.xml
+      run: mvn -B clean package --file backend/pom.xml
 
     - name: Buscar versão atual
       run: echo "VERSAO=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)" >> $GITHUB_ENV
@@ -46,7 +46,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build da imagem docker
-      run: docker build -f Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/aproove:latest -t ghcr.io/andrepenteado/aproove/aproove:${{ env.VERSAO }} .
+      run: docker build -f docker/Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/aproove:latest -t ghcr.io/andrepenteado/aproove/aproove:${{ env.VERSAO }} .
     
     - name: Push da imagem docker
       run: |

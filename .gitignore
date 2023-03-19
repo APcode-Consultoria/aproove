@@ -3,3 +3,4 @@
 docker/postgresql
 docker/postgresql-apsso
 docker/postgresql-test
+docker/*.iml
