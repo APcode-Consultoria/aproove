@@ -3,7 +3,7 @@
 FROM node:16-slim AS build-frontend
 WORKDIR /aproove/frontend/
 COPY ../frontend /aproove/frontend/
-RUN npm install && npm run build --prod
+RUN npm install && npm run build --omit=dev
 
 # Stage 2
 # Build backend

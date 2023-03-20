@@ -12,7 +12,7 @@ jobs:
 
     services:
       aproove-db-test:
-        image: postgres:14.5
+        image: postgres:15.2
         env:
           POSTGRES_DB: aproove-dbname
           POSTGRES_USER: aproove-dbuser
@@ -25,6 +25,17 @@ jobs:
     - name: Checkout do projeto
       uses: actions/checkout@v3
 
+    - name: Usar Node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Instalar pacotes do frontend
+      run: npm --prefix ./frontend install
+
+    - name: Buildar frontend
+      run: npm --prefix ./frontend run build --omit=dev
+
     - name: Usar JDK 17
       uses: actions/setup-java@v3
       with:
@@ -32,7 +43,7 @@ jobs:
         distribution: 'corretto'
         cache: 'maven'
 
-    - name: Compilar e testar
+    - name: Compilar e testar backend
       run: mvn -B clean package --file backend/pom.xml
 
     - name: Buscar versão atual

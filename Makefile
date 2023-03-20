@@ -28,7 +28,7 @@ stop:
 update:
 	$(MAKE) stop
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
-	docker image pull postgres:14.5
+	docker image pull postgres:15.2
 	docker image pull ghcr.io/andrepenteado/aproove/aproove
 	docker logout ghcr.io
 	$(MAKE) start
