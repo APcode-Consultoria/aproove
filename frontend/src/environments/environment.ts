@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  backendURL: 'http://aproove:30002'
+  backendURL: 'http://aproove:30002',
+  apssoURL: 'http://apsso-backend:30001'
 };
 /*
  * For easier debugging in development mode, you can import the following file

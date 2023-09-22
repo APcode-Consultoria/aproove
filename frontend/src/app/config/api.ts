@@ -1,9 +1,11 @@
 export class Api {
 
-    static readonly PACIENTES = '/pacientes';
+    static readonly PACIENTES: string = '/pacientes';
 
-    static readonly PRONTUARIOS = '/prontuarios';
+    static readonly PRONTUARIOS: string = '/prontuarios';
 
-    static readonly EXAMES = '/exames';
+    static readonly EXAMES: string = '/exames';
+
+    static readonly AUTH: string = '/auth';
 
 }

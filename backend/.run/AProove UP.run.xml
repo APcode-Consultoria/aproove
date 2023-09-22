@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="aproove-up" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="AProove UP" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="backend" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.github.andrepenteado.roove.RooveApplication" />
     <option name="VM_PARAMETERS" value="-Dserver.port=30002" />

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Usuario} from "../../../../../models/usuario";
+import {AuthService} from "../../../../../services/auth.service";
 
 @Component({
   selector: 'app-my-account',
@@ -7,9 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MyAccountComponent implements OnInit {
 
-  constructor() { }
+  usuario: Usuario;
+
+  constructor(
+      private authService: AuthService
+  ) { }
 
   ngOnInit() {
+    this.authService.usuarioLogado().subscribe({
+      next: usuario => this.usuario = usuario
+    });
+  }
+
+  nomePerfil(): string {
+    for (let i=0; i < this.usuario.perfis.length; i++) {
+      let perfilSistema = this.usuario.perfis[i];
+      if (perfilSistema.authority.startsWith('ROLE_APsso_'))
+        return perfilSistema.descricao;
+    }
   }
 
 }
