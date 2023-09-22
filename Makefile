@@ -1,14 +1,14 @@
 VERSAO_APP := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)
 #VERSAO_FRONTEND := $(shell cd frontend && npm pkg get version | sed 's/"//g')
 
-build-image:
+build:
 	docker build -f docker/Dockerfile -t ghcr.io/andrepenteado/aproove/aproove -t ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP) .
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
 	docker push ghcr.io/andrepenteado/aproove/aproove
 	docker push ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP)
 	docker logout ghcr.io
 
-build-local:
+build-pipeline:
 	cd frontend
 	ng build --aot --build-optimizer --optimization --delete-output-path
 	cd ..
@@ -33,6 +33,6 @@ update:
 	docker logout ghcr.io
 	$(MAKE) start
 
-dev-backend:
+start-dev:
 	docker compose -f docker/postgresql.yml up -d
 	mvn -f backend/pom.xml clean spring-boot:run -Dspring-boot.run.profiles=dev
