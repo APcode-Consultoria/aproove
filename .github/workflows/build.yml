@@ -12,13 +12,13 @@ jobs:
 
     services:
       aproove-db-test:
-        image: postgres:15.2
+        image: postgres:16
         env:
           POSTGRES_DB: aproove-dbname
           POSTGRES_USER: aproove-dbuser
           POSTGRES_PASSWORD: ***REMOVED***
         ports:
-          - 54320:5432
+          - 5433:5432
 
     steps:
 
@@ -34,7 +34,7 @@ jobs:
       run: npm --prefix ./frontend install
 
     - name: Buildar frontend
-      run: npm --prefix ./frontend run build --omit=dev
+      run: npm --prefix ./frontend run build --omit=dev -- "-c=production"
 
     - name: Usar JDK 21
       uses: actions/setup-java@v3
@@ -42,6 +42,16 @@ jobs:
         java-version: '21'
         distribution: 'corretto'
         cache: 'maven'
+
+    - name: Definir settings.xml
+      uses: s4u/maven-settings-action@v2.8.0
+      with:
+        servers: |
+          [{
+              "id": "github-apcode",
+              "username": "${{ github.actor }}",
+              "password": "${{ secrets.GITHUB_TOKEN }}"
+          }]
 
     - name: Compilar e testar backend
       run: mvn -B clean package --file backend/pom.xml

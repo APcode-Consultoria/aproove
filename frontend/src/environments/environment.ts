@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  backendURL: 'http://aproove:30002',
-  apssoURL: 'http://apsso-backend:30001'
+  backendURL:  window.location.protocol + '//' + window.location.host,
+  portalURL: window.location.protocol + '//' + window.location.host.replace('aproove.', 'portal.').replace('30003','30002')
 };
 /*
  * For easier debugging in development mode, you can import the following file

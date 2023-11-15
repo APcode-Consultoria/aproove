@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import com.github.andrepenteado.roove.RooveApplication;
+import com.github.andrepenteado.core.common.CoreUtil;
 import com.github.andrepenteado.roove.models.Exame;
 import com.github.andrepenteado.roove.repositories.ExameRepository;
 import com.github.andrepenteado.roove.services.IExameService;
@@ -27,7 +27,7 @@ public class ExameServiceImpl implements IExameService {
 
     @Override
     public Exame incluir(Exame exame, BindingResult validacao) {
-        String erros = RooveApplication.validar(validacao);
+        String erros = CoreUtil.validateModel(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
         exame.setDataUpload(LocalDateTime.now());

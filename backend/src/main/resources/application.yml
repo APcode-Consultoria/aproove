@@ -1,16 +1,25 @@
 spring:
 
+  application:
+    name: aproove
+
   datasource:
-    url: jdbc:postgresql://aproove-db:50002/aproove-dbname
+    url: jdbc:postgresql://${DB_SERVER}/aproove-dbname
     username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: aproove-pool
 
   jpa:
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        enable_lazy_load_no_trans: true
+        temp:
+          use_jdbc_metadata_defaults: false
 
   security:
     oauth2:
@@ -18,7 +27,7 @@ spring:
         registration:
           aproove-oidc:
             provider: spring
-            client-id: com.github.andrepenteado.aproove
+            client-id: ${CLIENT_ID}
             client-secret: ***REMOVED***
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
@@ -27,9 +36,21 @@ spring:
             client-name: aproove-oidc
         provider:
           spring:
-            issuer-uri: http://apsso:30000
+            issuer-uri: ${LOGIN_SERVER}
 
 server:
-  port: 30002
+  forward-headers-strategy: framework
   error:
     include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_SERVER}

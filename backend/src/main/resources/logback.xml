@@ -5,15 +5,9 @@
     <!-- Nome da aplicação -->
     <contextName>AProove</contextName>
 
-    <!-- Log para console -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%cyan(%d{"dd/MM/yyyy HH:mm:ss,SSS"}) %green(%.15mdc{IP}) %yellow(%mdc{USER:-}) %highlight(%m) [%file:%line]%n</pattern>
-        </encoder>
-    </appender>
+    <property name="APP" value="aproove" />
+    <property name="MODULE" value="roove" />
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-    </root>
+    <include resource="logback-common.xml"/>
 
 </configuration>

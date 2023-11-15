@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import com.github.andrepenteado.roove.RooveApplication;
+import com.github.andrepenteado.core.common.CoreUtil;
 import com.github.andrepenteado.roove.models.Paciente;
 import com.github.andrepenteado.roove.repositories.PacienteRepository;
 import com.github.andrepenteado.roove.services.IPacienteService;
@@ -34,7 +34,7 @@ public class PacienteServiceImpl implements IPacienteService {
 
     @Override
     public Paciente incluir(Paciente paciente, BindingResult validacao) {
-        String erros = RooveApplication.validar(validacao);
+        String erros = CoreUtil.validateModel(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
         if (pacienteRepository.findByCpf(paciente.getCpf()) != null)
@@ -45,7 +45,7 @@ public class PacienteServiceImpl implements IPacienteService {
 
     @Override
     public Paciente alterar(Paciente paciente, Long id, BindingResult validacao) {
-        String erros = RooveApplication.validar(validacao);
+        String erros = CoreUtil.validateModel(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
         Paciente pacienteAlterar = buscar(id)

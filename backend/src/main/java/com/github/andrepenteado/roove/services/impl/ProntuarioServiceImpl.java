@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import com.github.andrepenteado.roove.RooveApplication;
+import com.github.andrepenteado.core.common.CoreUtil;
 import com.github.andrepenteado.roove.models.Prontuario;
 import com.github.andrepenteado.roove.repositories.ProntuarioRepository;
 import com.github.andrepenteado.roove.services.IProntuarioService;
@@ -27,7 +27,7 @@ public class ProntuarioServiceImpl implements IProntuarioService {
 
     @Override
     public Prontuario incluir(Prontuario prontuario, BindingResult validacao) {
-        String erros = RooveApplication.validar(validacao);
+        String erros = CoreUtil.validateModel(validacao);
         if (erros != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
         prontuario.setDataRegistro(LocalDateTime.now());

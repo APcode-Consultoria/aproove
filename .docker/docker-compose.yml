@@ -1,6 +1,6 @@
 services:
 
-  aproove:
+  dev.aproove.apcode.com.br:
     image: ghcr.io/andrepenteado/aproove/aproove
     container_name: aproove
     hostname: aproove
@@ -10,23 +10,10 @@ services:
         max_attempts: 3
         window: 5s
     ports:
-      - 30002:30002
+      - 30003:8080
+    networks:
+      - docker-host-network
 
-  aproove-db:
-    image: postgres:15.2
-    container_name: aproove-db
-    hostname: aproove-db
-    environment:
-      - POSTGRES_DB=aproove-dbname
-      - POSTGRES_USER=aproove-dbuser
-      - POSTGRES_PASSWORD=***REMOVED***
-    command: -p 50002
-    ports:
-      - 50002:50002
-    volumes:
-      - aproove-pgdata:/var/lib/postgresql/data/
-
-volumes:
-  apsso-pgdata:
-  aproove-pgdata:
-
+networks:
+  docker-host-network:
+    external: true

@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  backendURL: 'http://aproove:30002'
+  backendURL:  window.location.protocol + '//' + window.location.host,
+  portalURL: window.location.protocol + '//' + window.location.host.replace('aproove.', 'portal.').replace('30003','30002')
 };

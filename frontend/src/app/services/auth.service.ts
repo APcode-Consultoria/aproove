@@ -15,7 +15,7 @@ export class AuthService {
   ) { }
 
   public usuarioLogado(): Observable<Usuario> {
-    return this.http.get<Usuario>(`${environment.apssoURL}${Api.AUTH}/usuario`);
+    return this.http.get<Usuario>(`${environment.backendURL}${Api.AUTH}/usuario`);
   }
 
 }

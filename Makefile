@@ -2,16 +2,8 @@ VERSAO_APP := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceS
 #VERSAO_FRONTEND := $(shell cd frontend && npm pkg get version | sed 's/"//g')
 
 build:
-	docker build -f .docker/Dockerfile -t ghcr.io/andrepenteado/aproove/aproove -t ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP) .
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
-	docker push ghcr.io/andrepenteado/aproove/aproove
-	docker push ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP)
-	docker logout ghcr.io
-
-build-pipeline:
-	cd frontend
-	ng build --aot --build-optimizer --optimization --delete-output-path
-	cd ..
+	npm --prefix ./frontend run build --omit=dev -- "-c=production"
 	mvn -U clean package --file backend/pom.xml -DskipTests
 	docker build -f .docker/Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/aproove -t ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP) .
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
@@ -26,8 +18,8 @@ stop:
 	docker compose -f .docker/docker-compose.yml down
 
 update:
-	$(MAKE) stop
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
+	$(MAKE) stop
 	docker image pull postgres:15.2
 	docker image pull ghcr.io/andrepenteado/aproove/aproove
 	docker logout ghcr.io
