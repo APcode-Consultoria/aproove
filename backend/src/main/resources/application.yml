@@ -4,7 +4,7 @@ spring:
     name: aproove
 
   datasource:
-    url: jdbc:postgresql://${DB_SERVER}/aproove-dbname
+    url: jdbc:postgresql://db.apcode.com.br/aproove-dbname
     username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
@@ -27,7 +27,7 @@ spring:
         registration:
           aproove-oidc:
             provider: spring
-            client-id: ${CLIENT_ID}
+            client-id: com.github.andrepenteado.aproove
             client-secret: ***REMOVED***
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
@@ -36,7 +36,7 @@ spring:
             client-name: aproove-oidc
         provider:
           spring:
-            issuer-uri: ${LOGIN_SERVER}
+            issuer-uri: https://login.apcode.com.br
 
 server:
   forward-headers-strategy: framework
@@ -53,4 +53,4 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: ${ZIPKIN_SERVER}
+      endpoint: http://cluster.apcode.com.br:9411

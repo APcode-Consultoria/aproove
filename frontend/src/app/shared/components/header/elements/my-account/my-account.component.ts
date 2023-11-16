@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Usuario} from "../../../../../models/usuario";
-import {AuthService} from "../../../../../services/auth.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserLogin } from "../../../../../models/dto/user-login";
 
 @Component({
   selector: 'app-my-account',
@@ -9,24 +9,26 @@ import {AuthService} from "../../../../../services/auth.service";
 })
 export class MyAccountComponent implements OnInit {
 
-  usuario: Usuario;
+  userLogin: UserLogin;
 
   constructor(
-      private authService: AuthService
+    private authService: AuthService
   ) { }
 
-  ngOnInit() {
-    this.authService.usuarioLogado().subscribe({
-      next: usuario => this.usuario = usuario
-    });
+  async ngOnInit() {
+    this.userLogin = await this.authService.usuarioLogado();
   }
 
   nomePerfil(): string {
-    for (let i=0; i < this.usuario.perfis.length; i++) {
-      let perfilSistema = this.usuario.perfis[i];
-      if (perfilSistema.authority.startsWith('ROLE_APsso_'))
-        return perfilSistema.descricao;
-    }
+    return this.authService.nomePerfil(this.userLogin);
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  public voltarAoPortal(): void {
+    this.authService.voltarAoPortal();
   }
 
 }

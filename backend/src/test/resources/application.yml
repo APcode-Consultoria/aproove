@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:54320/aproove-dbname
+    url: jdbc:postgresql://localhost:5433/aproove-dbname
     username: aproove-dbuser
     password: ***REMOVED***
     driver-class-name: org.postgresql.Driver
