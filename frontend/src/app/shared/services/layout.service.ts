@@ -9,7 +9,7 @@ export class LayoutService {
     settings: {
       layout: 'Tokyo',
       layout_type: 'ltr',
-      layout_version: 'dark-sidebar',
+      layout_version: 'dark-only',
       sidebar_type: 'default-sidebar'
     },
     color: {
