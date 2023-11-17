@@ -17,6 +17,11 @@ const routes: Routes = [
     children: content
   },
   {
+    path: '',
+    component: FullComponent,
+    children: full
+  },
+  {
     path: '**',
     redirectTo: ''
   }

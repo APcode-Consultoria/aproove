@@ -85,7 +85,7 @@ export class NavService implements OnDestroy {
 			headTitle1: 'Menu de Opções', headTitle2: 'Selecione uma das opções abaixo.',
 		},
 		{ path: '/home', title: 'Início', icon: 'home', type: 'link', active: true },
-		{ path: '/dashboard', title: 'Dashboard', icon: 'bar-chart-2', type: 'link', active: true },
+		{ path: '/dashboard', title: 'Dashboard', icon: 'bar-chart-2', type: 'link', active: false },
 		{ path: '/paciente/pesquisar', title: 'Pacientes', icon: 'user', type: 'link', active: false }
 	];
 
