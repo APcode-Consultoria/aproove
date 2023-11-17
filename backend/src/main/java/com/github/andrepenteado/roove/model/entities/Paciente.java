@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.models;
+package com.github.andrepenteado.roove.model.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.andrepenteado.roove.models.enums.Parentesco;
+import com.github.andrepenteado.roove.model.enums.Parentesco;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.models.Exame;
-import com.github.andrepenteado.roove.services.IExameService;
+import com.github.andrepenteado.roove.model.entities.Exame;
+import com.github.andrepenteado.roove.services.ExameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class ExameResource {
 
-    private final IExameService exameService;
+    private final ExameService exameService;
 
     @GetMapping("/{idPaciente}")
     public List<Exame> listarPorPaciente(@PathVariable Long idPaciente) {

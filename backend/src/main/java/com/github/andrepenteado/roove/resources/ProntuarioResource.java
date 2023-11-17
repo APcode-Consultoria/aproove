@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.models.Prontuario;
-import com.github.andrepenteado.roove.services.IProntuarioService;
+import com.github.andrepenteado.roove.model.entities.Prontuario;
+import com.github.andrepenteado.roove.services.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class ProntuarioResource {
 
-    private final IProntuarioService prontuarioService;
+    private final ProntuarioService prontuarioService;
 
     @GetMapping("/{idPaciente}")
     public List<Prontuario> listarPorPaciente(@PathVariable Long idPaciente) {

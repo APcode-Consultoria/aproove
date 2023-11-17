@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.models;
+package com.github.andrepenteado.roove.model.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

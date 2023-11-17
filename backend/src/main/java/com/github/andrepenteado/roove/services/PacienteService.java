@@ -1,12 +1,12 @@
 package com.github.andrepenteado.roove.services;
 
-import com.github.andrepenteado.roove.models.Paciente;
+import com.github.andrepenteado.roove.model.entities.Paciente;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface IPacienteService {
+public interface PacienteService {
 
     List<Paciente> listar();
 

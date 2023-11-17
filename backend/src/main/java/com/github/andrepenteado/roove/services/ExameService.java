@@ -1,11 +1,11 @@
 package com.github.andrepenteado.roove.services;
 
-import com.github.andrepenteado.roove.models.Exame;
+import com.github.andrepenteado.roove.model.entities.Exame;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public interface IExameService {
+public interface ExameService {
 
     List<Exame> listarProntuariosPorPaciente(Long idPaciente);
 

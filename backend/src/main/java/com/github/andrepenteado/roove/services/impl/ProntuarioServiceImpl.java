@@ -1,9 +1,9 @@
 package com.github.andrepenteado.roove.services.impl;
 
 import com.github.andrepenteado.core.common.CoreUtil;
-import com.github.andrepenteado.roove.models.Prontuario;
-import com.github.andrepenteado.roove.repositories.ProntuarioRepository;
-import com.github.andrepenteado.roove.services.IProntuarioService;
+import com.github.andrepenteado.roove.model.entities.Prontuario;
+import com.github.andrepenteado.roove.model.repositories.ProntuarioRepository;
+import com.github.andrepenteado.roove.services.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProntuarioServiceImpl implements IProntuarioService {
+public class ProntuarioServiceImpl implements ProntuarioService {
 
     private final ProntuarioRepository prontuarioRepository;
 

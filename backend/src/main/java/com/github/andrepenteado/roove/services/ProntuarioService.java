@@ -1,11 +1,11 @@
 package com.github.andrepenteado.roove.services;
 
-import com.github.andrepenteado.roove.models.Prontuario;
+import com.github.andrepenteado.roove.model.entities.Prontuario;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public interface IProntuarioService {
+public interface ProntuarioService {
 
     List<Prontuario> listarProntuariosPorPaciente(Long idPaciente);
 

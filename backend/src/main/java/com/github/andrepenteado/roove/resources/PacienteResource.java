@@ -1,8 +1,8 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.models.Paciente;
-import com.github.andrepenteado.roove.services.IPacienteService;
-import com.github.andrepenteado.roove.services.IProntuarioService;
+import com.github.andrepenteado.roove.model.entities.Paciente;
+import com.github.andrepenteado.roove.services.PacienteService;
+import com.github.andrepenteado.roove.services.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,9 @@ import java.util.List;
 @Slf4j
 public class PacienteResource {
 
-    private final IPacienteService pacienteService;
+    private final PacienteService pacienteService;
 
-    private final IProntuarioService prontuarioService;
+    private final ProntuarioService prontuarioService;
 
     @GetMapping
     public List<Paciente> listar() {

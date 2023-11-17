@@ -1,9 +1,9 @@
 package com.github.andrepenteado.roove.services.impl;
 
 import com.github.andrepenteado.core.common.CoreUtil;
-import com.github.andrepenteado.roove.models.Paciente;
-import com.github.andrepenteado.roove.repositories.PacienteRepository;
-import com.github.andrepenteado.roove.services.IPacienteService;
+import com.github.andrepenteado.roove.model.entities.Paciente;
+import com.github.andrepenteado.roove.model.repositories.PacienteRepository;
+import com.github.andrepenteado.roove.services.PacienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PacienteServiceImpl implements IPacienteService {
+public class PacienteServiceImpl implements PacienteService {
 
     private final PacienteRepository pacienteRepository;
 

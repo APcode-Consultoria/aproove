@@ -1,9 +1,9 @@
 package com.github.andrepenteado.roove.services.impl;
 
 import com.github.andrepenteado.core.common.CoreUtil;
-import com.github.andrepenteado.roove.models.Exame;
-import com.github.andrepenteado.roove.repositories.ExameRepository;
-import com.github.andrepenteado.roove.services.IExameService;
+import com.github.andrepenteado.roove.model.entities.Exame;
+import com.github.andrepenteado.roove.model.repositories.ExameRepository;
+import com.github.andrepenteado.roove.services.ExameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ExameServiceImpl implements IExameService {
+public class ExameServiceImpl implements ExameService {
 
     private final ExameRepository exameRepository;
 
