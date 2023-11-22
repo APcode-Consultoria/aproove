@@ -17,6 +17,9 @@ start:
 stop:
 	docker compose -f .docker/docker-compose.yml down
 
+log:
+	docker compose -f .docker/docker-compose.yml logs -f
+
 update:
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
 	$(MAKE) stop

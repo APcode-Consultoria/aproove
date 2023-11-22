@@ -1,6 +1,6 @@
 services:
 
-  dev.aproove.apcode.com.br:
+  dev.roove.apcode.com.br:
     image: ghcr.io/andrepenteado/aproove/roove
     container_name: aproove
     hostname: aproove
@@ -9,6 +9,8 @@ services:
         condition: on-failure
         max_attempts: 3
         window: 5s
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - 30003:8080
     networks:

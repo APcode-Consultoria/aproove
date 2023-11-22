@@ -109,7 +109,7 @@
     </repositories>
 
     <build>
-        <finalName>aproove</finalName>
+        <finalName>roove</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

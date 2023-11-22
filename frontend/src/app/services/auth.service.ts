@@ -42,7 +42,7 @@ export class AuthService {
   public nomePerfil(userLogin: UserLogin): string {
     for (const nome of Object.keys(userLogin.perfis)) {
       console.log(nome);
-      if (nome.startsWith("ROLE_AProove_"))
+      if (nome.startsWith("ROLE_Roove_"))
         return userLogin.perfis[nome];
     }
     return "Sem Perfil";

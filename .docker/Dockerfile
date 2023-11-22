@@ -16,5 +16,5 @@ RUN mvn -U clean package --file backend/pom.xml -DskipTests
 # Stage 3
 # Build app 
 FROM amazoncorretto:21
-COPY --from=build-backend /aproove/backend/target/aproove.jar ROOT.jar
+COPY --from=build-backend /aproove/backend/target/roove.jar ROOT.jar
 ENTRYPOINT [ "java", "-jar", "/ROOT.jar" ]
