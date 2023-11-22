@@ -6,9 +6,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>br.com.apcode</groupId>
+    <groupId>com.github.andrepenteado</groupId>
     <artifactId>backend</artifactId>
     <version>2.0.0</version>
+    <packaging>jar</packaging>
 
     <name>AProove</name>
     <description>Sistema de gerenciamento de pacientes e prontuários</description>

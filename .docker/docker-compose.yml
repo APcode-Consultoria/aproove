@@ -1,7 +1,7 @@
 services:
 
   dev.aproove.apcode.com.br:
-    image: ghcr.io/andrepenteado/aproove/aproove
+    image: ghcr.io/andrepenteado/aproove/roove
     container_name: aproove
     hostname: aproove
     deploy:

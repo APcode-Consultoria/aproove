@@ -5,10 +5,10 @@ build:
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
 	npm --prefix ./frontend run build --omit=dev -- "-c=production"
 	mvn -U clean package --file backend/pom.xml -DskipTests
-	docker build -f .docker/Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/aproove -t ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP) .
+	docker build -f .docker/Dockerfile.pipeline -t ghcr.io/andrepenteado/aproove/roove -t ghcr.io/andrepenteado/aproove/roove:$(VERSAO_APP) .
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
-	docker push ghcr.io/andrepenteado/aproove/aproove
-	docker push ghcr.io/andrepenteado/aproove/aproove:$(VERSAO_APP)
+	docker push ghcr.io/andrepenteado/aproove/roove
+	docker push ghcr.io/andrepenteado/aproove/roove:$(VERSAO_APP)
 	docker logout ghcr.io
 
 start:
@@ -20,8 +20,8 @@ stop:
 update:
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
 	$(MAKE) stop
-	docker image pull postgres:15.2
-	docker image pull ghcr.io/andrepenteado/aproove/aproove
+	docker image pull postgres:16
+	docker image pull ghcr.io/andrepenteado/aproove/roove
 	docker logout ghcr.io
 	$(MAKE) start
 
