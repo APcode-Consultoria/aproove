@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { NgxAnimatedCounterModule } from "@bugsplat/ngx-animated-counter";
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    NgxAnimatedCounterModule
   ]
 })
 export class DashboardModule { }

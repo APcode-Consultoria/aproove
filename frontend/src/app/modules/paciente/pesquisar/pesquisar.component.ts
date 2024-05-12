@@ -31,7 +31,6 @@ export class PesquisarComponent implements OnInit {
       next: listaPacientes => {
         this.lista = listaPacientes;
         this.aguardar = false;
-        console.log(listaPacientes);
         setTimeout(() => {
           $('#datatable-pesquisar-paciente').DataTable(DATATABLES_OPTIONS);
         }, 5);
@@ -54,7 +53,7 @@ export class PesquisarComponent implements OnInit {
         if (resposta.value) {
         this.pacienteService.excluir(paciente.id).subscribe({
           next: () => {
-            this.pesquisar();
+            window.location.reload();
           }
         });
       }
