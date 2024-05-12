@@ -3,15 +3,18 @@ package com.github.andrepenteado.roove.resources;
 import com.github.andrepenteado.roove.model.entities.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
 import com.github.andrepenteado.roove.services.ProntuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.validation.Valid;
 import java.util.List;
+
+import static com.github.andrepenteado.roove.RooveApplication.PERFIL_FISIOTERAPEUTA;
 
 @RestController
 @RequestMapping("/pacientes")
@@ -24,84 +27,48 @@ public class PacienteResource {
     private final ProntuarioService prontuarioService;
 
     @GetMapping
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public List<Paciente> listar() {
         log.info("Listar todos pacientes");
-        try {
-            return pacienteService.listar();
-        }
-        catch (Exception ex) {
-            log.error("Erro no processamento", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
-        }
+        return pacienteService.listar();
     }
 
     @GetMapping("/{id}")
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public Paciente buscar(@PathVariable Long id) {
-        log.info("Buscar paciente de ID #" + id);
-        try {
-            return pacienteService.buscar(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID %n não encontrado", id)));
-        }
-        catch (ResponseStatusException rsex) {
-            throw rsex;
-        }
-        catch (Exception ex) {
-            log.error("Erro no processamento", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
-        }
+        log.info("Buscar paciente de ID #{}", id);
+        return pacienteService.buscar(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID %n não encontrado", id)));
     }
 
     @PostMapping
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public Paciente incluir(@Valid @RequestBody Paciente paciente, BindingResult validacao) {
-        log.info("Incluir novo paciente " + paciente.toString());
-        try {
-            return pacienteService.incluir(paciente, validacao);
-        }
-        catch (ResponseStatusException rsex) {
-            throw rsex;
-        }
-        catch (Exception ex) {
-            log.error("Erro no processamento", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
-        }
+        log.info("Incluir novo paciente {}", paciente.toString());
+        return pacienteService.incluir(paciente, validacao);
     }
 
     @PutMapping("/{id}")
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, BindingResult validacao) {
-        log.info("Alterar dados do paciente " + paciente);
-        try {
-            return pacienteService.alterar(paciente, id, validacao);
-        }
-        catch (ResponseStatusException rsex) {
-            throw rsex;
-        }
-        catch (Exception ex) {
-            log.error("Erro no processamento", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
-        }
+        log.info("Alterar dados do paciente {}", paciente);
+        return pacienteService.alterar(paciente, id, validacao);
     }
 
     @DeleteMapping("/{id}")
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public void excluir(@PathVariable Long id) {
-        log.info("Excluir paciente de ID #" + id);
-        try {
-            if (!prontuarioService.listarProntuariosPorPaciente(id).isEmpty())
-                throw new ResponseStatusException(HttpStatus.FOUND, "Existe registros no prontuário do paciente");
-            pacienteService.excluir(id);
-        }
-        catch (ResponseStatusException rsex) {
-            throw rsex;
-        }
-        catch (Exception ex) {
-            log.error("Erro no processamento", ex);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro no processamento");
-        }
+        log.info("Excluir paciente de ID #{}", id);
+        if (!prontuarioService.listarProntuariosPorPaciente(id).isEmpty())
+            throw new ResponseStatusException(HttpStatus.FOUND, "Existe registros no prontuário do paciente");
+        pacienteService.excluir(id);
     }
 
     @GetMapping("/total")
+    @Secured({ PERFIL_FISIOTERAPEUTA })
     public Integer total() {
         Integer total = pacienteService.total();
-        log.info("Total de pacientes: " + total);
+        log.info("Total de pacientes: {}", total);
         return total;
     }
 

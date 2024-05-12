@@ -1,17 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {Parentesco} from 'src/app/models/enums/parentesco';
-import {PacienteService} from '../../../services/paciente.service';
-import {ViaCepService} from '../../../services/via-cep.service';
-import {Prontuario} from '../../../models/prontuario';
-import {ProntuarioService} from '../../../services/prontuario.service';
-import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/exibe-mensagem.component';
-import {Paciente} from '../../../models/paciente';
-import {ExameService} from '../../../services/exame.service';
-import {Exame} from '../../../models/exame';
-import {Arquivo} from '../../../models/arquivo';
-import Swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { PacienteService } from '../../../services/paciente.service';
+import { Prontuario } from '../../../models/prontuario';
+import { ProntuarioService } from '../../../services/prontuario.service';
+import { Paciente } from '../../../models/paciente';
+import { ExameService } from '../../../services/exame.service';
+import { Exame } from '../../../models/exame';
+import { Arquivo } from '../../../models/arquivo';
+import { Parentesco } from "../../../models/enums/parentesco";
+import { DecoracaoMensagem, ExibirMensagemService, ViaCepService } from "@andrepenteado/ngx-apcore";
 
 @Component({
   selector: 'app-cadastro',
@@ -19,9 +17,6 @@ import Swal from 'sweetalert2';
   styleUrls: ['./cadastro.component.scss']
 })
 export class CadastroComponent implements OnInit {
-
-  @ViewChild('exibeMensagem')
-  exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
 
   formPacienteEnviado = false;
   formProntuarioEnviado = false;
@@ -35,8 +30,8 @@ export class CadastroComponent implements OnInit {
   prontuarios: Prontuario[] = [];
   exames: Exame[] = [];
 
-  objetoPaciente: Paciente;
-  objetoArquivo: Arquivo;
+  objetoPaciente: Paciente = new Paciente();
+  objetoArquivo: Arquivo = new Arquivo();
 
   // Formulário dados do paciente
   id = new FormControl(null);
@@ -121,7 +116,8 @@ export class CadastroComponent implements OnInit {
     private pacienteService: PacienteService,
     private prontuarioService: ProntuarioService,
     private exameService: ExameService,
-    private viaCepService: ViaCepService
+    private viaCepService: ViaCepService,
+    private exibirMensagem: ExibirMensagemService
   ) {
     this.parentescos = Object.keys(Parentesco);
   }
@@ -162,24 +158,18 @@ export class CadastroComponent implements OnInit {
     this.viaCepService.consultarCep(cep).subscribe({
       next: endereco => {
         if (endereco.erro) {
-          this.exibeMensagem.show(
-            'CEP não encontrado ou incorreto',
-            DecoracaoMensagem.INFO,
-            'Pesquisar CEP',
+          this.exibirMensagem.showMessage(
+            `CEP não encontrado ou incorreto`,
+            "Pesquisar CEP",
+            DecoracaoMensagem.INFO
           );
-        } else {
+        }
+        else {
           this.logradouro.setValue(endereco.logradouro);
           this.bairro.setValue(endereco.bairro);
           this.cidade.setValue(endereco.localidade);
           this.estado.setValue(endereco.uf);
         }
-      },
-      error: () => {
-        this.exibeMensagem.show(
-          'Não foi possível consultar o CEP',
-          DecoracaoMensagem.ERRO,
-          'Erro de processamento'
-        );
       }
     });
   }
@@ -194,26 +184,19 @@ export class CadastroComponent implements OnInit {
           this.objetoPaciente = paciente;
           this.formPaciente.reset();
           this.formPaciente.patchValue(paciente);
-          this.exibeMensagem.show(
+          this.exibirMensagem.showMessage(
             `Dados do paciente ${paciente.nome} gravados com sucesso`,
-            DecoracaoMensagem.SUCESSO,
-            'Gravar Paciente'
-          );
-        },
-        error: objetoErro => {
-          this.exibeMensagem.show(
-            `${objetoErro.error.message}`,
-            DecoracaoMensagem.ERRO,
-            'Erro de processamento'
+            'Gravar Paciente',
+            DecoracaoMensagem.SUCESSO
           );
         }
       });
     }
     else {
-      this.exibeMensagem.show(
+      this.exibirMensagem.showMessage(
         'Preencha todos os dados obrigatórios antes de gravar os dados',
-        DecoracaoMensagem.PRIMARIO,
-        'Dados Obrigatórios'
+        'Dados Obrigatórios',
+        DecoracaoMensagem.PRIMARIO
       );
     }
   }
@@ -252,53 +235,34 @@ export class CadastroComponent implements OnInit {
           this.exames.unshift(exame);
           this.formExames.reset();
           this.formExamesEnviado = false;
-          this.exibeMensagem.show(
+          this.exibirMensagem.showMessage(
               'Arquivo de exame incluído com sucesso',
-              DecoracaoMensagem.SUCESSO,
-              'Gravar Exame'
-          );
-        },
-        error: objetoErro => {
-          this.exibeMensagem.show(
-              `${objetoErro.error.message}`,
-              DecoracaoMensagem.ERRO,
-              'Erro de processamento'
+              'Gravar Exame',
+              DecoracaoMensagem.SUCESSO
           );
         }
       });
     }
     else {
-      this.exibeMensagem.show(
+      this.exibirMensagem.showMessage(
           'Preencha todos os dados obrigatórios antes de gravar os dados',
-          DecoracaoMensagem.PRIMARIO,
-          'Dados Obrigatórios'
+          'Dados Obrigatórios',
+          DecoracaoMensagem.PRIMARIO
       );
     }
   }
 
   excluirExame(exame: Exame): void {
-    Swal.fire({
-      title: 'Excluir?',
-      text: `Confirma a exclusão do exame ${exame.descricao}`,
-      icon: 'question',
-      showCloseButton: true,
-      showCancelButton: true,
-      confirmButtonText: '<i class=\'fa fa-trash\'></i> Sim, Excluir',
-      cancelButtonText: 'Cancelar'
-    }).then((resposta) => {
-      if (resposta.value) {
-        this.exameService.excluir(exame.id).subscribe({
-          next: () => this.pesquisar(exame.paciente.id),
-          error: objetoErro => {
-            this.exibeMensagem.show(
-                `${objetoErro.error.message}`,
-                DecoracaoMensagem.ERRO,
-                'Erro de processamento'
-            );
-          }
-        });
+    this.exibirMensagem
+      .showConfirm(`Confirma a exclusão do exame ${exame.descricao}`, "Excluir?")
+      .then((resposta) => {
+        if (resposta.value) {
+          this.exameService.excluir(exame.id).subscribe({
+            next: () => this.pesquisar(exame.paciente.id)
+          });
+        }
       }
-    });
+    );
   }
 
   gravarProntuario(): void {
@@ -306,54 +270,40 @@ export class CadastroComponent implements OnInit {
     if (this.formProntuario.valid) {
       this.formProntuario.controls.dataRegistro.setValue(new Date());
       this.formProntuario.controls.paciente.setValue(this.objetoPaciente);
-      console.log(this.formProntuario.value);
       this.prontuarioService.incluir(this.formProntuario.value).subscribe({
         next: prontuario => {
           this.prontuarios.unshift(prontuario);
           this.formProntuario.reset();
           this.formProntuarioEnviado = false;
-          this.exibeMensagem.show(
+          this.exibirMensagem.showMessage(
             'Dados do atendimento incluído ao prontuário com sucesso',
-            DecoracaoMensagem.SUCESSO,
-            'Gravar Prontuário'
-          );
-        },
-        error: objetoErro => {
-          this.exibeMensagem.show(
-            `${objetoErro.error.message}`,
-            DecoracaoMensagem.ERRO,
-            'Erro de processamento'
+            'Gravar Prontuário',
+            DecoracaoMensagem.SUCESSO
           );
         }
       });
     }
     else {
-      this.exibeMensagem.show(
+      this.exibirMensagem.showMessage(
         'Preencha todos os dados obrigatórios antes de gravar os dados',
-        DecoracaoMensagem.PRIMARIO,
-        'Dados Obrigatórios'
+        'Dados Obrigatórios',
+        DecoracaoMensagem.PRIMARIO
       );
     }
   }
 
   excluirProntuario(prontuario: Prontuario): void {
-    Swal.fire({
-      title: 'Excluir?',
-      text: `Confirma a exclusão do prontuário #${prontuario.id}`,
-      icon: 'question',
-      showCloseButton: true,
-      showCancelButton: true,
-      confirmButtonText: '<i class=\'fa fa-trash\'></i> Sim, Excluir',
-      cancelButtonText: 'Cancelar'
-    }).then((resposta) => {
+    this.exibirMensagem
+      .showConfirm(`Confirma a exclusão do prontuário ${prontuario.id}`, "Excluir?")
+      .then((resposta) => {
       if (resposta.value) {
         this.prontuarioService.excluir(prontuario.id).subscribe({
           next: () => this.pesquisar(prontuario.paciente.id),
           error: objetoErro => {
-            this.exibeMensagem.show(
+            this.exibirMensagem.showMessage(
                 `${objetoErro.error.message}`,
-                DecoracaoMensagem.ERRO,
-                'Erro de processamento'
+                'Erro de processamento',
+              DecoracaoMensagem.ERRO
             );
           }
         });

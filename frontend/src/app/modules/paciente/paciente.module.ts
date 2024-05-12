@@ -1,14 +1,14 @@
-import {CommonModule, DatePipe} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {NgxMaskModule} from 'ngx-mask';
+import { CommonModule, DatePipe } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
-import {SharedModule} from '../../shared/shared.module';
-import {CoreModule} from '../core/core.module';
-
-import {CadastroComponent} from './cadastro/cadastro.component';
-import {PacienteRoutingModule} from './paciente-routing.module';
-import {PesquisarComponent} from './pesquisar/pesquisar.component';
-import {DataTablesModule} from 'angular-datatables';
+import { CadastroComponent } from './cadastro/cadastro.component';
+import { PacienteRoutingModule } from './paciente-routing.module';
+import { PesquisarComponent } from './pesquisar/pesquisar.component';
+import { DataTablesModule } from 'angular-datatables';
+import { NgxApcoreModule } from "@andrepenteado/ngx-apcore";
+import { NgxLoadingModule } from "ngx-loading";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -18,12 +18,15 @@ import {DataTablesModule} from 'angular-datatables';
   imports: [
     CommonModule,
     PacienteRoutingModule,
-    SharedModule,
-    NgxMaskModule.forRoot(),
-    CoreModule,
-    DataTablesModule
+    NgxMaskDirective,
+    NgxMaskPipe,
+    DataTablesModule,
+    NgxApcoreModule,
+    NgxLoadingModule,
+    ReactiveFormsModule
   ],
   providers: [
+    provideNgxMask(),
     DatePipe
   ]
 })

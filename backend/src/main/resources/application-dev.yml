@@ -1,13 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dev.db.apcode.com.br/aproove-dbname
-
-  security:
-    oauth2:
-      client:
-        provider:
-          spring:
-            issuer-uri: http://dev.login.apcode.com.br:30000
+    url: jdbc:postgresql://dbserver/aproove-dbname
 
 management:
   tracing:

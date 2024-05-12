@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ExameService } from 'src/app/services/exame.service';
-import { PacienteService } from 'src/app/services/paciente.service';
-import { ProntuarioService } from 'src/app/services/prontuario.service';
+import { ExameService } from "../../../services/exame.service";
+import { ProntuarioService } from "../../../services/prontuario.service";
+import { PacienteService } from "../../../services/paciente.service";
 
 @Component({
   selector: 'app-dashboard',

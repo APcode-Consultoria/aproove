@@ -1,30 +1,41 @@
-<app-loader [show]="this.aguardar "></app-loader>
-<ap-floating-button (click)="incluir()"><i class="fa fa-plus fa-2x"></i></ap-floating-button>
+<apcore-widget-floating-button (click)="incluir()"><i class="bi bi-plus-lg fs-2"></i></apcore-widget-floating-button>
 
-<app-breadcrumb [title]="'Pesquisar Pacientes'" [active_item]="'Pacientes'"></app-breadcrumb>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="margin-top: -23px">
+    <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="bi bi-house-door"></i></a></li>
+    <li class="breadcrumb-item active">Pacientes</li>
+  </ol>
+</nav>
 
-<div class="col-12 col-md-12">
+<div class="container">
+
   <div class="card border border-primary rounded shadow-lg">
+
+    <ngx-loading [show]="aguardar" [config]="{ primaryColour: '#dd0031', secondaryColour: '#fff', animationType: ngxLoadingAnimationTypes.doubleBounce }"></ngx-loading>
+
     <div class="card-body custom-datatable table-responsive table-border-radius">
-      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-styling">
+      <!--<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-styling table-striped align-middle">-->
+      <table id="datatable-pesquisar-paciente" class="table table-styling table-striped align-middle">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Nome</th>
             <th scope="col">Telefone</th>
             <th scope="col">E-mail</th>
-            <th scope="col">Ações</th>
+            <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let paciente of this.lista ">
             <td>{{ paciente.id }}</td>
             <td>{{ paciente.nome }}</td>
-            <td>{{ paciente.telefone | phone: 'BR' }} <i *ngIf="paciente.whatsapp" class="icofont icofont-brand-whatsapp"></i></td>
+            <td>{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="icofont icofont-brand-whatsapp"></i></td>
             <td>{{ paciente.email }}</td>
-            <td>
-              <button (click)="editar(paciente)"><i class="fa fa-pencil"></i></button>
-              <button (click)="excluir(paciente)"><i class="fa fa-trash"></i></button>
+            <td class="text-center">
+              <div class="btn-group">
+                <button class="btn btn-success btn-sm" (click)="editar(paciente)"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-danger btn-sm" (click)="excluir(paciente)"><i class="bi bi-trash"></i></button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -32,5 +43,3 @@
     </div>
   </div>
 </div>
-
-<ap-exibe-mensagem #exibeMensagem></ap-exibe-mensagem>

@@ -1,39 +1,36 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ContentComponent } from "./shared/components/layout/content/content.component";
-import { FullComponent } from "./shared/components/layout/full/full.component";
-import { full } from "./shared/routes/full.routes";
-import { content } from "./shared/routes/routes";
+import { DECORATED_ROUTES, NO_DECORATED_ROUTES } from "./etc/routes";
+import {
+  AuthorizedComponent,
+  DecoratedComponent,
+  LoginComponent,
+  NoDecoratedComponent
+} from "@andrepenteado/ngx-apcore";
 
 const routes: Routes = [
+
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+
+  { path: 'login', component: LoginComponent },
+
+  { path: 'authorized', component: AuthorizedComponent },
+
   {
     path: '',
-    redirectTo: 'sample-page',
-    pathMatch: 'full'
+    component: DecoratedComponent,
+    children: DECORATED_ROUTES
   },
   {
     path: '',
-    component: ContentComponent,
-    children: content
-  },
-  {
-    path: '',
-    component: FullComponent,
-    children: full
-  },
-  {
-    path: '**',
-    redirectTo: ''
+    component: NoDecoratedComponent,
+    children: NO_DECORATED_ROUTES
   }
+
 ];
 
 @NgModule({
-  imports: [[RouterModule.forRoot(routes, {
-    anchorScrolling: 'enabled',
-    scrollPositionRestoration: 'enabled',
-    relativeLinkResolution: 'legacy'
-})],
-],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

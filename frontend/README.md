@@ -1,59 +1,27 @@
-# AProove: Gestão de pacientes
+# Aproove
 
-Sistema de controle e registro de acesso na portaria do câmpus
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.3.
 
-## Guia de Comandos
+## Development server
 
-Um guia de comandos para criar componentes para o frontend
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-### Módulos
+## Code scaffolding
 
-Novo módulo
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-```
-ng g m --routing <nome-do-módulo>
-```
+## Build
 
-### Entidades
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-Entidades de dados
+## Running unit tests
 
-```
-cd frontend/src/app/entities
-ng g class --skip-tests <nome-da-entidade> 
-```
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-### Serviços
+## Running end-to-end tests
 
-Serviços de acesso a APIs
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-```
-cd frontend/src/app/services
-ng g service --skip-tests <nome-do-serviço> 
-```
+## Further help
 
-### Componentes complexos
-
-Componentes complexos com separação entre controller e view
-
-```
-cd frontend/src/app/components
-ng g c --skip-tests -s <nome-do-componente> 
-```
-
-### Componentes simples
-
-Componentes simples do frontend
-
-```
-cd frontend/src/app/views
-ng g c --skip-tests --flat -s -t <nome-do-componente>
-```
-
-## Executar em modo testes
-
-Não esquecer da barra (/) final
-
-```
-ng build --watch --base-href /aproove/
-```
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.

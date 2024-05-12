@@ -1,5 +1,17 @@
 ------------------------------------------------------------------------------
 
+DROP TABLE IF EXISTS Upload CASCADE;
+CREATE TABLE IF NOT EXISTS Upload (
+    UUID       UUID         NOT NULL,
+    Nome       VARCHAR(100) NOT NULL,
+    Descricao  VARCHAR(200) NULL,
+    Tipo       VARCHAR(100) NOT NULL,
+    Base64     TEXT         NOT NULL,
+    CONSTRAINT PK_Upload    PRIMARY KEY (UUID)
+);
+
+------------------------------------------------------------------------------
+
 DROP TABLE IF EXISTS Arquivo CASCADE;
 CREATE TABLE IF NOT EXISTS Arquivo (
     Id          BIGSERIAL NOT NULL,
@@ -32,6 +44,7 @@ CREATE TABLE IF NOT EXISTS Paciente (
     Bairro                        TEXT       NULL,
     Cidade                        TEXT       NULL,
     Estado                        TEXT       NULL,
+    Complemento                   TEXT       NULL,
     Profissao                     TEXT       NULL,
     Dia_Vencimento                INTEGER    NULL,
     Frequencia_Semanal            INTEGER    NULL,

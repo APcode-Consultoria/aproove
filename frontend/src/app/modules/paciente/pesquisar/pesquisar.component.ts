@@ -1,31 +1,24 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paciente } from 'src/app/models/paciente';
-import { PacienteService } from 'src/app/services/paciente.service';
-import Swal from 'sweetalert2';
-import {Subject} from 'rxjs';
-import {Core} from '../../../config/core';
-import {DecoracaoMensagem, ExibeMensagemComponent} from '../../core/components/exibe-mensagem.component';
+import { DATATABLES_OPTIONS, ExibirMensagemService } from "@andrepenteado/ngx-apcore";
+import { Paciente } from "../../../models/paciente";
+import { PacienteService } from "../../../services/paciente.service";
+import { ngxLoadingAnimationTypes } from "ngx-loading";
 
 @Component({
   selector: 'app-pesquisar',
   templateUrl: './pesquisar.component.html',
   styleUrls: ['./pesquisar.component.scss']
 })
-export class PesquisarComponent implements OnInit, OnDestroy {
-
-  @ViewChild('exibeMensagem')
-  exibeMensagem: ExibeMensagemComponent = new ExibeMensagemComponent();
+export class PesquisarComponent implements OnInit {
 
   aguardar: boolean = true;
 
-  dtOptions: DataTables.Settings = Core.DATATABLES_OPTIONS;
-  dtTrigger: Subject<any> = new Subject<any>();
-
-  lista: Paciente[];
+  lista: Paciente[] = [];
 
   constructor(
     private pacienteService: PacienteService,
+    private exibirMensagem: ExibirMensagemService,
     private router: Router
   ) { }
 
@@ -33,58 +26,40 @@ export class PesquisarComponent implements OnInit, OnDestroy {
     this.pesquisar();
   }
 
-  ngOnDestroy(): void {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
-
   pesquisar(): void {
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
-        this.lista = listaPacientes,
-        this.dtTrigger.next(null);
-      },
-      error: objetoErro => {
-        this.exibeMensagem.show(
-          `${objetoErro.error.message}`,
-          DecoracaoMensagem.ERRO,
-          'Erro de processamento'
-        );
+        this.lista = listaPacientes;
+        this.aguardar = false;
+        console.log(listaPacientes);
+        setTimeout(() => {
+          $('#datatable-pesquisar-paciente').DataTable(DATATABLES_OPTIONS);
+        }, 5);
       }
     });
-    this.aguardar = false;
   }
 
   incluir(): void {
     this.router.navigate([`/paciente/cadastro`]);
   }
 
-  editar(paciente): void {
+  editar(paciente: Paciente): void {
     this.router.navigate([`/paciente/cadastro/${paciente.id}`]);
   }
 
-  excluir(paciente): void {
-    Swal.fire({
-      title: 'Excluir?',
-      text: `Confirma a exclusão do paciente ${paciente.nome}`,
-      icon: 'question',
-      showCloseButton: true,
-      showCancelButton: true,
-      confirmButtonText: '<i class=\'fa fa-trash\'></i> Sim, Excluir',
-      cancelButtonText: 'Cancelar'
-    }).then((resposta) => {
-      if (resposta.value) {
+  excluir(paciente: Paciente): void {
+    this.exibirMensagem
+      .showConfirm(`Confirma a exclusão do paciente ${paciente.nome}`, "Excluir?")
+      .then((resposta) => {
+        if (resposta.value) {
         this.pacienteService.excluir(paciente.id).subscribe({
-          next: () => this.pesquisar(),
-          error: objetoErro => {
-            this.exibeMensagem.show(
-              `${objetoErro.error.message}`,
-              DecoracaoMensagem.ERRO,
-              'Erro de processamento'
-            );
+          next: () => {
+            this.pesquisar();
           }
         });
       }
     });
   }
+
+  protected readonly ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 }
