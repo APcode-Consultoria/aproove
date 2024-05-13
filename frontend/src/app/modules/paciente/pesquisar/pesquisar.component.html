@@ -13,24 +13,23 @@
 
     <ngx-loading [show]="aguardar" [config]="{ primaryColour: '#dd0031', secondaryColour: '#fff', animationType: ngxLoadingAnimationTypes.doubleBounce }"></ngx-loading>
 
-    <div class="card-body custom-datatable table-responsive table-border-radius">
-      <!--<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-styling table-striped align-middle">-->
-      <table id="datatable-pesquisar-paciente" class="table table-styling table-striped align-middle">
+    <div class="card-body custom-datatables table-responsive table-border-radius">
+      <table id="datatable-pesquisar-paciente" class="table table-styling table-striped nowrap align-middle w-100">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Telefone</th>
-            <th scope="col">E-mail</th>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-start">Nome</th>
+            <th scope="col" class="text-center">Telefone</th>
+            <th scope="col" class="text-center">E-mail</th>
             <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let paciente of this.lista ">
-            <td>{{ paciente.id }}</td>
-            <td>{{ paciente.nome }}</td>
-            <td>{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="bi bi-whatsapp"></i></td>
-            <td>{{ paciente.email }}</td>
+            <td class="text-center">{{ paciente.id }}</td>
+            <td class="text-start">{{ paciente.nome }}</td>
+            <td class="text-center">{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="bi bi-whatsapp"></i></td>
+            <td class="text-center">{{ paciente.email }}</td>
             <td class="text-center">
               <div class="btn-group">
                 <button class="btn btn-success btn-sm" (click)="editar(paciente)"><i class="bi bi-pencil"></i></button>

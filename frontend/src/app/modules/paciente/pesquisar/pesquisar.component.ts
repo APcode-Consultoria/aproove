@@ -27,6 +27,8 @@ export class PesquisarComponent implements OnInit {
   }
 
   pesquisar(): void {
+
+
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
         this.lista = listaPacientes;
