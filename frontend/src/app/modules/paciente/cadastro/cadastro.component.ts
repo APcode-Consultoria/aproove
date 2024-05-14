@@ -7,9 +7,9 @@ import { ProntuarioService } from '../../../services/prontuario.service';
 import { Paciente } from '../../../models/paciente';
 import { ExameService } from '../../../services/exame.service';
 import { Exame } from '../../../models/exame';
-import { Arquivo } from '../../../models/arquivo';
 import { Parentesco } from "../../../models/enums/parentesco";
-import { DecoracaoMensagem, ExibirMensagemService, ViaCepService } from "@andrepenteado/ngx-apcore";
+import { DecoracaoMensagem, ExibirMensagemService, Upload, UploadService, ViaCepService } from "@andrepenteado/ngx-apcore";
+import { lastValueFrom, Observable } from "rxjs"
 
 @Component({
   selector: 'app-cadastro',
@@ -29,7 +29,7 @@ export class CadastroComponent implements OnInit {
   exames: Exame[] = [];
 
   objetoPaciente: Paciente = new Paciente();
-  objetoArquivo: Arquivo = new Arquivo();
+  objetoArquivo: Upload = new Upload();
 
   // Formulário dados do paciente
   id = new FormControl(null);
@@ -121,7 +121,8 @@ export class CadastroComponent implements OnInit {
     private prontuarioService: ProntuarioService,
     private exameService: ExameService,
     private viaCepService: ViaCepService,
-    private exibirMensagem: ExibirMensagemService
+    private exibirMensagem: ExibirMensagemService,
+    private uploadService: UploadService
   ) {
     this.parentescos = Object.keys(Parentesco);
   }
@@ -207,10 +208,9 @@ export class CadastroComponent implements OnInit {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
 
-      this.objetoArquivo = new Arquivo();
+      this.objetoArquivo = new Upload();
       this.objetoArquivo.nome = file.name;
       this.objetoArquivo.tipoMime = file.type;
-      this.objetoArquivo.modificado = file.lastModified;
       this.objetoArquivo.tamanho = file.size;
 
       const reader: FileReader = new FileReader();
@@ -220,18 +220,23 @@ export class CadastroComponent implements OnInit {
   }
 
   downloadArquivo(exame: Exame): void {
-    const link = document.createElement('a');
-    link.href = exame.arquivo.base64;
-    link.download = exame.arquivo.nome;
-    link.click();
+    this.uploadService.buscar(exame.arquivo).subscribe(upload => {
+      const link = document.createElement('a');
+      link.href = upload.base64;
+      link.download = upload.nome;
+      link.click();
+    });
   }
 
-  gravarExame(): void {
+  async gravarExame() {
     this.formExamesEnviado = true;
     if (this.formExames.valid) {
+      let upload$: Observable<Upload>;
+      upload$ = this.uploadService.incluir(this.objetoArquivo);
+      let upload = await lastValueFrom(upload$);
+
       this.formExames.controls.paciente.setValue(this.objetoPaciente);
-      this.formExames.controls.arquivo.setValue(this.objetoArquivo);
-      console.log(this.formExames.value);
+      this.formExames.controls.arquivo.setValue(upload.uuid);
       this.exameService.incluir(this.formExames.value).subscribe({
         next: exame => {
           this.exames.unshift(exame);

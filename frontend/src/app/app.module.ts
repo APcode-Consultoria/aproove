@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,6 +9,10 @@ import { LOGOTIPO, MODULO } from "./etc/layout";
 import { HttpClientModule } from "@angular/common/http";
 import { MENU } from "./etc/menu";
 import { NgxApcoreModule } from "@andrepenteado/ngx-apcore";
+import { registerLocaleData } from "@angular/common";
+import localePT from '@angular/common/locales/pt';
+
+registerLocaleData(localePT);
 
 @NgModule({
   declarations: [
@@ -31,7 +35,9 @@ import { NgxApcoreModule } from "@andrepenteado/ngx-apcore";
       urlAuthorizationServer: environment.urlAuthorizationServer
     })
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: "pt-BR" }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

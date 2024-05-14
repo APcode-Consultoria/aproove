@@ -13,7 +13,6 @@ import { ngxLoadingAnimationTypes } from "ngx-loading";
 export class PesquisarComponent implements OnInit {
 
   aguardar: boolean = true;
-
   lista: Paciente[] = [];
 
   constructor(

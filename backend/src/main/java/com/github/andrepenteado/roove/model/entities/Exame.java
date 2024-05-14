@@ -1,13 +1,14 @@
 package com.github.andrepenteado.roove.model.entities;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -24,10 +25,9 @@ public class Exame {
     @NotNull(message = "Paciente é um campo obrigatório")
     private Paciente paciente;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Id_Arquivo")
+    @Column(name = "FK_Upload")
     @NotNull(message = "Exame é um campo obrigatório")
-    private Arquivo arquivo;
+    private UUID arquivo;
 
     private LocalDateTime dataUpload;
 

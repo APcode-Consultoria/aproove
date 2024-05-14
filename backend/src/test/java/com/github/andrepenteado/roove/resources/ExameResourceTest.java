@@ -2,7 +2,7 @@ package com.github.andrepenteado.roove.resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.roove.model.entities.Arquivo;
+import com.github.andrepenteado.core.upload.Upload;
 import com.github.andrepenteado.roove.model.entities.Exame;
 import com.github.andrepenteado.roove.model.entities.Paciente;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,20 +65,10 @@ public class ExameResourceTest {
         return paciente;
     }
 
-    private Arquivo getNovoArquivo() {
-        Arquivo arquivo = new Arquivo();
-        arquivo.setNome("Arquivo novo para testes");
-        arquivo.setTipoMime("application/xml");
-        arquivo.setModificado(99999999L);
-        arquivo.setTamanho(99999L);
-        arquivo.setBase64("XXXXXXXX");
-        return arquivo;
-    }
-
     private String getJsonExame() throws Exception {
         Exame exame = new Exame();
         exame.setPaciente(getPaciente());
-        exame.setArquivo(getNovoArquivo());
+        exame.setArquivo(UUID.randomUUID());
         exame.setDescricao(DESCRICAO_EXAME);
         exame.setDataUpload(LocalDateTime.now());
         return objectMapper.writeValueAsString(exame);

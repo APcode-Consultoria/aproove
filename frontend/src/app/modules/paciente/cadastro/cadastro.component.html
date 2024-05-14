@@ -35,7 +35,7 @@
           PRONTUÁRIO
         </button>
       </nav>
-      <p class="form-text ms-1 fst-italic" *ngIf="!objetoPaciente.id">
+      <p class="form-text ms-1 fst-italic" *ngIf="objetoPaciente.id">
         Incluído por {{ objetoPaciente?.usuarioCadastro }} em {{ objetoPaciente?.dataCadastro | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}<br/>
         <span *ngIf="objetoPaciente?.dataUltimaAtualizacao != null">
           Alterado por {{ objetoPaciente.usuarioUltimaAtualizacao }} em {{ objetoPaciente.dataUltimaAtualizacao | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
@@ -223,12 +223,13 @@
               <div class="col-12">
                 <div *ngFor="let exame of this.exames">
                   <p class="text-break">
-                    <a href="javascript:void(0)" (click)="downloadArquivo(exame)" class="link-primary fs-5">
-                      <i class="fa fa-download" aria-hidden="true"></i> {{ exame.descricao }}
+                    <a href="javascript:void(0)" (click)="downloadArquivo(exame)" class="link-primary link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-5">
+                      <i class="bi bi-paperclip"></i> Download {{ exame.descricao }}
                     </a>
-                    <small class="form-text text-muted fst-italic"> {{ exame.arquivo.tamanho / 1024 | number: '1.0-0' }} KB</small>
-                    &nbsp;
-                    <a href="javascript:void(0)" (click)="excluirExame(exame)"><i class="bi bi-trash text-danger fs-6"></i></a>
+                    <br>
+                    <a href="javascript:void(0)" (click)="excluirExame(exame)" class="link-danger link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-6">
+                      <i class="bi bi-trash"></i> Excluir {{ exame.descricao }}
+                    </a>
                   </p>
                   <br>
                 </div>
@@ -259,9 +260,11 @@
                   <p class="text-muted">
                     #{{ prontuario.id }} {{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
                     &nbsp;
-                    <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)"><i class="bi bi-trash text-danger fs-6"></i></a>
+                    <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)" class="text-danger fs-6"><i class="bi bi-trash"></i> Excluir registro</a>
                   </p>
-                  <p class="text-break fs-5">{{ prontuario.atendimento }}</p>
+                  <p class="text-break fs-5">
+                    <i class="bi bi-record-circle"></i> {{ prontuario.atendimento }}
+                  </p>
                   <br>
                 </div>
               </div>
@@ -272,4 +275,4 @@
     </div>
   </div>
 </div>
-
+<br><br>

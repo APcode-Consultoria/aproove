@@ -3,24 +3,12 @@
 DROP TABLE IF EXISTS Upload CASCADE;
 CREATE TABLE IF NOT EXISTS Upload (
     UUID       UUID         NOT NULL,
-    Nome       VARCHAR(100) NOT NULL,
-    Descricao  VARCHAR(200) NULL,
-    Tipo       VARCHAR(100) NOT NULL,
+    Nome       TEXT         NOT NULL,
+    Descricao  TEXT         NULL,
+    Tipo_Mime  TEXT         NOT NULL,
+    Tamanho    BIGINT       NOT NULL,
     Base64     TEXT         NOT NULL,
     CONSTRAINT PK_Upload    PRIMARY KEY (UUID)
-);
-
-------------------------------------------------------------------------------
-
-DROP TABLE IF EXISTS Arquivo CASCADE;
-CREATE TABLE IF NOT EXISTS Arquivo (
-    Id          BIGSERIAL NOT NULL,
-    Nome        TEXT      NOT NULL,
-    Tipo_Mime   TEXT      NOT NULL,
-    Modificado  BIGINT    NOT NULL,
-    Tamanho     BIGINT    NOT NULL,
-    Base64      TEXT      NOT NULL,
-    CONSTRAINT PK_Arquivo PRIMARY KEY (Id)
 );
 
 ------------------------------------------------------------------------------
@@ -65,13 +53,13 @@ DROP TABLE IF EXISTS Exame;
 CREATE TABLE IF NOT EXISTS Exame (
     Id          BIGSERIAL NOT NULL,
     Id_Paciente BIGINT    NOT NULL,
-    Id_Arquivo  BIGINT    NOT NULL,
+    FK_Upload   UUID      NOT NULL,
     Descricao   TEXT      NOT NULL,
     Data_Upload TIMESTAMP NOT NULL,
     CONSTRAINT PK_Exame_Paciente PRIMARY KEY (Id),
     CONSTRAINT FK_Exame_Paciente FOREIGN KEY (Id_Paciente) REFERENCES Paciente (Id),
-    CONSTRAINT FK_Exame_Arquivo  FOREIGN KEY (Id_Arquivo)  REFERENCES Arquivo (Id),
-    CONSTRAINT UN_Exame_PacienteArquivo UNIQUE (Id_Paciente, Id_Arquivo)
+    CONSTRAINT FK_Exame_Arquivo  FOREIGN KEY (FK_Upload)  REFERENCES Upload (UUID),
+    CONSTRAINT UN_Exame_PacienteArquivo UNIQUE (Id_Paciente, FK_Upload)
 );
 
 DROP TABLE IF EXISTS Prontuario;

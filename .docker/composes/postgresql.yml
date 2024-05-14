@@ -4,9 +4,9 @@ services:
     image: postgres:16
     container_name: aproove-db
     environment:
-      - POSTGRES_DB=aproove-dbname
-      - POSTGRES_USER=aproove-dbuser
-      - POSTGRES_PASSWORD=***REMOVED***
+      POSTGRES_DB: aproove-dbname
+      POSTGRES_USER: aproove-dbuser
+      POSTGRES_PASSWORD: ***REMOVED***
     ports:
       - 5432:5432
     volumes:
@@ -18,9 +18,9 @@ services:
     image: postgres:16
     container_name: aproove-db-test
     environment:
-      - POSTGRES_DB=aproove-dbname
-      - POSTGRES_USER=aproove-dbuser
-      - POSTGRES_PASSWORD=***REMOVED***
+      POSTGRES_DB: aproove-dbname
+      POSTGRES_USER: aproove-dbuser
+      POSTGRES_PASSWORD: ***REMOVED***
     ports:
       - 5433:5432
     volumes:
