@@ -22,8 +22,6 @@ export class CadastroComponent implements OnInit {
   formProntuarioEnviado = false;
   formExamesEnviado = false;
 
-  dataCadastroFormatada: Date = new Date();
-
   parentescos: string[];
   enumParentescos = Parentesco;
 
@@ -36,6 +34,9 @@ export class CadastroComponent implements OnInit {
   // Formulário dados do paciente
   id = new FormControl(null);
   dataCadastro = new FormControl(null);
+  usuarioCadastro = new FormControl(null);
+  dataUltimaAtualizacao = new FormControl(null);
+  usuarioUltimaAtualizacao = new FormControl(null);
   nome = new FormControl(null, Validators.required);
   cpf = new FormControl(null, Validators.required);
   dataNascimento = new FormControl(null);
@@ -61,6 +62,9 @@ export class CadastroComponent implements OnInit {
   formPaciente = new FormGroup({
     id: this.id,
     dataCadastro: this.dataCadastro,
+    usuarioCadastro: this.usuarioCadastro,
+    dataUltimaAtualizacao: this.dataUltimaAtualizacao,
+    usuarioUltimaAtualizacao: this.usuarioUltimaAtualizacao,
     nome: this.nome,
     cpf: this.cpf,
     dataNascimento: this.dataNascimento,
@@ -135,7 +139,6 @@ export class CadastroComponent implements OnInit {
     this.pacienteService.buscar(id).subscribe(paciente => {
       this.objetoPaciente = paciente;
       this.formPaciente.patchValue(paciente);
-      this.dataCadastroFormatada = new Date(paciente.dataCadastro);
       this.prontuarioService.listarPorPaciente(paciente.id).subscribe(
           prontuarios => this.prontuarios = prontuarios
       );
@@ -178,7 +181,6 @@ export class CadastroComponent implements OnInit {
     this.formPacienteEnviado = true;
     if (this.formPaciente.valid) {
       this.formPaciente.controls.dataCadastro.setValue(new Date());
-      console.log(this.formPaciente.value);
       this.pacienteService.gravar(this.formPaciente.value).subscribe({
         next: paciente => {
           this.objetoPaciente = paciente;

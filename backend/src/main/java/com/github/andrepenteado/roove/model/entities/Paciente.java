@@ -31,6 +31,13 @@ public class Paciente {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataCadastro;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime dataUltimaAtualizacao;
+
+    private String usuarioCadastro;
+
+    private String usuarioUltimaAtualizacao;
+
     @NotNull(message = "Nome do paciente é um campo obrigatório. ")
     private String nome;
 

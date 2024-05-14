@@ -35,9 +35,11 @@
           PRONTUÁRIO
         </button>
       </nav>
-      <p class="form-text ms-1 fst-italic">
-        Incluído em {{ objetoPaciente?.dataCadastro | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}<br/>
-      </p>
+      <p class="form-text ms-1 fst-italic" *ngIf="!objetoPaciente.id">
+        Incluído por {{ objetoPaciente?.usuarioCadastro }} em {{ objetoPaciente?.dataCadastro | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}<br/>
+        <span *ngIf="objetoPaciente?.dataUltimaAtualizacao != null">
+          Alterado por {{ objetoPaciente.usuarioUltimaAtualizacao }} em {{ objetoPaciente.dataUltimaAtualizacao | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
+        </span>
     </div>
     <div class="card-body">
       <div class="tab-content" id="nav-conteudo">

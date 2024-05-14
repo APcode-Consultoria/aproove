@@ -1,8 +1,9 @@
 name: Compilar, testar e buildar
 
-on:
-  push:
-    branches: [main]
+on: workflow_dispatch
+#on:
+#  push:
+#    branches: [main]
 
 jobs:
   build:
@@ -25,10 +26,10 @@ jobs:
     - name: Checkout do projeto
       uses: actions/checkout@v3
 
-    - name: Usar Node 16
+    - name: Usar Node 20
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 20
 
     - name: Instalar pacotes do frontend
       run: npm --prefix ./frontend install

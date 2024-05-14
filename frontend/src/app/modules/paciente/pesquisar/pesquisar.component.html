@@ -21,6 +21,7 @@
             <th scope="col" class="text-start">Nome</th>
             <th scope="col" class="text-center">Telefone</th>
             <th scope="col" class="text-center">E-mail</th>
+            <th scope="col" class="text-center">Cidade</th>
             <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
@@ -30,6 +31,7 @@
             <td class="text-start">{{ paciente.nome }}</td>
             <td class="text-center">{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="bi bi-whatsapp"></i></td>
             <td class="text-center">{{ paciente.email }}</td>
+            <td class="text-center">{{ paciente.cidade }}</td>
             <td class="text-center">
               <div class="btn-group">
                 <button class="btn btn-success btn-sm" (click)="editar(paciente)"><i class="bi bi-pencil"></i></button>

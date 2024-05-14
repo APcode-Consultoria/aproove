@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DATATABLES_OPTIONS, ExibirMensagemService } from "@andrepenteado/ngx-apcore";
+import { DatatablesService, ExibirMensagemService } from "@andrepenteado/ngx-apcore";
 import { Paciente } from "../../../models/paciente";
 import { PacienteService } from "../../../services/paciente.service";
 import { ngxLoadingAnimationTypes } from "ngx-loading";
@@ -19,6 +19,7 @@ export class PesquisarComponent implements OnInit {
   constructor(
     private pacienteService: PacienteService,
     private exibirMensagem: ExibirMensagemService,
+    private datatablesService: DatatablesService,
     private router: Router
   ) { }
 
@@ -27,14 +28,12 @@ export class PesquisarComponent implements OnInit {
   }
 
   pesquisar(): void {
-
-
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
         this.lista = listaPacientes;
         this.aguardar = false;
         setTimeout(() => {
-          $('#datatable-pesquisar-paciente').DataTable(DATATABLES_OPTIONS);
+          $('#datatable-pesquisar-paciente').DataTable(this.datatablesService.getOptions());
         }, 5);
       }
     });

@@ -30,6 +30,9 @@ DROP TABLE IF EXISTS Paciente;
 CREATE TABLE IF NOT EXISTS Paciente (
     Id                            BIGSERIAL  NOT NULL,
     Data_Cadastro                 TIMESTAMP  NOT NULL,
+    Usuario_Cadastro              TEXT       NOT NULL,
+    Data_Ultima_Atualizacao       TIMESTAMP  NULL,
+    Usuario_Ultima_Atualizacao    TEXT       NULL,
     Nome                          TEXT       NOT NULL,
     CPF                           BIGINT     NOT NULL,
     Data_Nascimento               DATE       NULL,
