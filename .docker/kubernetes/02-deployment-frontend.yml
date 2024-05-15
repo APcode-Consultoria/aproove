@@ -1,0 +1,53 @@
+# Módulo de Controle
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name roove-frontend
+  namespace: aproove
+  labels: &selector
+    apcode.com.br/app: aproove
+    apcode.com.br/module: roove-frontend
+    apcode.com.br/version: 1.0.0
+    apcode.com.br/env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      <<: *selector
+  template:
+    metadata:
+      labels:
+        <<: *selector
+    spec:
+      containers:
+        - name: *name
+          image: ghcr.io/andrepenteado/aproove/frontend
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 1G
+#              cpu: 8000m
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: github-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roove-frontend
+  namespace: aproove
+  labels: &selector
+    apcode.com.br/app: aproove
+    apcode.com.br/module: roove-frontend
+    apcode.com.br/version: 1.0.0
+    apcode.com.br/env: prod
+spec:
+  type: LoadBalancer
+  ports:
+    - name: roove-front
+      port: 80
+      targetPort: 80
+  selector:
+    <<: *selector
