@@ -17,27 +17,27 @@
       <table id="datatable-pesquisar-paciente" class="table table-styling table-striped nowrap align-middle w-100">
         <thead>
           <tr>
+            <th scope="col" class="text-center">Ações</th>
             <th scope="col" class="text-center">#</th>
             <th scope="col" class="text-start">Nome</th>
             <th scope="col" class="text-center">Telefone</th>
             <th scope="col" class="text-center">E-mail</th>
             <th scope="col" class="text-center">Cidade</th>
-            <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let paciente of this.lista ">
-            <td class="text-center">{{ paciente.id }}</td>
-            <td class="text-start">{{ paciente.nome }}</td>
-            <td class="text-center">{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="bi bi-whatsapp"></i></td>
-            <td class="text-center">{{ paciente.email }}</td>
-            <td class="text-center">{{ paciente.cidade }}</td>
             <td class="text-center">
               <div class="btn-group">
                 <button class="btn btn-success btn-sm" (click)="editar(paciente)"><i class="bi bi-pencil"></i></button>
                 <button class="btn btn-danger btn-sm" (click)="excluir(paciente)"><i class="bi bi-trash"></i></button>
               </div>
             </td>
+            <td class="text-center">{{ paciente.id }}</td>
+            <td class="text-start">{{ paciente.nome }}</td>
+            <td class="text-center">{{ paciente.telefone }} <i *ngIf="paciente.whatsapp" class="bi bi-whatsapp"></i></td>
+            <td class="text-center">{{ paciente.email }}</td>
+            <td class="text-center">{{ paciente.cidade }}</td>
           </tr>
         </tbody>
       </table>

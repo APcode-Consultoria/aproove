@@ -3,7 +3,7 @@ services:
   backend:
     image: ghcr.io/andrepenteado/aproove/backend
     container_name: aproove-backend
-    hostname: aproove
+    hostname: aproove-backend
     deploy:
       restart_policy:
         condition: on-failure
@@ -19,45 +19,11 @@ services:
   frontend:
     image: ghcr.io/andrepenteado/aproove/frontend
     container_name: aproove-frontend
-    hostname: controle-frontend
+    hostname: aproove-frontend
     ports:
       - 40004:80
     networks:
       - docker-host-network
-
-  dbserver:
-    image: postgres:16
-    container_name: apsso-db
-    hostname: apsso-db
-    environment:
-      POSTGRES_DB: aproove-dbname
-      POSTGRES_USER: aproove-dbuser
-      POSTGRES_PASSWORD: ***REMOVED***
-    volumes:
-      - aproove-pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    networks:
-      - docker-host-network
-
-  dbserver-test:
-    image: postgres:16
-    container_name: apsso-db-test
-    hostname: apsso-db-test
-    environment:
-      POSTGRES_DB: aproove-dbname
-      POSTGRES_USER: aproove-dbuser
-      POSTGRES_PASSWORD: ***REMOVED***
-    volumes:
-      - aproove-test-pgdata:/var/lib/postgresql/data
-    ports:
-      - 5433:5432
-    networks:
-      - docker-host-network
-
-volumes:
-  aproove-pgdata:
-  aproove-test-pgdata:
 
 networks:
   docker-host-network:
