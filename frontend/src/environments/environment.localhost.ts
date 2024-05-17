@@ -2,11 +2,11 @@ export const environment = {
 
   backendURL:  "http://localhost:30004",
 
-  portalURL: "http://localhost:40002",
+  portalURL: "https://portal.apcode.com.br",
 
-  backendPortalURL: "http://localhost:30002",
+  backendPortalURL: "https://api-portal.apcode.com.br",
 
-  urlAuthorizationServer: "http://localhost:30000",
+  urlAuthorizationServer: "https://login.apcode.com.br",
 
   redirectUri: "http://localhost:40004/authorized"
 

@@ -27,4 +27,4 @@ update:
 
 start-dev:
 	docker compose -f .docker/postgresql.yml up -d
-	mvn -f backend/pom.xml clean spring-boot:run -Dspring-boot.run.profiles=dev
+	mvn -f backend/pom.xml clean spring-boot:run -Dspring-boot.run.profiles=dev -DAUTHORIZATION_SERVER_URL=http://login:30000
