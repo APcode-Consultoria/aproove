@@ -2,9 +2,8 @@ package com.github.andrepenteado.roove.resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.core.upload.Upload;
-import com.github.andrepenteado.roove.model.entities.Exame;
-import com.github.andrepenteado.roove.model.entities.Paciente;
+import com.github.andrepenteado.roove.domain.entities.Exame;
+import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +24,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Testes do resource {@link ExameResource}

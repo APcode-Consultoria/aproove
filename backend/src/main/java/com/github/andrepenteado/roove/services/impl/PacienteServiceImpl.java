@@ -1,15 +1,14 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import com.github.andrepenteado.core.common.CoreUtil;
-import com.github.andrepenteado.core.web.dto.UserLogin;
-import com.github.andrepenteado.roove.model.entities.Paciente;
-import com.github.andrepenteado.roove.model.repositories.PacienteRepository;
+import br.unesp.fc.andrepenteado.core.common.CoreUtil;
+import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
+import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.repositories.PacienteRepository;
 import com.github.andrepenteado.roove.services.PacienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;

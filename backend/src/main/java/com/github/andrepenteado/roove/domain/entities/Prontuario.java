@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.model.entities;
+package com.github.andrepenteado.roove.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

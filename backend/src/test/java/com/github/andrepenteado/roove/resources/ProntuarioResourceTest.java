@@ -2,8 +2,8 @@ package com.github.andrepenteado.roove.resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.roove.model.entities.Paciente;
-import com.github.andrepenteado.roove.model.entities.Prontuario;
+import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.DisplayName;

@@ -2,19 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PacienteService } from '../../../services/paciente.service';
-import { Prontuario } from '../../../models/prontuario';
 import { ProntuarioService } from '../../../services/prontuario.service';
-import { Paciente } from '../../../models/paciente';
 import { ExameService } from '../../../services/exame.service';
-import { Exame } from '../../../models/exame';
-import { Parentesco } from "../../../models/enums/parentesco";
-import { DecoracaoMensagem, ExibirMensagemService, Upload, UploadService, ViaCepService } from "@andrepenteado/ngx-apcore";
+import {
+  DecoracaoMensagem,
+  ExibirMensagemService,
+  Upload,
+  UploadService,
+  ViaCepService
+} from "@andre.penteado/ngx-apcore";
 import { lastValueFrom, Observable } from "rxjs"
+import { Parentesco } from "../../../domain/enums/parentesco";
+import { Prontuario } from "../../../domain/entities/prontuario";
+import { Exame } from "../../../domain/entities/exame";
+import { Paciente } from "../../../domain/entities/paciente";
 
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
-  styleUrls: ['./cadastro.component.scss']
+  styles: ``
 })
 export class CadastroComponent implements OnInit {
 

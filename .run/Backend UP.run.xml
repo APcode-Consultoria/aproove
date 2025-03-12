@@ -5,7 +5,7 @@
       <env name="AUTHORIZATION_SERVER_URL" value="https://login.apcode.com.br" />
     </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-    <module name="backend" />
+    <module name="roove" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.github.andrepenteado.roove.RooveApplication" />
     <option name="VM_PARAMETERS" value="-Dserver.port=30004" />
     <method v="2">

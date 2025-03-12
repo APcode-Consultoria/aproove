@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.core.web.dto.UserLogin;
-import com.github.andrepenteado.roove.model.entities.Paciente;
+import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
+import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import jakarta.validation.Valid;
@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,14 +45,14 @@ public class PacienteResource {
 
     @PostMapping
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente incluir(@Valid @RequestBody Paciente paciente, UserLogin userLogin, BindingResult validacao) {
+    public Paciente incluir(@Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin, BindingResult validacao) {
         log.info("Incluir novo paciente {}", paciente.toString());
         return pacienteService.incluir(paciente, userLogin, validacao);
     }
 
     @PutMapping("/{id}")
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, UserLogin userLogin, BindingResult validacao) {
+    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin, BindingResult validacao) {
         log.info("Alterar dados do paciente {}", paciente);
         return pacienteService.alterar(paciente, id, userLogin, validacao);
     }

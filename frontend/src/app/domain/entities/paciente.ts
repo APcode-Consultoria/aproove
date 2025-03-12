@@ -1,4 +1,4 @@
-import { Parentesco } from "./enums/parentesco";
+import { Parentesco } from "../enums/parentesco";
 
 export class Paciente {
 

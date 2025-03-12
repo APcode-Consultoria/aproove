@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.model.entities;
+package com.github.andrepenteado.roove.domain.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

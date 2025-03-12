@@ -4,13 +4,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from "../environments/environment";
-import { clientId, clientSecret } from "./etc/oauth2";
-import { LOGOTIPO, MODULO } from "./etc/layout";
-import { HttpClientModule } from "@angular/common/http";
-import { MENU } from "./etc/menu";
-import { NgxApcoreModule } from "@andrepenteado/ngx-apcore";
+import { LOGOTIPO, MODULO, PREFIXO_PERFIL_SISTEMA } from "./config/layout";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { MENU } from "./config/menu";
 import { registerLocaleData } from "@angular/common";
 import localePT from '@angular/common/locales/pt';
+import { HttpErrorsInterceptor, PARAMS, WithCredentialsInterceptor } from "@andre.penteado/ngx-apcore";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgxLoadingModule } from "ngx-loading";
+import { ToastrModule } from "ngx-toastr";
 
 registerLocaleData(localePT);
 
@@ -20,23 +22,27 @@ registerLocaleData(localePT);
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    NgxApcoreModule.forRoot({
-      nomeSistema: MODULO,
-      logotipoSistema: LOGOTIPO,
-      urlBackendSistema: environment.backendURL,
-      urlPortal: environment.portalURL,
-      urlBackendPortal: environment.backendPortalURL,
-      menu: MENU,
-      clientId: clientId,
-      redirectUri: environment.redirectUri,
-      clientSecret: clientSecret,
-      urlAuthorizationServer: environment.urlAuthorizationServer
-    })
+    NgxLoadingModule,
+    ToastrModule.forRoot()
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: "pt-BR" }
+    { provide: LOCALE_ID, useValue: "pt-BR" },
+    {
+      provide: PARAMS, useValue: {
+        logotipo: LOGOTIPO,
+        menu: MENU,
+        sistema: MODULO,
+        urlBackend: environment.urlBackend,
+        urlFrontend: environment.urlFrontend,
+        urlPortal: environment.urlPortal,
+        prefixoPerfil: PREFIXO_PERFIL_SISTEMA
+      }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorsInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: WithCredentialsInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

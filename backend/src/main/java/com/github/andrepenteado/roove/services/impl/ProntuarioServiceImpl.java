@@ -1,8 +1,8 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import com.github.andrepenteado.core.common.CoreUtil;
-import com.github.andrepenteado.roove.model.entities.Prontuario;
-import com.github.andrepenteado.roove.model.repositories.ProntuarioRepository;
+import br.unesp.fc.andrepenteado.core.common.CoreUtil;
+import com.github.andrepenteado.roove.domain.entities.Prontuario;
+import com.github.andrepenteado.roove.domain.repositories.ProntuarioRepository;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

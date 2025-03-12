@@ -2,12 +2,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
-import { NgxApcoreModule } from "@andrepenteado/ngx-apcore";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgxLoadingModule } from "ngx-loading";
 import { CadastroComponent } from './cadastro/cadastro.component';
 import { PacienteRoutingModule } from './paciente-routing.module';
 import { PesquisarComponent } from './pesquisar/pesquisar.component';
+import { FloatingButtonComponent } from "@andre.penteado/ngx-apcore";
 
 @NgModule({
   declarations: [
@@ -19,9 +19,9 @@ import { PesquisarComponent } from './pesquisar/pesquisar.component';
     PacienteRoutingModule,
     NgxMaskDirective,
     NgxMaskPipe,
-    NgxApcoreModule,
     NgxLoadingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FloatingButtonComponent
   ],
   providers: [
     provideNgxMask(),

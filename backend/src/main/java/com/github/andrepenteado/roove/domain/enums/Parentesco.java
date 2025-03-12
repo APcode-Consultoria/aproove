@@ -1,4 +1,4 @@
-package com.github.andrepenteado.roove.model.enums;
+package com.github.andrepenteado.roove.domain.enums;
 
 public enum Parentesco {
 

@@ -109,7 +109,7 @@
             }
           },
           "options": {
-            "port": 40004
+            "port": 4200
           },
           "defaultConfiguration": "localhost"
         },

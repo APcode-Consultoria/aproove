@@ -1,6 +1,6 @@
-package com.github.andrepenteado.roove.model.repositories;
+package com.github.andrepenteado.roove.domain.repositories;
 
-import com.github.andrepenteado.roove.model.entities.Exame;
+import com.github.andrepenteado.roove.domain.entities.Exame;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

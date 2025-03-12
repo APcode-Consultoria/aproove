@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.model.entities.Exame;
+import com.github.andrepenteado.roove.domain.entities.Exame;
 import com.github.andrepenteado.roove.services.ExameService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

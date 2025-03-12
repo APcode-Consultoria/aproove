@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.github.andrepenteado.roove.model.entities.Prontuario;
+import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

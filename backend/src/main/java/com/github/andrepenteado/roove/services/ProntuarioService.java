@@ -1,6 +1,6 @@
 package com.github.andrepenteado.roove.services;
 
-import com.github.andrepenteado.roove.model.entities.Prontuario;
+import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;

@@ -1,8 +1,7 @@
 package com.github.andrepenteado.roove.services;
 
-import com.github.andrepenteado.core.web.dto.UserLogin;
-import com.github.andrepenteado.roove.model.entities.Paciente;
-import org.apache.catalina.User;
+import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
+import com.github.andrepenteado.roove.domain.entities.Paciente;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
