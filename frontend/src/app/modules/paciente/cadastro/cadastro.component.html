@@ -1,5 +1,5 @@
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb" style="margin-top: -23px">
+  <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="bi bi-house-door"></i></a></li>
     <li class="breadcrumb-item"><a routerLink="/paciente/pesquisar">Pacientes</a></li>
     <li class="breadcrumb-item active">Cadastro</li>
@@ -7,269 +7,271 @@
 </nav>
 
 <div class="container">
-  <div class="card border border-primary rounded shadow-lg">
-    <div class="card-header">
-      <nav class="nav nav-pills" id="nav-principal">
-        <button class="nav-link active fw-bold"
-                id="nav-principal-dados-cadastrais"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-conteudo-dados-cadastrais"
-                type="button"
-                role="tab">
-          DADOS CADASTRAIS
-        </button>
-        <button class="nav-link fw-bold {{ !this.objetoPaciente.id ? 'disabled' : '' }}"
-                id="nav-principal-exames"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-conteudo-exames"
-                type="button"
-                role="tab">
-          EXAMES
-        </button>
-        <button class="nav-link fw-bold {{ !this.objetoPaciente.id ? 'disabled' : '' }}"
-                id="nav-principal-prontuario"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-conteudo-prontuario"
-                type="button"
-                role="tab">
-          PRONTUÁRIO
-        </button>
-      </nav>
-      <p class="form-text ms-1 fst-italic" *ngIf="objetoPaciente.id">
-        Incluído por {{ objetoPaciente?.usuarioCadastro }} em {{ objetoPaciente?.dataCadastro | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}<br/>
-        <span *ngIf="objetoPaciente?.dataUltimaAtualizacao != null">
-          Alterado por {{ objetoPaciente.usuarioUltimaAtualizacao }} em {{ objetoPaciente.dataUltimaAtualizacao | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
-        </span>
-    </div>
-    <div class="card-body">
-      <div class="tab-content" id="nav-conteudo">
-        <div class="tab-pane fade show active"
-             id="nav-conteudo-dados-cadastrais"
-             role="tabpanel"
-             aria-labelledby="nav-conteudo-dados-cadastrais">
-          <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formPacienteEnviado}">
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>* Nome</label>
-                <input type="text" name="nome" formControlName="nome" class="form-control" required="true">
-                <div class="invalid-feedback">Campo nome é obrigatório</div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-6">
-                <label>* CPF</label>
-                <input type="text" name="cpf" formControlName="cpf" class="form-control" required="true" mask="000.000.000-00">
-                <div class="invalid-feedback">Campo CPF é obrigatório</div>
-              </div>
-              <div class="form-group col-12 col-md-6">
-                <label>Data de Nascimento</label>
-                <input type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-4">
-                <label>* Telefone</label>
-                <input type="text" name="telefone" formControlName="telefone" class="form-control" required="true" mask="(00) 00000-0000">
-                <div class="invalid-feedback">Campo Telefone é obrigatório</div>
-              </div>
-              <div class="form-group col-12 col-md-2">
-                <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp" value="true"/>
-                  <label>Sim</label>
+  <div class="col-12 col-md-8 offset-md-2">
+    <div class="card border border-primary rounded shadow-lg">
+      <div class="card-header">
+        <nav class="nav nav-pills" id="nav-principal">
+          <button class="nav-link active fw-bold"
+                  id="nav-principal-dados-cadastrais"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-conteudo-dados-cadastrais"
+                  type="button"
+                  role="tab">
+            DADOS CADASTRAIS
+          </button>
+          <button class="nav-link fw-bold {{ !this.objetoPaciente.id ? 'disabled' : '' }}"
+                  id="nav-principal-exames"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-conteudo-exames"
+                  type="button"
+                  role="tab">
+            EXAMES
+          </button>
+          <button class="nav-link fw-bold {{ !this.objetoPaciente.id ? 'disabled' : '' }}"
+                  id="nav-principal-prontuario"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-conteudo-prontuario"
+                  type="button"
+                  role="tab">
+            PRONTUÁRIO
+          </button>
+        </nav>
+        <p class="form-text ms-1 fst-italic" *ngIf="objetoPaciente.id">
+          Incluído por {{ objetoPaciente?.usuarioCadastro }} em {{ objetoPaciente?.dataCadastro | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}<br/>
+          <span *ngIf="objetoPaciente?.dataUltimaAtualizacao != null">
+            Alterado por {{ objetoPaciente.usuarioUltimaAtualizacao }} em {{ objetoPaciente.dataUltimaAtualizacao | date: "EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
+          </span>
+      </div>
+      <div class="card-body">
+        <div class="tab-content" id="nav-conteudo">
+          <div class="tab-pane fade show active"
+               id="nav-conteudo-dados-cadastrais"
+               role="tabpanel"
+               aria-labelledby="nav-conteudo-dados-cadastrais">
+            <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formPacienteEnviado}">
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Nome</label>
+                  <input type="text" name="nome" formControlName="nome" class="form-control" required="true">
+                  <div class="invalid-feedback">Campo nome é obrigatório</div>
                 </div>
               </div>
-              <div class="form-group col-12 col-md-6">
-                <label>E-mail</label>
-                <input type="email" name="email" formControlName="email" class="form-control">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-6">
-                <label>Contato de Emergência</label>
-                <input type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
-              </div>
-              <div class="form-group col-12 col-md-6">
-                <label>Parentesco</label>
-                <select name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-control">
-                  <option *ngFor="let p of parentescos" [value]="p">{{ enumParentescos[p] }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-4">
-                <label>CEP</label>
-                <div class="input-group">
-                  <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
-                  <div class="input-group-append">
-                    <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="bi bi-search"></i></button>
-                  </div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-6">
+                  <label>* CPF</label>
+                  <input type="text" name="cpf" formControlName="cpf" class="form-control" required="true" mask="000.000.000-00">
+                  <div class="invalid-feedback">Campo CPF é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>Data de Nascimento</label>
+                  <input type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
                 </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-6">
-                <label>Logradouro</label>
-                <input type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
-              </div>
-              <div class="form-group col-12 col-md-4">
-                <label>Complemento</label>
-                <input type="text" name="complemento" formControlName="complemento" class="form-control">
-              </div>
-              <div class="form-group col-12 col-md-2">
-                <label>Número</label>
-                <input type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-5">
-                <label>Bairro</label>
-                <input type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
-              </div>
-              <div class="form-group col-12 col-md-5">
-                <label>Cidade</label>
-                <input type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
-              </div>
-              <div class="form-group col-12 col-md-2">
-                <label>Estado</label>
-                <input type="text" name="estado" formControlName="estado" class="form-control" readonly>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-9">
-                <label>Profissão</label>
-                <input type="text" name="profissao" formControlName="profissao" class="form-control">
-              </div>
-              <div class="form-group col-12 col-md-3">
-                <label>Dia de Vencimento</label>
-                <input type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>Frequência Semanal</label>
-                <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1"/>
-                    <label for="frequencia_1" class="mb-0">Uma vez</label>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-4">
+                  <label>* Telefone</label>
+                  <input type="text" name="telefone" formControlName="telefone" class="form-control" required="true" mask="(00) 00000-0000">
+                  <div class="invalid-feedback">Campo Telefone é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                  <label><i class="icofont icofont-brand-whatsapp"></i> WhatsApp?</label>
+                  <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp" value="true"/>
+                    <label>Sim</label>
                   </div>
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2"/>
-                    <label for="frequencia_2" class="mb-0">Duas vezes</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3"/>
-                    <label for="frequencia_3" class="mb-0">Três vezes</label>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>E-mail</label>
+                  <input type="email" name="email" formControlName="email" class="form-control">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-6">
+                  <label>Contato de Emergência</label>
+                  <input type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>Parentesco</label>
+                  <select name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-control">
+                    <option *ngFor="let p of parentescos" [value]="p">{{ enumParentescos[p] }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-4">
+                  <label>CEP</label>
+                  <div class="input-group">
+                    <input #cep type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
+                    <div class="input-group-append">
+                      <button class="btn btn-light" type="submit" (click)="consultaCep(cep.value)"><i class="bi bi-search"></i></button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>* Queixa Principal (QP)</label>
-                <input type="text" class="form-control" name="queixaPrincipal" formControlName="queixaPrincipal" required="true">
-                <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-6">
+                  <label>Logradouro</label>
+                  <input type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-4">
+                  <label>Complemento</label>
+                  <input type="text" name="complemento" formControlName="complemento" class="form-control">
+                </div>
+                <div class="form-group col-12 col-md-2">
+                  <label>Número</label>
+                  <input type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>* História Moléstia Pregressa (HMP)</label>
-                <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required="true"></textarea>
-                <div class="invalid-feedback">Descrever a história moléstia pregressa do paciente é obrigatório</div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-5">
+                  <label>Bairro</label>
+                  <input type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-5">
+                  <label>Cidade</label>
+                  <input type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
+                </div>
+                <div class="form-group col-12 col-md-2">
+                  <label>Estado</label>
+                  <input type="text" name="estado" formControlName="estado" class="form-control" readonly>
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>Remédios</label>
-                <textarea class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-9">
+                  <label>Profissão</label>
+                  <input type="text" name="profissao" formControlName="profissao" class="form-control">
+                </div>
+                <div class="form-group col-12 col-md-3">
+                  <label>Dia de Vencimento</label>
+                  <input type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>Objetivos</label>
-                <textarea class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>Frequência Semanal</label>
+                  <div class="m-t-15 m-checkbox-inline mb-0 custom-radio-ml ml-2">
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1"/>
+                      <label for="frequencia_1" class="mb-0">Uma vez</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2"/>
+                      <label for="frequencia_2" class="mb-0">Duas vezes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3"/>
+                      <label for="frequencia_3" class="mb-0">Três vezes</label>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12 text-center">
-                <button class="btn btn-primary" (click)="gravarPaciente()"><i class="bi bi-floppy"></i> Gravar</button>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Queixa Principal (QP)</label>
+                  <input type="text" class="form-control" name="queixaPrincipal" formControlName="queixaPrincipal" required="true">
+                  <div class="invalid-feedback">Descrever a queixa principal do paciente é obrigatório</div>
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
-        <div class="tab-pane fade show"
-             id="nav-conteudo-exames"
-             role="tabpanel"
-             aria-labelledby="nav-conteudo-exames">
-          <form [formGroup]="formExames" [ngClass]="{ 'was-validated': !formExames.valid && formExamesEnviado }">
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-6">
-                <label>* Descrição</label>
-                <input type="text" formControlName="descricao" name="descricao" class="form-control" required="true"/>
-                <div class="invalid-feedback">Preencher a descrição do exame é obrigatório</div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>* História Moléstia Pregressa (HMP)</label>
+                  <textarea class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa" required="true"></textarea>
+                  <div class="invalid-feedback">Descrever a história moléstia pregressa do paciente é obrigatório</div>
+                </div>
               </div>
-              <div class="form-group col-12 col-md-6">
-                <label>* Upload do Arquivo</label>
-                <input type="file" (change)="selecionarArquivo($event)" formControlName="arquivoExame" name="arquivoExame" class="form-control" required="true"/>
-                <div class="invalid-feedback">Selecionar o arquivo do exame é obrigatório</div>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>Remédios</label>
+                  <textarea class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12 text-center">
-                <button class="btn btn-primary" (click)="gravarExame()"><i class="bi bi-floppy"></i> Gravar</button>
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>Objetivos</label>
+                  <textarea class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12">
-                <div *ngFor="let exame of this.exames">
-                  <p class="text-break">
-                    <a href="javascript:void(0)" (click)="downloadArquivo(exame)" class="link-primary link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-5">
-                      <i class="bi bi-paperclip"></i> Download {{ exame.descricao }}
-                    </a>
+              <div class="row mb-3">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravarPaciente()"><i class="bi bi-floppy"></i> Gravar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade show"
+               id="nav-conteudo-exames"
+               role="tabpanel"
+               aria-labelledby="nav-conteudo-exames">
+            <form [formGroup]="formExames" [ngClass]="{ 'was-validated': !formExames.valid && formExamesEnviado }">
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-6">
+                  <label>* Descrição</label>
+                  <input type="text" formControlName="descricao" name="descricao" class="form-control" required="true"/>
+                  <div class="invalid-feedback">Preencher a descrição do exame é obrigatório</div>
+                </div>
+                <div class="form-group col-12 col-md-6">
+                  <label>* Upload do Arquivo</label>
+                  <input type="file" (change)="selecionarArquivo($event)" formControlName="arquivoExame" name="arquivoExame" class="form-control" required="true"/>
+                  <div class="invalid-feedback">Selecionar o arquivo do exame é obrigatório</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravarExame()"><i class="bi bi-floppy"></i> Gravar</button>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-12">
+                  <div *ngFor="let exame of this.exames">
+                    <p class="text-break">
+                      <a href="javascript:void(0)" (click)="downloadArquivo(exame)" class="link-primary link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-5">
+                        <i class="bi bi-paperclip"></i> Download {{ exame.descricao }}
+                      </a>
+                      <br>
+                      <a href="javascript:void(0)" (click)="excluirExame(exame)" class="link-danger link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-6">
+                        <i class="bi bi-trash"></i> Excluir {{ exame.descricao }}
+                      </a>
+                    </p>
                     <br>
-                    <a href="javascript:void(0)" (click)="excluirExame(exame)" class="link-danger link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-6">
-                      <i class="bi bi-trash"></i> Excluir {{ exame.descricao }}
-                    </a>
-                  </p>
-                  <br>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
-        </div>
-        <div class="tab-pane fade show"
-             id="nav-conteudo-prontuario"
-             role="tabpanel"
-             aria-labelledby="nav-conteudo-prontuario">
-          <form [formGroup]="formProntuario" [ngClass]="{ 'was-validated': !formProntuario.valid && formProntuarioEnviado }">
-            <div class="row mb-3">
-              <div class="form-group col-12 col-md-12">
-                <label>* Atendimento</label>
-                <textarea name="atendimento" formControlName="atendimento" class="form-control" required="true" rows="6"></textarea>
-                <div class="invalid-feedback">Preencher a descrição do atendimento é obrigatório</div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12 text-center">
-                <button class="btn btn-primary" (click)="gravarProntuario()"><i class="bi bi-floppy"></i> Gravar</button>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12">
-                <div *ngFor="let prontuario of this.prontuarios">
-                  <p class="text-muted">
-                    #{{ prontuario.id }} {{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
-                    &nbsp;
-                    <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)" class="text-danger fs-6"><i class="bi bi-trash"></i> Excluir registro</a>
-                  </p>
-                  <p class="text-break fs-5">
-                    <i class="bi bi-record-circle"></i> {{ prontuario.atendimento }}
-                  </p>
-                  <br>
+            </form>
+          </div>
+          <div class="tab-pane fade show"
+               id="nav-conteudo-prontuario"
+               role="tabpanel"
+               aria-labelledby="nav-conteudo-prontuario">
+            <form [formGroup]="formProntuario" [ngClass]="{ 'was-validated': !formProntuario.valid && formProntuarioEnviado }">
+              <div class="row mb-3">
+                <div class="form-group col-12 col-md-12">
+                  <label>* Atendimento</label>
+                  <textarea name="atendimento" formControlName="atendimento" class="form-control" required="true" rows="6"></textarea>
+                  <div class="invalid-feedback">Preencher a descrição do atendimento é obrigatório</div>
                 </div>
               </div>
-            </div>
-          </form>
+              <div class="row mb-3">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary" (click)="gravarProntuario()"><i class="bi bi-floppy"></i> Gravar</button>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-12">
+                  <div *ngFor="let prontuario of this.prontuarios">
+                    <p class="text-muted">
+                      #{{ prontuario.id }} {{ toDate(prontuario.dataRegistro) | date: "'Registrado ' EEEE, dd 'de' MMMM 'de' yyyy 'às' HH:mm" }}
+                      &nbsp;
+                      <a href="javascript:void(0)" (click)="excluirProntuario(prontuario)" class="text-danger fs-6"><i class="bi bi-trash"></i> Excluir registro</a>
+                    </p>
+                    <p class="text-break fs-5">
+                      <i class="bi bi-record-circle"></i> {{ prontuario.atendimento }}
+                    </p>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

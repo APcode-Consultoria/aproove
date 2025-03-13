@@ -14,6 +14,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(
+	scanBasePackages = {
+		"com.github.andrepenteado.roove"
+	},
 	scanBasePackageClasses = {
 		SecurityConfig.class,
 		AuthResource.class,
@@ -24,11 +27,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 	}
 )
 @EntityScan(
+	basePackages = {
+		"com.github.andrepenteado.roove"
+	},
 	basePackageClasses = {
 		Upload.class
 	}
 )
 @EnableJpaRepositories(
+	basePackages = {
+		"com.github.andrepenteado.roove"
+	},
 	basePackageClasses = {
 		UploadRepository.class
 	}

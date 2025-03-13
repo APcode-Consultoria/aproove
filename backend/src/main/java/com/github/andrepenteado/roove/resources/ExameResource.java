@@ -2,6 +2,7 @@ package com.github.andrepenteado.roove.resources;
 
 import com.github.andrepenteado.roove.domain.entities.Exame;
 import com.github.andrepenteado.roove.services.ExameService;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import static com.github.andrepenteado.roove.RooveApplication.PERFIL_FISIOTERAPE
 @RestController
 @RequestMapping("/exames")
 @RequiredArgsConstructor
+@Observed
 @Slf4j
 public class ExameResource {
 

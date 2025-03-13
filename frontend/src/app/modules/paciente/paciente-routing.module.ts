@@ -12,21 +12,21 @@ const routes: Routes = [
     path: 'pesquisar',
     component: PesquisarComponent,
     canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}_FISIOTERAPEUTA`] }
+    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
   },
 
   {
     path: 'cadastro',
     component: CadastroComponent,
     canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}_FISIOTERAPEUTA`] }
+    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
   },
 
   {
     path: 'cadastro/:id',
     component: CadastroComponent,
     canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}_FISIOTERAPEUTA`] }
+    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
   }
 
 ];

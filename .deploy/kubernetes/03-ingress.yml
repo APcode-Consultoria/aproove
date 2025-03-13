@@ -10,21 +10,21 @@ spec:
   tls:
     - secretName: cert-apcode.com.br
   rules:
-    - host: api-roove.apcode.com.br
+    - host: sistemas.apcode.com.br
       http:
         paths:
           - pathType: Prefix
-            path: /
+            path: /roove-backend
             backend:
               service:
                 name: roove-backend
                 port:
                   name: roove-back
-    - host: roove.apcode.com.br
+    - host: sistemas.apcode.com.br
       http:
         paths:
           - pathType: Prefix
-            path: /
+            path: /roove
             backend:
               service:
                 name: roove-frontend
