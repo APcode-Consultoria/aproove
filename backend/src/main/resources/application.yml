@@ -1,7 +1,7 @@
 spring:
 
   application:
-    name: aproove
+    name: roove
 
   datasource:
     url: jdbc:postgresql://db.apcode.com.br/aproove-dbname
@@ -21,10 +21,30 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
 
+  security:
+    oauth2:
+      client:
+        registration:
+          "[com.github.andrepenteado.roove]":
+            provider: com.github.andrepenteado.sso.portal
+            client-name: Módulo de Controle
+            client-id: PRODUCAO-controle
+            client-secret: ***REMOVED***
+            authorization-grant-type: authorization_code
+            scope: openid
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-authentication-method: client_secret_basic
+        provider:
+          "[com.github.andrepenteado.sso.portal]":
+            issuer-uri: https://login.apcode.com.br
+
 server:
   forward-headers-strategy: framework
+  port: 8080
   error:
     include-message: always
+  servlet:
+    context-path: /roove-backend
 
 management:
   endpoints:
@@ -36,4 +56,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: http://cluster.apcode.com.br:9411
+      endpoint: http://sistemas.apcode.com.br:9411
+
+frontend:
+  pagina-inicial: https://sistemas.apcode.com.br/roove/pagina-inicial
