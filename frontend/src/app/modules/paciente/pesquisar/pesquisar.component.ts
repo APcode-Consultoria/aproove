@@ -2,26 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Datatables, ExibirMensagemService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
-import { ngxLoadingAnimationTypes } from "ngx-loading";
 import { Paciente } from "../../../domain/entities/paciente";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
-  selector: 'app-pesquisar',
-  templateUrl: './pesquisar.component.html',
-  styles: ``
+    selector: 'app-pesquisar',
+    templateUrl: './pesquisar.component.html',
+    styles: ``,
+    standalone: false
 })
 export class PesquisarComponent implements OnInit {
 
-  aguardar: boolean = true;
   lista: Paciente[] = [];
 
   constructor(
     private pacienteService: PacienteService,
     private exibirMensagem: ExibirMensagemService,
+    private spinnerService: NgxSpinnerService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.spinnerService.show();
     this.pesquisar();
   }
 
@@ -29,7 +31,7 @@ export class PesquisarComponent implements OnInit {
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
         this.lista = listaPacientes;
-        this.aguardar = false;
+        this.spinnerService.hide();
         setTimeout(() => {
           $('#datatable-pesquisar-paciente').DataTable(Datatables.config);
         }, 5);
@@ -59,5 +61,4 @@ export class PesquisarComponent implements OnInit {
     });
   }
 
-  protected readonly ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 }

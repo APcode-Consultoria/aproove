@@ -1,13 +1,14 @@
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { ReactiveFormsModule } from '@angular/forms';
 
-import { ReactiveFormsModule } from "@angular/forms";
-import { NgxLoadingModule } from "ngx-loading";
-import { CadastroComponent } from './cadastro/cadastro.component';
 import { PacienteRoutingModule } from './paciente-routing.module';
+import { CadastroComponent } from './cadastro/cadastro.component';
 import { PesquisarComponent } from './pesquisar/pesquisar.component';
+
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { FloatingButtonComponent } from "@andre.penteado/ngx-apcore";
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -19,13 +20,14 @@ import { FloatingButtonComponent } from "@andre.penteado/ngx-apcore";
     PacienteRoutingModule,
     NgxMaskDirective,
     NgxMaskPipe,
-    NgxLoadingModule,
     ReactiveFormsModule,
-    FloatingButtonComponent
+    FloatingButtonComponent,
+    NgxSpinnerModule
   ],
   providers: [
     provideNgxMask(),
     DatePipe
-  ]
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class PacienteModule { }

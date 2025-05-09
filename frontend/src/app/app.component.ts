@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'roove-root',
-  template: `
+    selector: 'roove-root',
+    template: `
     <router-outlet />
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class AppComponent {
 }

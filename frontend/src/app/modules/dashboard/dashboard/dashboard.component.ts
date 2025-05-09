@@ -4,10 +4,10 @@ import { ProntuarioService } from "../../../services/prontuario.service";
 import { PacienteService } from "../../../services/paciente.service";
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styles: [
-  ]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styles: [],
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
 

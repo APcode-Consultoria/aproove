@@ -11,7 +11,9 @@
 
   <div class="card border border-primary rounded shadow-lg">
 
-    <ngx-loading [show]="aguardar" [config]="{ primaryColour: '#dd0031', secondaryColour: '#fff', animationType: ngxLoadingAnimationTypes.doubleBounce }"></ngx-loading>
+    <ngx-spinner color="rgba(var(--bs-secondary-bg-rgb), 0.8)" bdColor="rgba(var(--bs-secondary-color-rgb), 0.8)" type="ball-atom" [fullScreen]="false">
+      <p style="font-size: 20px; color: rgba(var(--bs-secondary-bg-rgb), 0.8); margin-top: 160px;">Aguarde, carregando ...</p>
+    </ngx-spinner>
 
     <div class="card-body custom-datatables table-responsive table-border-radius">
       <table id="datatable-pesquisar-paciente" class="table table-styling table-striped nowrap align-middle w-100">

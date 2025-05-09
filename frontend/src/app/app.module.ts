@@ -5,13 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from "../environments/environment";
 import { LOGOTIPO, MODULO, PREFIXO_PERFIL_SISTEMA } from "./config/layout";
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { MENU } from "./config/menu";
 import { registerLocaleData } from "@angular/common";
 import localePT from '@angular/common/locales/pt';
 import { HttpErrorsInterceptor, PARAMS, WithCredentialsInterceptor } from "@andre.penteado/ngx-apcore";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgxLoadingModule } from "ngx-loading";
 import { ToastrModule } from "ngx-toastr";
 
 registerLocaleData(localePT);
@@ -20,16 +19,18 @@ registerLocaleData(localePT);
   declarations: [
     AppComponent
   ],
+  bootstrap: [
+    AppComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule,
-    NgxLoadingModule,
-    ToastrModule.forRoot()
-  ],
-  providers: [
-    { provide: LOCALE_ID, useValue: "pt-BR" },
+    ToastrModule.forRoot()],
+    providers: [
+    {
+      provide: LOCALE_ID, useValue: "pt-BR"
+    },
     {
       provide: PARAMS, useValue: {
         logotipo: LOGOTIPO,
@@ -40,9 +41,14 @@ registerLocaleData(localePT);
         prefixoPerfil: PREFIXO_PERFIL_SISTEMA
       }
     },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorsInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: WithCredentialsInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
+    {
+      provide: HTTP_INTERCEPTORS, useClass: HttpErrorsInterceptor, multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: WithCredentialsInterceptor, multi: true
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
-export class AppModule { }
+export class AppModule {
+}

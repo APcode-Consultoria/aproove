@@ -18,9 +18,10 @@ import { Exame } from "../../../domain/entities/exame";
 import { Paciente } from "../../../domain/entities/paciente";
 
 @Component({
-  selector: 'app-cadastro',
-  templateUrl: './cadastro.component.html',
-  styles: ``
+    selector: 'app-cadastro',
+    templateUrl: './cadastro.component.html',
+    styles: ``,
+    standalone: false
 })
 export class CadastroComponent implements OnInit {
 
