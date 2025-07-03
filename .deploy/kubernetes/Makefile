@@ -2,13 +2,11 @@
 # E antes de expor o serviço, verificar se o deploy foi concluído.
 
 deploy:
-	kubectl apply -f 00-namespace.yml          \
-	              -f 01-secret.yml             \
-				  -f 02-deployment-backend.yml \
-				  -f 02-deployment-frontend.yml
-
-expor:
-	kubectl apply -f 03-ingress.yml
+	kubectl apply -f 00-namespace.yml           \
+	              -f 01-secret.yml              \
+				  -f 02-deployment-backend.yml  \
+				  -f 02-deployment-frontend.yml \
+	              -f 03-ingress.yml
 
 delete:
 	kubectl delete namespace aproove
