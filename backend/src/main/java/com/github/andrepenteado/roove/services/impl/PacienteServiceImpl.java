@@ -1,16 +1,16 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import br.unesp.fc.andrepenteado.core.common.CoreUtil;
 import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.domain.repositories.PacienteRepository;
 import com.github.andrepenteado.roove.services.PacienteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class PacienteServiceImpl implements PacienteService {
 
     private final PacienteRepository pacienteRepository;
@@ -34,10 +35,7 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente incluir(Paciente paciente, UserLogin userLogin, BindingResult validacao) {
-        String erros = CoreUtil.validateModel(validacao);
-        if (erros != null)
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
+    public Paciente incluir(@Valid Paciente paciente, UserLogin userLogin) {
         if (pacienteRepository.findByCpf(paciente.getCpf()) != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, String.format("CPF %n já se encontra cadastrado"));
         paciente.setDataCadastro(LocalDateTime.now());
@@ -46,10 +44,7 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente alterar(Paciente paciente, Long id, UserLogin userLogin, BindingResult validacao) {
-        String erros = CoreUtil.validateModel(validacao);
-        if (erros != null)
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
+    public Paciente alterar(@Valid Paciente paciente, Long id, UserLogin userLogin) {
         Paciente pacienteAlterar = buscar(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID %n não encontrado", id)));
         BeanUtils.copyProperties(paciente, pacienteAlterar);

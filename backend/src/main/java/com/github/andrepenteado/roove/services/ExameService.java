@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.services;
 
 import com.github.andrepenteado.roove.domain.entities.Exame;
-import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public interface ExameService {
 
     List<Exame> listarProntuariosPorPaciente(Long idPaciente);
 
-    Exame incluir(Exame exame, BindingResult validacao);
+    Exame incluir(@Valid Exame exame);
 
     void excluir(Long id);
 

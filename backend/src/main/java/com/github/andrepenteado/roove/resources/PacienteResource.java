@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,16 +46,16 @@ public class PacienteResource {
 
     @PostMapping
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente incluir(@Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin, BindingResult validacao) {
+    public Paciente incluir(@Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
         log.info("Incluir novo paciente {}", paciente.toString());
-        return pacienteService.incluir(paciente, userLogin, validacao);
+        return pacienteService.incluir(paciente, userLogin);
     }
 
     @PutMapping("/{id}")
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin, BindingResult validacao) {
+    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
         log.info("Alterar dados do paciente {}", paciente);
-        return pacienteService.alterar(paciente, id, userLogin, validacao);
+        return pacienteService.alterar(paciente, id, userLogin);
     }
 
     @DeleteMapping("/{id}")

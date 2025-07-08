@@ -1,14 +1,14 @@
 package com.github.andrepenteado.roove.services.impl;
 
-import br.unesp.fc.andrepenteado.core.common.CoreUtil;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.andrepenteado.roove.domain.repositories.ProntuarioRepository;
 import com.github.andrepenteado.roove.services.ProntuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ProntuarioServiceImpl implements ProntuarioService {
 
     private final ProntuarioRepository prontuarioRepository;
@@ -26,10 +27,7 @@ public class ProntuarioServiceImpl implements ProntuarioService {
     }
 
     @Override
-    public Prontuario incluir(Prontuario prontuario, BindingResult validacao) {
-        String erros = CoreUtil.validateModel(validacao);
-        if (erros != null)
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, erros);
+    public Prontuario incluir(@Valid Prontuario prontuario) {
         prontuario.setDataRegistro(LocalDateTime.now());
         return prontuarioRepository.save(prontuario);
     }

@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.services;
 
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
-import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public interface ProntuarioService {
 
     List<Prontuario> listarProntuariosPorPaciente(Long idPaciente);
 
-    Prontuario incluir(Prontuario prontuario, BindingResult validacao);
+    Prontuario incluir(@Valid Prontuario prontuario);
 
     void excluir(Long id);
 

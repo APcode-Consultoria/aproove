@@ -43,11 +43,6 @@
     <dependencies>
         <dependency>
             <groupId>br.unesp.fc.andrepenteado.core</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>br.unesp.fc.andrepenteado.core</groupId>
             <artifactId>web</artifactId>
             <version>1.0.0</version>
         </dependency>
