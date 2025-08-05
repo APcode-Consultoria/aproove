@@ -2,7 +2,6 @@ package com.github.andrepenteado.roove.resources;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,8 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.github.andrepenteado.roove.MockConfiguration.getPaciente;
+import static com.github.andrepenteado.roove.MockConfiguration.getToken;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,9 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestExecutionListeners({
-        DependencyInjectionTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class
+    DependencyInjectionTestExecutionListener.class,
+    TransactionalTestExecutionListener.class,
+    DbUnitTestExecutionListener.class
 })
 @DatabaseSetup("/datasets/prontuario.xml")
 @Transactional
@@ -52,42 +54,33 @@ public class ProntuarioResourceTest {
 
     private final String TEXTO_ATENDIMENTO = "Atendimento de testes";
 
-    private Paciente getPaciente() {
-        Paciente paciente = new Paciente();
-        paciente.setId(100L);
-        paciente.setDataCadastro(LocalDateTime.now());
-        paciente.setNome("Paciente com prontuário");
-        paciente.setCpf(99999999999L);
-        paciente.setQueixaPrincipal("Queixa principal NOT NULL");
-        paciente.setHistoriaMolestiaPregressa("Histório pregressa NOT NULL");
-        return paciente;
-    }
-
     private String getJsonProntuario() throws Exception {
         Prontuario prontuario = new Prontuario();
         prontuario.setDataRegistro(LocalDateTime.now());
         prontuario.setAtendimento(TEXTO_ATENDIMENTO);
-        prontuario.setPaciente(getPaciente());
+        prontuario.setPaciente(getPaciente(300L));
         return objectMapper.writeValueAsString(prontuario);
     }
 
     @Test
     @DisplayName("Listar prontuários do paciente")
     void testListarPorPaciente() throws Exception {
-        String json = mockMvc.perform(get("/prontuarios/100")
+        String json = mockMvc.perform(get("/prontuarios/300")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
         List<Prontuario> lista = objectMapper.readValue(json, new TypeReference<List<Prontuario>>() {});
-        assertEquals(lista.size(), 2);
+        assertEquals(2, lista.size());
     }
 
     @Test
     @DisplayName("Incluir novo prontuário")
     void testIncluir() throws Exception {
         String json = mockMvc.perform(post("/prontuarios")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonProntuario()))
@@ -101,6 +94,7 @@ public class ProntuarioResourceTest {
 
         // Sem dados obrigatórios
         mockMvc.perform(post("/prontuarios")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Prontuario())))
@@ -111,13 +105,15 @@ public class ProntuarioResourceTest {
     @DisplayName("Excluir prontuário existente")
     void testExcluir() throws Exception {
         mockMvc.perform(delete("/prontuarios/1000")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        /*mockMvc.perform(delete("/prontuarios/9999")
+        mockMvc.perform(delete("/prontuarios/9999")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());*/
+            .andExpect(status().isNotFound());
     }
 
 }

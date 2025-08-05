@@ -1,41 +1,47 @@
 <dataset>
     <paciente
-        id="100"
+        id="400"
         data_cadastro="2022-01-01 08:00:00.0000"
-        nome="Paciente 100"
+        usuario_cadastro="Arquiteto"
+        nome="Paciente 400"
         cpf="10010010011"
         queixa_principal="Queixa paciente 100"
         historia_molestia_pregressa="Moléstia paciente 100"
     />
 
-    <arquivo
-        id="1000"
+    <upload
+        uuid="00000000-0000-0000-0000-000000000001"
         nome="Arquivo #1000"
         tipo_mime="application/xml"
-        modificado="9999999999"
         tamanho="999999"
         base64="XXXXXXX"
     />
-    <arquivo
-        id="2000"
+    <upload
+        uuid="00000000-0000-0000-0000-000000000002"
         nome="Arquivo #2000"
         tipo_mime="application/xml"
-        modificado="9999999999"
+        tamanho="999999"
+        base64="XXXXXXX"
+    />
+    <upload
+        uuid="00000000-0000-0000-0000-000000000003"
+        nome="Arquivo #3000"
+        tipo_mime="application/xml"
         tamanho="999999"
         base64="XXXXXXX"
     />
 
     <exame
         id="1000"
-        id_paciente="100"
-        id_arquivo="1000"
+        id_paciente="400"
+        fk_upload="00000000-0000-0000-0000-000000000001"
         descricao="Exame #1000"
         data_upload="2022-01-01 08:00:00.0000"
     />
     <exame
         id="2000"
-        id_paciente="100"
-        id_arquivo="2000"
+        id_paciente="400"
+        fk_upload="00000000-0000-0000-0000-000000000002"
         descricao="Exame #2000"
         data_upload="2022-01-01 08:00:00.0000"
     />

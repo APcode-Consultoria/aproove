@@ -3,9 +3,7 @@ package com.github.andrepenteado.roove.services.impl;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.andrepenteado.roove.domain.repositories.ProntuarioRepository;
 import com.github.andrepenteado.roove.services.ProntuarioService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -27,19 +25,16 @@ public class ProntuarioServiceImpl implements ProntuarioService {
     }
 
     @Override
-    public Prontuario incluir(@Valid Prontuario prontuario) {
+    public Prontuario incluir(Prontuario prontuario) {
         prontuario.setDataRegistro(LocalDateTime.now());
         return prontuarioRepository.save(prontuario);
     }
 
     @Override
     public void excluir(Long id) {
-        try {
-            prontuarioRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Prontuario prontuario = prontuarioRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        prontuarioRepository.delete(prontuario);
     }
 
     @Override

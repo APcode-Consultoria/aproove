@@ -5,7 +5,6 @@ import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import io.micrometer.observation.annotation.Observed;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,19 +40,19 @@ public class PacienteResource {
     public Paciente buscar(@PathVariable Long id) {
         log.info("Buscar paciente de ID #{}", id);
         return pacienteService.buscar(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID #%n não encontrado", id)));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Paciente de ID #%s não encontrado", id)));
     }
 
     @PostMapping
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente incluir(@Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
+    public Paciente incluir(@RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
         log.info("Incluir novo paciente {}", paciente.toString());
         return pacienteService.incluir(paciente, userLogin);
     }
 
     @PutMapping("/{id}")
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Paciente alterar(@PathVariable Long id, @Valid @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
+    public Paciente alterar(@PathVariable Long id, @RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
         log.info("Alterar dados do paciente {}", paciente);
         return pacienteService.alterar(paciente, id, userLogin);
     }

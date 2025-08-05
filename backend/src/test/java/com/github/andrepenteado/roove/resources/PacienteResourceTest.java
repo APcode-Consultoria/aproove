@@ -19,14 +19,13 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.github.andrepenteado.roove.MockConfiguration.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-;
 
 /**
  * Testes do resource {@link com.github.andrepenteado.roove.resources.PacienteResource}
@@ -50,22 +49,6 @@ public class PacienteResourceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final String NOME_PACIENTE = "Nome de Paciente de Testes";
-
-    private final Long CPF_PACIENTE = 12345678901L;
-
-    private Paciente getPaciente(Long id) {
-        Paciente paciente = new Paciente();
-        if (id != null)
-            paciente.setId(id);
-        paciente.setDataCadastro(LocalDateTime.now());
-        paciente.setNome(NOME_PACIENTE);
-        paciente.setCpf(CPF_PACIENTE);
-        paciente.setQueixaPrincipal("Queixa principal NOT NULL");
-        paciente.setHistoriaMolestiaPregressa("Histório pregressa NOT NULL");
-        return paciente;
-    }
-
     private String getJsonPaciente(Long id) throws Exception {
         return objectMapper.writeValueAsString(getPaciente(id));
     }
@@ -74,22 +57,25 @@ public class PacienteResourceTest {
     @DisplayName("Listar todos pacientes")
     void testListar() throws Exception {
         String json = mockMvc.perform(get("/pacientes")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString();
         List<Paciente> lista = objectMapper.readValue(json, new TypeReference<List<Paciente>>() {});
-        assertEquals(lista.size(), 3);
+        assertEquals(3, lista.size());
     }
 
     @Test
     @DisplayName("Buscar pacientes por ID")
     void testBuscar() throws Exception {
         mockMvc.perform(get("/pacientes/100")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
         mockMvc.perform(get("/pacientes/999")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -98,6 +84,7 @@ public class PacienteResourceTest {
     @DisplayName("Incluir novo paciente")
     void testIncluir() throws Exception {
         String json = mockMvc.perform(post("/pacientes")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(-1L)))
@@ -106,11 +93,12 @@ public class PacienteResourceTest {
             .getResponse()
             .getContentAsString();
         Paciente pacienteNovo = objectMapper.readValue(json, Paciente.class);
-        assertEquals(pacienteNovo.getNome(), NOME_PACIENTE);
+        assertEquals(NOME_PACIENTE, pacienteNovo.getNome());
         assertNotNull(pacienteNovo.getId());
 
         // Sem dados obrigatórios
         mockMvc.perform(post("/pacientes")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
@@ -119,6 +107,7 @@ public class PacienteResourceTest {
 
         // CPF duplicado
         mockMvc.perform(post("/pacientes")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(-1L)))
@@ -130,6 +119,7 @@ public class PacienteResourceTest {
     @DisplayName("Alterar paciente existente")
     void testAlterar() throws Exception {
         String json = mockMvc.perform(put("/pacientes/100")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(100L)))
@@ -138,10 +128,11 @@ public class PacienteResourceTest {
             .getResponse()
             .getContentAsString();
         Paciente pacienteAlterado = objectMapper.readValue(json, Paciente.class);
-        assertEquals(pacienteAlterado.getNome(), NOME_PACIENTE);
-        assertEquals(pacienteAlterado.getId(), 100);
+        assertEquals(NOME_PACIENTE, pacienteAlterado.getNome());
+        assertEquals(100, pacienteAlterado.getId());
 
         mockMvc.perform(put("/pacientes/999")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(100L)))
@@ -149,6 +140,7 @@ public class PacienteResourceTest {
             .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("não encontrado")));
 
         mockMvc.perform(put("/pacientes/100")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(getJsonPaciente(300L)))
@@ -156,6 +148,7 @@ public class PacienteResourceTest {
             .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("porém enviado dados do paciente")));
 
         mockMvc.perform(put("/pacientes/100")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Paciente())))
@@ -167,15 +160,18 @@ public class PacienteResourceTest {
     @DisplayName("Excluir paciente existente")
     void testExcluir() throws Exception {
         mockMvc.perform(delete("/pacientes/200")
+                .with(authentication(getToken()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        /*mockMvc.perform(delete("/pacientes/999")
+        mockMvc.perform(delete("/pacientes/999")
+            .with(authentication(getToken()))
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound());*/
+        .andExpect(status().isNotFound());
 
         mockMvc.perform(delete("/pacientes/300")
+                .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isFound())
             .andExpect(ex -> assertTrue(ex.getResolvedException().getMessage().contains("Existe registros no prontuário do paciente")));

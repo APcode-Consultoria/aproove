@@ -3,9 +3,7 @@ package com.github.andrepenteado.roove.services.impl;
 import com.github.andrepenteado.roove.domain.entities.Exame;
 import com.github.andrepenteado.roove.domain.repositories.ExameRepository;
 import com.github.andrepenteado.roove.services.ExameService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -27,19 +25,16 @@ public class ExameServiceImpl implements ExameService {
     }
 
     @Override
-    public Exame incluir(@Valid Exame exame) {
+    public Exame incluir(Exame exame) {
         exame.setDataUpload(LocalDateTime.now());
         return exameRepository.save(exame);
     }
 
     @Override
     public void excluir(Long id) {
-        try {
-            exameRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Exame exame = exameRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        exameRepository.delete(exame);
     }
 
     @Override

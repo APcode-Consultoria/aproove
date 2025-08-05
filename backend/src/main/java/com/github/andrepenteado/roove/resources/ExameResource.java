@@ -3,7 +3,6 @@ package com.github.andrepenteado.roove.resources;
 import com.github.andrepenteado.roove.domain.entities.Exame;
 import com.github.andrepenteado.roove.services.ExameService;
 import io.micrometer.observation.annotation.Observed;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
@@ -31,7 +30,7 @@ public class ExameResource {
 
     @PostMapping
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Exame incluir(@Valid @RequestBody Exame exame) {
+    public Exame incluir(@RequestBody Exame exame) {
         log.info("Incluir novo exame {}", exame.toString());
         return exameService.incluir(exame);
     }

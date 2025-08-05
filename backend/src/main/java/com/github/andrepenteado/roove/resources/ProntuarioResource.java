@@ -3,7 +3,6 @@ package com.github.andrepenteado.roove.resources;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import io.micrometer.observation.annotation.Observed;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
@@ -31,7 +30,7 @@ public class ProntuarioResource {
 
     @PostMapping
     @Secured({ PERFIL_FISIOTERAPEUTA })
-    public Prontuario incluir(@Valid @RequestBody Prontuario prontuario) {
+    public Prontuario incluir(@RequestBody Prontuario prontuario) {
         log.info("Incluir novo prontuário {}", prontuario.toString());
         return prontuarioService.incluir(prontuario);
     }

@@ -2,6 +2,7 @@
     <paciente
         id="100"
         data_cadastro="2022-01-01 08:00:00.0000"
+        usuario_cadastro="Arquiteto"
         nome="Paciente 100"
         cpf="10010010011"
         queixa_principal="Queixa paciente 100"
@@ -10,6 +11,7 @@
     <paciente
         id="200"
         data_cadastro="2022-01-01 08:00:00.0000"
+        usuario_cadastro="Arquiteto"
         nome="Paciente 200"
         cpf="20020020022"
         queixa_principal="Queixa paciente 200"
@@ -18,6 +20,7 @@
     <paciente
         id="300"
         data_cadastro="2022-01-01 08:00:00.0000"
+        usuario_cadastro="Arquiteto"
         nome="Paciente 300"
         cpf="30030030033"
         queixa_principal="Queixa paciente 300"
