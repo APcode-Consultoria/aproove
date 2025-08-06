@@ -13,6 +13,8 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     List<Paciente> findAllByOrderByNomeAsc();
 
+    List<Paciente> findAllByResponsavelOrderByNomeAsc(String responsavel);
+
     Paciente findByCpf(Long cpf);
 
     @Query("SELECT COUNT(*) FROM Paciente")

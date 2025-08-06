@@ -23,8 +23,10 @@
             <th scope="col" class="text-center">#</th>
             <th scope="col" class="text-start">Nome</th>
             <th scope="col" class="text-center">Telefone</th>
-            <th scope="col" class="text-center">E-mail</th>
-            <th scope="col" class="text-center">Cidade</th>
+            <th scope="col" class="text-center">Bairro</th>
+            @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+              <th scope="col" class="text-center">Responsável</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -38,11 +40,15 @@
               </td>
               <td class="text-center">{{ paciente.id }}</td>
               <td class="text-start">{{ paciente.nome }}</td>
-              <td class="text-center">{{ paciente.telefone }} @if (paciente.whatsapp) {
-                <i class="fa-brands fa-whatsapp"></i>
-              }</td>
-              <td class="text-center">{{ paciente.email }}</td>
-              <td class="text-center">{{ paciente.cidade }}</td>
+              <td class="text-center">{{ paciente.telefone }}
+                @if (paciente.whatsapp) {
+                  <i class="fa-brands fa-whatsapp"></i>
+                }
+              </td>
+              <td class="text-center">{{ paciente.bairro }}</td>
+              @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+                <td class="text-center">{{ paciente.responsavel }}</td>
+              }
             </tr>
           }
         </tbody>

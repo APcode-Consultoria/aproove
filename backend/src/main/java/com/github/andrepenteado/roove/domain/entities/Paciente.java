@@ -35,10 +35,10 @@ public class Paciente {
 
     private String usuarioUltimaAtualizacao;
 
-    @NotNull(message = "Nome do paciente é um campo obrigatório. ")
+    @NotNull(message = "Nome é um campo obrigatório")
     private String nome;
 
-    @NotNull(message = "CPF do paciente é um campo obrigatório. ")
+    @NotNull(message = "CPF é um campo obrigatório")
     private Long cpf;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -75,15 +75,17 @@ public class Paciente {
 
     private Integer frequenciaSemanal;
 
-    @NotNull(message = "Queixa principal (QP) do paciente é um campo obrigatório. ")
+    @NotNull(message = "Queixa principal (QP) é um campo obrigatório")
     private String queixaPrincipal;
 
-    @NotNull(message = "História Moléstia Pregressa do paciente é um campo obrigatório. ")
+    @NotNull(message = "História Moléstia Pregressa (HMP) é um campo obrigatório")
     private String historiaMolestiaPregressa;
 
     private String remedios;
 
     private String objetivos;
+
+    private String responsavel;
 
     @Override
     public final boolean equals(Object o) {

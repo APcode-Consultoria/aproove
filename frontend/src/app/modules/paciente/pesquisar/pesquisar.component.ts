@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Datatables, ExibirMensagemService } from "@andre.penteado/ngx-apcore";
+import { Datatables, ExibirMensagemService, LoginService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
 import { Paciente } from "../../../domain/entities/paciente";
 import { NgxSpinnerService } from "ngx-spinner";
+import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 
 @Component({
     selector: 'app-pesquisar',
@@ -13,12 +14,15 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class PesquisarComponent implements OnInit {
 
+  protected readonly PREFIXO_PERFIL_SISTEMA = PREFIXO_PERFIL_SISTEMA;
+
   lista: Paciente[] = [];
 
   constructor(
     private pacienteService: PacienteService,
     private exibirMensagem: ExibirMensagemService,
     private spinnerService: NgxSpinnerService,
+    protected loginService: LoginService,
     private router: Router
   ) { }
 

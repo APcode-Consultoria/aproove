@@ -5,7 +5,7 @@ CONNECT TO apsso-dbname;
 
 INSERT INTO empresa (data_cadastro, usuario_cadastro, razao_social, nome_fantasia, cnpj) VALUES (now(), 'Arquiteto do Sistema', 'Stúdio Roove de Pilates', 'Roove', 111111111111122);
 
-INSERT INTO sistema (data_cadastro, usuario_cadastro, identificador, nome, descricao, fk_empresa) VALUES (now(), 'Arquiteto do Sistema', 'com.github.andrepenteado.sso.roove', 'AProove', 'Sistema de controle de pacientes', currval('empresa_id_seq'));
+INSERT INTO sistema (data_cadastro, usuario_cadastro, identificador, nome, descricao, fk_empresa) VALUES (now(), 'Arquiteto do Sistema', 'com.github.andrepenteado.roove', 'AProove', 'Sistema de controle de pacientes', currval('empresa_id_seq'));
 INSERT INTO public.oauth2_registered_client (
     id, client_name, url_acesso, uri_provider, tipo, fk_sistema, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_authentication_methods,
     authorization_grant_types, redirect_uris, post_logout_redirect_uris, scopes, client_settings, token_settings)
@@ -28,5 +28,8 @@ VALUES (
 );
 INSERT INTO perfil_sistema (authority, fk_sistema, descricao)
 VALUES ('ROLE_com.github.andrepenteado.roove_FISIOTERAPEUTA', currval('sistema_id_seq'), 'Fisioterapeuta');
+INSERT INTO perfil_sistema (authority, fk_sistema, descricao)
+VALUES ('ROLE_com.github.andrepenteado.roove_DIRETOR', currval('sistema_id_seq'), 'Diretor Clínico');
 
 INSERT INTO authorities (username, authority) VALUES ('arquiteto', 'ROLE_com.github.andrepenteado.roove_FISIOTERAPEUTA');
+INSERT INTO authorities (username, authority) VALUES ('arquiteto', 'ROLE_com.github.andrepenteado.roove_DIRETOR');

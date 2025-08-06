@@ -48,6 +48,8 @@ public class RooveApplication {
 
 	public static final String PERFIL_FISIOTERAPEUTA = "ROLE_com.github.andrepenteado.roove_FISIOTERAPEUTA";
 
+    public static final String PERFIL_DIRETOR = "ROLE_com.github.andrepenteado.roove_DIRETOR";
+
 	public static void main(String[] args) {
 		SpringApplication.run(RooveApplication.class, args);
 	}

@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS Paciente (
     Historia_Molestia_Pregressa   TEXT       NOT NULL,
     Remedios                      TEXT       NULL,
     Objetivos                     TEXT       NULL,
+    Responsavel                   TEXT       NULL,
     CONSTRAINT PK_Paciente PRIMARY KEY (Id),
     CONSTRAINT UN_Paciente_CPF UNIQUE (CPF)
 );

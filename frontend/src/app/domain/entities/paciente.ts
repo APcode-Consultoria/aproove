@@ -29,5 +29,6 @@ export class Paciente {
   queixaPrincipal!: string;
   remedios!: string;
   objetivos!: string;
+  responsavel!: string;
 
 }

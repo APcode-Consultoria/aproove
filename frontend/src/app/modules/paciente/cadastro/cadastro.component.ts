@@ -66,6 +66,7 @@ export class CadastroComponent implements OnInit {
   historiaMolestiaPregressa = new FormControl(null, Validators.required);
   remedios = new FormControl(null);
   objetivos = new FormControl(null);
+  responsavel = new FormControl(null);
   formPaciente = new FormGroup({
     id: this.id,
     dataCadastro: this.dataCadastro,
@@ -93,7 +94,8 @@ export class CadastroComponent implements OnInit {
     queixaPrincipal: this.queixaPrincipal,
     historiaMolestiaPregressa: this.historiaMolestiaPregressa,
     remedios: this.remedios,
-    objetivos: this.objetivos
+    objetivos: this.objetivos,
+    responsavel: this.responsavel
   });
 
   // Formulário exames

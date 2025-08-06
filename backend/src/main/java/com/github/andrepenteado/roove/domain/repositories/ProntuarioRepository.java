@@ -1,15 +1,15 @@
 package com.github.andrepenteado.roove.domain.repositories;
 
-import java.util.List;
-
+import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.github.andrepenteado.roove.domain.entities.Prontuario;
+import java.util.List;
 
 public interface ProntuarioRepository extends JpaRepository<Prontuario, Long> {
 
-    List<Prontuario> findByPacienteIdOrderByDataRegistroDesc(Long idPaciente);
+    List<Prontuario> findByPacienteOrderByDataRegistroDesc(Paciente paciente);
 
     @Query("SELECT COUNT(*) FROM Prontuario")
     Integer total();
