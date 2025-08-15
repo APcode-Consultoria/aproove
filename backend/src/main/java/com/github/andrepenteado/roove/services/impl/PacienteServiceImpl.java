@@ -1,10 +1,10 @@
 package com.github.andrepenteado.roove.services.impl;
 
 import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
+import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.domain.repositories.PacienteRepository;
 import com.github.andrepenteado.roove.services.PacienteService;
-import com.github.andrepenteado.roove.services.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;

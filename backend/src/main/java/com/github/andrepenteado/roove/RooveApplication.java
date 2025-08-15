@@ -7,6 +7,7 @@ import br.unesp.fc.andrepenteado.core.web.config.CorsConfig;
 import br.unesp.fc.andrepenteado.core.web.config.SecurityConfig;
 import br.unesp.fc.andrepenteado.core.web.exceptions.GlobalExceptionHandler;
 import br.unesp.fc.andrepenteado.core.web.resources.AuthResource;
+import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import br.unesp.fc.andrepenteado.core.web.services.UserLoginOAuth2Service;
 import br.unesp.fc.andrepenteado.core.web.services.UserLoginOidcService;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +26,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		UserLoginOidcService.class,
 		CorsConfig.class,
 		UploadResource.class,
-		GlobalExceptionHandler.class
+		GlobalExceptionHandler.class,
+        SecurityService.class
 	}
 )
 @EntityScan(
