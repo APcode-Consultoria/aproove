@@ -12,7 +12,7 @@ import br.unesp.fc.andrepenteado.core.web.services.UserLoginOAuth2Service;
 import br.unesp.fc.andrepenteado.core.web.services.UserLoginOidcService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(
@@ -52,7 +52,7 @@ public class RooveApplication {
 
     public static final String PERFIL_DIRETOR = "ROLE_com.github.andrepenteado.roove_DIRETOR";
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		SpringApplication.run(RooveApplication.class, args);
 	}
 
