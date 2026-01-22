@@ -5,7 +5,8 @@ import br.unesp.fc.andrepenteado.core.upload.UploadRepository;
 import br.unesp.fc.andrepenteado.core.upload.UploadResource;
 import br.unesp.fc.andrepenteado.core.web.config.CorsConfig;
 import br.unesp.fc.andrepenteado.core.web.config.SecurityConfig;
-import br.unesp.fc.andrepenteado.core.web.exceptions.GlobalExceptionHandler;
+import br.unesp.fc.andrepenteado.core.web.exceptions.DatabaseExceptionHandler;
+import br.unesp.fc.andrepenteado.core.web.exceptions.DefaultExceptionHandler;
 import br.unesp.fc.andrepenteado.core.web.resources.AuthResource;
 import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import br.unesp.fc.andrepenteado.core.web.services.UserLoginOAuth2Service;
@@ -26,7 +27,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		UserLoginOidcService.class,
 		CorsConfig.class,
 		UploadResource.class,
-		GlobalExceptionHandler.class,
+		DefaultExceptionHandler.class,
+		DatabaseExceptionHandler.class,
         SecurityService.class
 	}
 )

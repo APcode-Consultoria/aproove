@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Backend UP" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
-    <option name="ALTERNATIVE_JRE_PATH" value="corretto-25" />
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-25.0.1.8.1 (mise)" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="roove" />
