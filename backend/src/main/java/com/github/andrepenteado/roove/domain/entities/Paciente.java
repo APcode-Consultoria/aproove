@@ -85,6 +85,7 @@ public class Paciente {
 
     private String objetivos;
 
+    @NotNull(message = "Responsável é um campo obrigatório")
     private String responsavel;
 
     @Override

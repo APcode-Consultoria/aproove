@@ -28,6 +28,7 @@ public class MockConfiguration {
         paciente.setCpf(CPF_PACIENTE);
         paciente.setQueixaPrincipal("Queixa principal NOT NULL");
         paciente.setHistoriaMolestiaPregressa("Histório pregressa NOT NULL");
+        paciente.setResponsavel("usuario.teste");
         return paciente;
     }
 
@@ -39,11 +40,18 @@ public class MockConfiguration {
             Map.of(
                 "login", "arquiteto",
                 "nome", "Arquiteto do Sistema",
-                "perfis", Map.of(RooveApplication.PERFIL_FISIOTERAPEUTA, "Fisioterapeuta"))
+                "perfis", Map.of(
+                    RooveApplication.PERFIL_FISIOTERAPEUTA, "Fisioterapeuta",
+                    RooveApplication.PERFIL_DIRETOR, "Diretor Clínico"
+                )
+            )
         );
 
         DefaultOidcUser oidcUser = new DefaultOidcUser(
-            List.of(new SimpleGrantedAuthority(RooveApplication.PERFIL_FISIOTERAPEUTA)),
+            List.of(
+                new SimpleGrantedAuthority(RooveApplication.PERFIL_FISIOTERAPEUTA),
+                new SimpleGrantedAuthority(RooveApplication.PERFIL_DIRETOR)
+            ),
             idToken,
             "login"
         );

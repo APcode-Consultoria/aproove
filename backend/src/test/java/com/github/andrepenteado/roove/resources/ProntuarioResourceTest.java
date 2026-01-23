@@ -1,7 +1,5 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -18,6 +16,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,7 +72,7 @@ public class ProntuarioResourceTest {
             .andReturn()
             .getResponse()
             .getContentAsString();
-        List<Prontuario> lista = objectMapper.readValue(json, new TypeReference<List<Prontuario>>() {});
+        List<Prontuario> lista = objectMapper.readValue(json, new TypeReference<>() {});
         assertEquals(2, lista.size());
     }
 
@@ -98,7 +98,7 @@ public class ProntuarioResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Prontuario())))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableContent());
     }
 
     @Test

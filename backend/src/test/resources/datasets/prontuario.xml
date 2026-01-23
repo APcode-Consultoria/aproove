@@ -7,6 +7,7 @@
         cpf="10010010011"
         queixa_principal="Queixa paciente 100"
         historia_molestia_pregressa="Moléstia paciente 100"
+        responsavel = "usuario.teste"
     />
 
     <prontuario

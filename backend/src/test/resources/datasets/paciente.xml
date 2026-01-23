@@ -7,6 +7,7 @@
         cpf="10010010011"
         queixa_principal="Queixa paciente 100"
         historia_molestia_pregressa="Moléstia paciente 100"
+        responsavel = "usuario.teste"
     />
     <paciente
         id="200"
@@ -16,6 +17,7 @@
         cpf="20020020022"
         queixa_principal="Queixa paciente 200"
         historia_molestia_pregressa="Moléstia paciente 200"
+        responsavel = "usuario.teste"
     />
     <paciente
         id="300"
@@ -25,6 +27,7 @@
         cpf="30030030033"
         queixa_principal="Queixa paciente 300"
         historia_molestia_pregressa="Moléstia paciente 300"
+        responsavel = "usuario.teste"
     />
     <prontuario
         id="1000"

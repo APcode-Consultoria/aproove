@@ -28,18 +28,18 @@
         </developer>
     </developers>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>25</maven.compiler.release>
+    </properties>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.1</version>
         <relativePath/>
     </parent>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>25</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -124,33 +124,32 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>github-apcode</id>
-            <name>GitHub Packages - APcode</name>
-            <url>https://maven.pkg.github.com/andrepenteado/apcore</url>
-        </repository>
-    </repositories>
-
     <build>
         <finalName>roove</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <image>
-                        <builder>paketobuildpacks/builder-jammy-base:latest</builder>
-                    </image>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <compilerArgument>-proc:full</compilerArgument>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.unesp.br/api/v4/projects/592/packages/maven</url>
+        </repository>
+    </repositories>
 
 </project>
