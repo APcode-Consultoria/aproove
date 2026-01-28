@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:alpine
 
 ARG AMBIENTE=production
 ARG CONTEXT_PATH="/roove"
