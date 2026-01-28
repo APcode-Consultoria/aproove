@@ -34,12 +34,13 @@ spring:
         provider:
           "[com.github.andrepenteado.sso.portal]":
             issuer-uri: https://login.apcode.com.br
+  web:
+    error:
+      include-message: always
 
 server:
   forward-headers-strategy: framework
   port: 8080
-  error:
-    include-message: always
   servlet:
     context-path: /roove-backend
 
@@ -51,9 +52,9 @@ management:
   tracing:
     sampling:
       probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://sistemas.apcode.com.br:9411
+    export:
+      zipkin:
+        endpoint: http://sistemas.apcode.com.br:9411
 
 frontend:
   pagina-inicial: https://sistemas.apcode.com.br/roove/pagina-inicial

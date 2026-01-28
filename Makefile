@@ -1,5 +1,7 @@
-VERSAO_APP := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file backend/pom.xml)
-#VERSAO_FRONTEND := $(shell cd frontend && npm pkg get version | sed 's/"//g')
+.ONESHELL:
+.PHONY: build
+SHELL := /bin/bash
+VERSAO_APP = $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' ./backend/pom.xml | head -n 1)
 
 build:
 	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin

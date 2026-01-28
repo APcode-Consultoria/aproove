@@ -1,6 +1,3 @@
-# Fazer o deploy do login para depois fazer o deploy dos outros serviços.
-# E antes de expor o serviço, verificar se o deploy foi concluído.
-
 deploy:
 	kubectl apply -f 00-namespace.yml           \
 	              -f 01-secret.yml              \

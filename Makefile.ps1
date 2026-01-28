@@ -7,7 +7,7 @@ switch($exec) {
     "build-all" {
         Get-Content 'C:\Users\andrepenteado\ownCloud\Particular\token-github.txt' | docker login ghcr.io --username andrepenteado --password-stdin
         cd ./frontend/ && ng build --configuration=production --output-path=dist/production && cd ../
-        $VERSAO = mvn help:evaluate '-Dexpression=project.version' '-q' '-DforceStdout' '-f' './backend/pom.xml'
+        $VERSAO = ([xml](Get-Content ./backend/pom.xml)).project.version
         mvn -U clean package -DskipTests -f ./backend/pom.xml
         docker buildx build -f .deploy/dockerfiles/backend -t ghcr.io/andrepenteado/aproove/backend -t ghcr.io/andrepenteado/aproove/backend:$VERSAO --push .
         docker buildx build -f .deploy/dockerfiles/frontend -t ghcr.io/andrepenteado/aproove/frontend -t ghcr.io/andrepenteado/aproove/frontend:$VERSAO --push .
