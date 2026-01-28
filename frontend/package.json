@@ -41,7 +41,7 @@
     "jszip": "^3.10.1",
     "ngx-mask": "^20.0.3",
     "ngx-spinner": "^21.0.0",
-    "ngx-toastr": "^19.1.0",
+    "ngx-toastr": "^20.0.0",
     "pdfmake": "^0.3.2",
     "rxjs": "~7.8.2",
     "sweetalert2": "^11.26.17",
