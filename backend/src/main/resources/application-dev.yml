@@ -21,7 +21,8 @@ spring:
 
 management:
   tracing:
-    enabled: false
+    export:
+      enabled: false
 
 frontend:
   pagina-inicial: http://localhost:4200/roove/pagina-inicial

@@ -1,14 +1,178 @@
 .ONESHELL:
-.PHONY: build
-SHELL := /bin/bash
-VERSAO_APP = $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' ./backend/pom.xml | head -n 1)
+.SHELLFLAGS = -ec
+.PHONY: help \
+        build-all build-frontend build-backend build-images \
+        docker-login docker-logout \
+        k8s-deploy k8s-delete \
+        k8s-log-backend k8s-log-frontend \
+        k8s-update k8s-get
 
-build:
-	echo $(GITHUB_TOKEN) | docker login ghcr.io --username andrepenteado --password-stdin
-	cd ./frontend/ && ng build --configuration=production --output-path=dist/production && cd ../
-	mvn -U clean package --file backend/pom.xml -DskipTests
-	docker buildx build -f .deploy/dockerfiles/backend -t ghcr.io/andrepenteado/aproove/backend -t ghcr.io/andrepenteado/aproove/backend:$(VERSAO_APP) --push .
-	docker buildx build -f .deploy/dockerfiles/frontend -t ghcr.io/andrepenteado/aproove/frontend -t ghcr.io/andrepenteado/aproove/frontend:$(VERSAO_APP) --push .
-	cd ./frontend/ && ng build --configuration=localhost --output-path=dist/localhost && cd ../
-	docker buildx build -f .deploy/dockerfiles/frontend --build-arg AMBIENTE=localhost -t ghcr.io/andrepenteado/aproove/frontend:dev --push .
-	docker logout ghcr.io
+SHELL := /bin/bash
+
+# =====================
+# VARIÁVEIS
+# =====================
+REGISTRY     := ghcr.io
+NAMESPACE    := andrepenteado/aproove
+ANGULAR_DIST := production
+K8S_NS       := aproove
+
+VERSAO_APP := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
+
+# URL onde o LOGIN já deve estar disponível
+LOGIN_HEALTH_URL := https://login.aproove.com.br/actuator/health
+
+# =====================
+# HELP
+# =====================
+help:
+	@echo ""
+	@echo "🛠️  Makefile AProove — comandos disponíveis"
+	@echo ""
+	@echo "🔐 Registry (GHCR):"
+	@echo "   docker-login         → Login no GitHub Container Registry"
+	@echo "   docker-logout        → Logout do registry"
+	@echo ""
+	@echo "🚀 Build:"
+	@echo "   build-frontend       → Build do frontend Angular"
+	@echo "   build-backend        → Build do backend Java (Maven)"
+	@echo "   build-images         → Build & push das imagens Docker"
+	@echo "   build-all            → Build completo (frontend + backend + imagens)"
+	@echo ""
+	@echo "☸️ Kubernetes:"
+	@echo "   k8s-deploy           → Deploy com validação prévia do LOGIN"
+	@echo "   k8s-update           → Reinicia e acompanha o rollout"
+	@echo "   k8s-log-backend      → Logs do backend"
+	@echo "   k8s-log-frontend     → Logs do frontend"
+	@echo "   k8s-delete           → Remove o namespace aproove"
+	@echo "   k8s-get              → Lista recursos do namespace"
+	@echo ""
+	@echo "Exemplo:"
+	@echo "  make build-all"
+	@echo "  make k8s-deploy"
+	@echo ""
+
+# =====================
+# LOGIN / LOGOUT
+# =====================
+docker-login:
+	@if [ -n "$(GITHUB_TOKEN)" ]; then \
+		echo "🔐 Login automático no GHCR"; \
+		echo "$(GITHUB_TOKEN)" | docker login $(REGISTRY) --username andrepenteado --password-stdin; \
+	else \
+		echo "❌ GITHUB_TOKEN não definido"; \
+		exit 1; \
+	fi
+
+docker-logout:
+	@echo "🔓 Logout do GHCR"
+	@docker logout $(REGISTRY)
+
+# =====================
+# BUILD FRONTEND
+# =====================
+build-frontend:
+	@echo "🎨 Build do frontend Angular ($(ANGULAR_DIST))"
+	cd frontend
+	npm ci
+	ng build --configuration=$(ANGULAR_DIST) --output-path=dist/$(ANGULAR_DIST)
+	cd ..
+	@echo "✅ Frontend buildado com sucesso"
+
+# =====================
+# BUILD BACKEND
+# =====================
+build-backend:
+	@echo "☕ Build do backend Java (Maven)"
+	mvn -U clean package \
+		--file backend/pom.xml \
+		-DskipTests
+	@echo "✅ Backend buildado com sucesso"
+
+# =====================
+# BUILD IMAGENS
+# =====================
+build-images:
+	@echo "🐳 Build e push das imagens Docker (versão $(VERSAO_APP))"
+
+	@echo "   📦 Backend"
+	docker buildx build \
+		-f .deploy/dockerfiles/backend \
+		-t $(REGISTRY)/$(NAMESPACE)/backend \
+		-t $(REGISTRY)/$(NAMESPACE)/backend:$(VERSAO_APP) \
+		--push .
+
+	@echo "   📦 Frontend (produção)"
+	docker buildx build \
+		-f .deploy/dockerfiles/frontend \
+		-t $(REGISTRY)/$(NAMESPACE)/frontend \
+		-t $(REGISTRY)/$(NAMESPACE)/frontend:$(VERSAO_APP) \
+		--push .
+
+	@echo "🚀 Imagens publicadas com sucesso"
+
+# =====================
+# BUILD COMPLETO
+# =====================
+build-all: docker-login build-frontend build-backend build-images docker-logout
+	@echo "🎉 Build completo finalizado!"
+
+# ============================================================
+# 🚀 Deploy Kubernetes (com validação de LOGIN)
+# ============================================================
+k8s-deploy:
+	@echo "🚀 [1/4] Inicializando namespace e secrets"
+	kubectl apply -f .deploy/kubernetes/00-namespace.yml
+	kubectl apply -f .deploy/kubernetes/01-secret.yml
+
+	@echo "🔐 [2/4] Validando LOGIN externo"
+	@for i in {1..60}; do \
+	  curl -sf $(LOGIN_HEALTH_URL) && break; \
+	  echo "⏳ Login ainda não disponível..."; \
+	  sleep 5; \
+	done || { echo "❌ LOGIN indisponível. Abortando deploy."; exit 1; }
+
+	@echo "🚀 [3/4] Deploy do backend e frontend"
+	kubectl apply -f .deploy/kubernetes/02-deployment-backend.yml
+	kubectl apply -f .deploy/kubernetes/02-deployment-frontend.yml
+
+	@echo "🌐 [4/4] Aplicando ingress"
+	kubectl apply -f .deploy/kubernetes/03-ingress.yml
+
+	@echo "✅ Deploy do AProove finalizado com sucesso"
+
+# =====================
+# 🧹 Remoção completa
+# =====================
+k8s-delete:
+	@echo "🧹 Removendo namespace $(K8S_NS)"
+	kubectl delete namespace $(K8S_NS)
+
+# =====================
+# 📄 Logs
+# =====================
+k8s-log-backend:
+	@echo "📄 Logs do BACKEND"
+	kubectl logs -n $(K8S_NS) service/aproove-backend -f
+
+k8s-log-frontend:
+	@echo "📄 Logs do FRONTEND"
+	kubectl logs -n $(K8S_NS) service/aproove-frontend -f
+
+# =====================
+# ♻️ Rollout
+# =====================
+k8s-update:
+	@echo "♻️ Reiniciando BACKEND e FRONTEND"
+	kubectl rollout restart deployment aproove-backend -n $(K8S_NS)
+	kubectl rollout restart deployment aproove-frontend -n $(K8S_NS)
+	kubectl rollout status deployment aproove-backend -n $(K8S_NS)
+	kubectl rollout status deployment aproove-frontend -n $(K8S_NS)
+	@echo "✅ Rollout finalizado"
+
+# =====================
+# 🔍 Inspeção
+# =====================
+k8s-get:
+	@echo "🔍 Recursos do namespace $(K8S_NS)"
+	kubectl get all -n $(K8S_NS)

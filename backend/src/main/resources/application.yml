@@ -48,7 +48,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include:
+          - prometheus
+          - health
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
   tracing:
     sampling:
       probability: 1.0

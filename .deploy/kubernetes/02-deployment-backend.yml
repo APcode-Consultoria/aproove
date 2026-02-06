@@ -29,6 +29,18 @@ spec:
 #              cpu: 8000m
           ports:
             - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /roove-backend/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /roove-backend/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
       imagePullSecrets:
         - name: github-secret
 ---
