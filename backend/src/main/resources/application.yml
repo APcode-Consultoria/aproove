@@ -10,6 +10,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: aproove-pool
+      initializationFailTimeout: 0
+      connectionTimeout: 30000
 
   jpa:
     show-sql: true

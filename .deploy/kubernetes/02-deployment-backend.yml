@@ -19,6 +19,16 @@ spec:
       labels:
         <<: *selector
     spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:18-alpine
+          command:
+            - sh
+            - -c
+            - >
+              until pg_isready -h db.apcode.com.br -U aproove-dbuser;
+              do sleep 2;
+              done;
       containers:
         - name: *name
           image: ghcr.io/andrepenteado/aproove/backend
