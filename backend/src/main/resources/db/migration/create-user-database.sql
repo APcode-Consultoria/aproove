@@ -12,7 +12,7 @@ INSERT INTO public.oauth2_registered_client (
 VALUES (
    gen_random_uuid(), 'Máquina Local', 'http://localhost:4200/roove/login', 'http://localhost:30000', 'LOCAL', currval('sistema_id_seq'), 'LOCAL-roove', '2023-01-01 00:00:00.000000',
    '{bcrypt}$2y$10$uVX3rDMu9VbU60KpcBxiHOj4eIdeEJX5KoJ0a5N8WMYcXzYwpylji', null, 'client_secret_basic',  'refresh_token,client_credentials,authorization_code',
-   'http://localhost:8080/roove-backend/authorized,http://localhost:8080/roove-backend/login/oauth2/code/com.github.andrepenteado.roove', 'http://localhost:8080/roove-backend/logout', 'openid',
+   'http://localhost:8080/roove-Dockerfile/authorized,http://localhost:8080/roove-Dockerfile/login/oauth2/code/com.github.andrepenteado.roove', 'http://localhost:8080/roove-Dockerfile/logout', 'openid',
    '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}',
    '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",86400.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000],"settings.token.device-code-time-to-live":["java.time.Duration",300.000000000]}'
 );
@@ -22,7 +22,7 @@ INSERT INTO public.oauth2_registered_client (
 VALUES (
    gen_random_uuid(), 'Servidor de Produção', 'https://sistemas.apcode.com.br/roove/login', 'https://login.apcode.com.br', 'PRODUCAO', currval('sistema_id_seq'), 'PRODUCAO-roove', '2023-01-01 00:00:00.000000',
    '{bcrypt}$2y$10$fXrNPhMZB3Sn4ZaXY34asO.AuVpMsk7.FYWXrFh6FEV7YOYFOtCRK', null, 'client_secret_basic',  'refresh_token,client_credentials,authorization_code',
-   'https://sistemas.apcode.com.br/roove-backend/authorized,https://sistemas.apcode.com.br/roove-backend/login/oauth2/code/com.github.andrepenteado.roove', 'https://sistemas.apcode.com.br/roove-backend/logout', 'openid',
+   'https://sistemas.apcode.com.br/roove-Dockerfile/authorized,https://sistemas.apcode.com.br/roove-Dockerfile/login/oauth2/code/com.github.andrepenteado.roove', 'https://sistemas.apcode.com.br/roove-Dockerfile/logout', 'openid',
    '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}',
    '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",86400.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000],"settings.token.device-code-time-to-live":["java.time.Duration",300.000000000]}'
 );

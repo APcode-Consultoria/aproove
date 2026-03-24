@@ -1,16 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Datatables, ExibirMensagemService, LoginService } from "@andre.penteado/ngx-apcore";
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { Datatables, ExibirMensagemService, FloatingButtonComponent, LoginService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
 import { Paciente } from "../../../domain/entities/paciente";
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
 import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
-    selector: 'app-pesquisar',
-    templateUrl: './pesquisar.component.html',
-    styles: ``,
-    standalone: false
+  selector: 'app-pesquisar',
+  templateUrl: './pesquisar.component.html',
+  styles: ``,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    NgxSpinnerComponent,
+    FloatingButtonComponent
+  ]
 })
 export class PesquisarComponent implements OnInit {
 
@@ -18,13 +28,11 @@ export class PesquisarComponent implements OnInit {
 
   lista: Paciente[] = [];
 
-  constructor(
-    private pacienteService: PacienteService,
-    private exibirMensagem: ExibirMensagemService,
-    private spinnerService: NgxSpinnerService,
-    protected loginService: LoginService,
-    private router: Router
-  ) { }
+  private pacienteService = inject(PacienteService);
+  private exibirMensagem = inject(ExibirMensagemService);
+  private spinnerService = inject(NgxSpinnerService);
+  protected loginService = inject(LoginService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.spinnerService.show();

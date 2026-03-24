@@ -6,7 +6,7 @@ import { CadastroComponent } from './cadastro/cadastro.component';
 import { autorizarPerfilGuard } from "@andre.penteado/ngx-apcore";
 import { PREFIXO_PERFIL_SISTEMA } from "../../config/layout";
 
-const routes: Routes = [
+export const pacienteRoutes: Routes = [
 
   {
     path: 'pesquisar',
@@ -30,9 +30,3 @@ const routes: Routes = [
   }
 
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class PacienteRoutingModule { }

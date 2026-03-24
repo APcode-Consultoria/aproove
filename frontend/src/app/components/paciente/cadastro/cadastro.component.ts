@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PacienteService } from '../../../services/paciente.service';
 import { ProntuarioService } from '../../../services/prontuario.service';
 import { ExameService } from '../../../services/exame.service';
@@ -16,12 +16,19 @@ import { Parentesco } from "../../../domain/enums/parentesco";
 import { Prontuario } from "../../../domain/entities/prontuario";
 import { Exame } from "../../../domain/entities/exame";
 import { Paciente } from "../../../domain/entities/paciente";
+import { CommonModule } from "@angular/common";
 
 @Component({
-    selector: 'app-cadastro',
-    templateUrl: './cadastro.component.html',
-    styles: ``,
-    standalone: false
+  selector: 'app-cadastro',
+  templateUrl: './cadastro.component.html',
+  styles: ``,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink
+  ]
 })
 export class CadastroComponent implements OnInit {
 
@@ -124,15 +131,15 @@ export class CadastroComponent implements OnInit {
     paciente: this.pacienteProntuario
   });
 
-  constructor(
-    private activedRoute: ActivatedRoute,
-    private pacienteService: PacienteService,
-    private prontuarioService: ProntuarioService,
-    private exameService: ExameService,
-    private viaCepService: ViaCepService,
-    private exibirMensagem: ExibirMensagemService,
-    private uploadService: UploadService
-  ) {
+  private activedRoute = inject(ActivatedRoute);
+  private pacienteService = inject(PacienteService);
+  private prontuarioService = inject(ProntuarioService);
+  private exameService = inject(ExameService);
+  private viaCepService = inject(ViaCepService);
+  private exibirMensagem = inject(ExibirMensagemService);
+  private uploadService = inject(UploadService);
+
+  constructor() {
     this.parentescos = Object.keys(Parentesco);
   }
 

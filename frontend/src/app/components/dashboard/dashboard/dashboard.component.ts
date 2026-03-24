@@ -1,13 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ExameService } from "../../../services/exame.service";
 import { ProntuarioService } from "../../../services/prontuario.service";
 import { PacienteService } from "../../../services/paciente.service";
+import { NgxAnimatedCounterModule } from "@bugsplat/ngx-animated-counter";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styles: [],
-    standalone: false
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styles: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    NgxAnimatedCounterModule
+  ]
 })
 export class DashboardComponent implements OnInit {
 
@@ -15,11 +26,9 @@ export class DashboardComponent implements OnInit {
   totalAtendimentos: number = 0;
   totalPacientes: number = 0;
 
-  constructor(
-    private exameService: ExameService,
-    private prontuarioService: ProntuarioService,
-    private pacienteService: PacienteService
-  ) { }
+  private exameService = inject(ExameService);
+  private prontuarioService = inject(ProntuarioService);
+  private pacienteService = inject(PacienteService);
 
   ngOnInit(): void {
     this.exibeTotais();

@@ -30,6 +30,6 @@ spec:
             path: /roove
             backend:
               service:
-                name: roove-frontend
+                name: roove-Dockerfile
                 port:
                   name: roove-front

@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { DECORATED_ROUTES, NO_DECORATED_ROUTES } from "./config/routes";
 import {
   AuthorizedComponent,
@@ -9,7 +8,7 @@ import {
   SemLayoutComponent
 } from "@andre.penteado/ngx-apcore";
 
-const routes: Routes = [
+export const appRoutes: Routes = [
 
   { path: '', redirectTo: '/pagina-inicial', pathMatch: 'full' },
 
@@ -32,9 +31,3 @@ const routes: Routes = [
   }
 
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

@@ -31,11 +31,11 @@ jobs:
       with:
         node-version: 24
 
-    - name: Instalar pacotes do frontend
-      run: npm --prefix ./frontend install
+    - name: Instalar pacotes do Dockerfile
+      run: npm --prefix ./Dockerfile install
 
-    - name: Buildar frontend
-      run: npm --prefix ./frontend run build --omit=dev -- "-c=production"
+    - name: Buildar Dockerfile
+      run: npm --prefix ./Dockerfile run build --omit=dev -- "-c=production"
 
     - name: Usar JDK 25
       uses: actions/setup-java@v3
