@@ -1,0 +1,20 @@
+app:
+
+  image:
+    repository: "ghcr.io/andrepenteado/aproove/backend"
+    tag: ""
+    imagePullSecrets: "github-secret"
+
+  port: 8080
+
+  envVars:
+    SPRING_PROFILES_ACTIVE: prod
+
+  livenessProbe: "/actuator/health/liveness"
+  readinessProbe: "/actuator/health/readiness"
+
+ingress:
+  host: "sistemas.apcode.com.br"
+  context: "/roove-backend"
+
+authServer: "https://login.apcode.com.br/actuator/health/readiness"

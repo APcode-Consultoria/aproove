@@ -3,9 +3,8 @@ param(
             "help",
             "build-all","build-frontend","build-backend","build-images",
             "docker-login","docker-logout",
-            "k8s-deploy","k8s-delete",
+            "k8s-pre-init","k8s-deploy","k8s-delete",
             "k8s-log-backend","k8s-log-frontend",
-            "k8s-update",
             "k8s-get"
     )]
     [string]$exec = "help"
@@ -17,12 +16,11 @@ $ErrorActionPreference = "Stop"
 # =====================
 # VARIÁVEIS
 # =====================
-$Registry  = "ghcr.io"
-$Namespace = "andrepenteado/aproove"
-$Ambiente  = "production"
-$K8sNS     = "aproove"
-
-$LoginHealthUrl = "https://login.apcode.com.br/actuator/health"
+$Registry   = "ghcr.io"
+$Namespace  = "andrepenteado/aproove"
+$ModuleName = "roove"
+$Ambiente   = "production"
+$K8sNS      = "aproove"
 
 $Versao = ([xml](Get-Content backend/pom.xml)).project.version
 
@@ -46,8 +44,8 @@ function Docker-Login {
 #    }
 
     Write-Host "🔐 Login no GitHub Container Registry" -ForegroundColor Cyan
-#    $env:GITHUB_TOKEN | docker login $Registry --username andrepenteado --password-stdin
-    Get-Content 'C:\Users\andrepenteado\ownCloud\Particular\token-github.txt' | docker login ghcr.io --username andrepenteado --password-stdin
+    Write-Output $env:GITHUB_TOKEN | docker login $Registry --username andrepenteado --password-stdin
+#    Get-Content 'C:\Users\andrepenteado\ownCloud\Particular\token-github.txt' | docker login ghcr.io --username andrepenteado --password-stdin
     Assert-LastExit "docker login"
 }
 
@@ -90,7 +88,8 @@ function Build-Images {
 
     Write-Host "📦 Backend"
     docker buildx build `
-        -f ".deploy/dockerfiles/backend" `
+        -f "./backend/Dockerfile" `
+        --build-arg MODULE_NAME=$ModuleName `
         -t "$Registry/$Namespace/backend" `
         -t "$Registry/$Namespace/backend:$Versao" `
         --push .
@@ -98,7 +97,9 @@ function Build-Images {
 
     Write-Host "📦 Frontend (produção)"
     docker buildx build `
-        -f ".deploy/dockerfiles/frontend" `
+        -f "./frontend/Dockerfile" `
+        --build-arg MODULE_NAME=$ModuleName `
+        --build-arg ENV_NAME=$Ambiente `
         -t "$Registry/$Namespace/frontend" `
         -t "$Registry/$Namespace/frontend:$Versao" `
         --push .
@@ -110,41 +111,19 @@ function Build-Images {
 # =====================
 # KUBERNETES
 # =====================
+function K8s-Pre-Init {
+    kubectl apply -f .helm/namespace.yaml
+    kubectl apply -f .helm/github-secret.yaml
+    Write-Host "✅ Namespace e Secret criados" -ForegroundColor Green
+}
+
 function K8s-Deploy {
-    Write-Host "🚀 [1/4] Inicializando namespace e secrets"
-    kubectl apply -f .deploy/kubernetes/00-namespace.yml
-    Assert-LastExit "kubectl namespace"
-
-    kubectl apply -f .deploy/kubernetes/01-secret.yml
-    Assert-LastExit "kubectl secret"
-
-    Write-Host "🔐 [2/4] Validando LOGIN externo"
-    $ok = $false
-
-    for ($i = 1; $i -le 60; $i++) {
-        try {
-            Invoke-WebRequest -Uri $LoginHealthUrl -UseBasicParsing -TimeoutSec 5 | Out-Null
-            $ok = $true
-            break
-        } catch {
-            Write-Host "⏳ Login ainda não disponível..."
-            Start-Sleep -Seconds 5
-        }
-    }
-
-    if (-not $ok) {
-        throw "❌ LOGIN indisponível. Abortando deploy."
-    }
-
-    Write-Host "🚀 [3/4] Deploy do backend e frontend"
-    kubectl apply -f .deploy/kubernetes/02-deployment-backend.yml
-    kubectl apply -f .deploy/kubernetes/02-deployment-frontend.yml
-    Assert-LastExit "kubectl deploy apps"
-
-    Write-Host "🌐 [4/4] Aplicando ingress"
-    kubectl apply -f .deploy/kubernetes/03-ingress.yml
-    Assert-LastExit "kubectl ingress"
-
+    Write-Host "🚀 Iniciando deploy no Kubernetes (namespace: $K8sNS)" -ForegroundColor Cyan
+    Write-Host "Entre com a senha do gitlab.com para baixar o helm chart" -ForegroundColor Blue
+    $CHART="oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart"
+    helm registry login registry.gitlab.com -u andrepenteado
+    helm upgrade --install backend $CHART -f .helm/values.backend.yaml --set app.image.tag=$Versao -n aproove
+    helm upgrade --install frontend $CHART -f .helm/values.frontend.yaml --set app.image.tag=$Versao -n aproove
     Write-Host "✅ Deploy do AProove finalizado com sucesso" -ForegroundColor Green
 }
 
@@ -156,20 +135,6 @@ function K8s-Delete {
 
 function K8s-Logs($service) {
     kubectl logs -n $K8sNS service/$service -f
-}
-
-function K8s-Rollout {
-    Write-Host "♻️ Reiniciando BACKEND e FRONTEND" -ForegroundColor Cyan
-
-    foreach ($deploy in @("aproove-backend","aproove-frontend")) {
-        kubectl rollout restart deployment $deploy -n $K8sNS
-        Assert-LastExit "kubectl rollout restart $deploy"
-
-        kubectl rollout status deployment $deploy -n $K8sNS
-        Assert-LastExit "kubectl rollout status $deploy"
-    }
-
-    Write-Host "✅ Rollout finalizado" -ForegroundColor Green
 }
 
 # =====================
@@ -192,8 +157,8 @@ switch ($exec) {
         Write-Host "   build-all            → Build completo"
         Write-Host ""
         Write-Host "☸️ Kubernetes:"
+        Write-Host "   k8s-pre-init         → Cria namespace e secrets"
         Write-Host "   k8s-deploy           → Deploy com validação de LOGIN"
-        Write-Host "   k8s-update           → Reinicia backend e frontend"
         Write-Host "   k8s-log-backend      → Logs do backend"
         Write-Host "   k8s-log-frontend     → Logs do frontend"
         Write-Host "   k8s-delete           → Remove namespace"
@@ -218,13 +183,12 @@ switch ($exec) {
         Write-Host "🎉 Build completo finalizado com sucesso!" -ForegroundColor Green
     }
 
+    "k8s-pre-init"   { K8s-Pre-Init }
     "k8s-deploy"     { K8s-Deploy }
     "k8s-delete"     { K8s-Delete }
 
     "k8s-log-backend"  { Write-Host "📄 Logs BACKEND";  K8s-Logs "aproove-backend" }
     "k8s-log-frontend" { Write-Host "📄 Logs FRONTEND"; K8s-Logs "aproove-frontend" }
-
-    "k8s-update"     { K8s-Rollout }
 
     "k8s-get" {
         Write-Host "🔍 Recursos do namespace $K8sNS"

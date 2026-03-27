@@ -1,0 +1,17 @@
+app:
+
+  image:
+    repository: "ghcr.io/andrepenteado/aproove/frontend"
+    tag: ""
+    imagePullSecrets: "github-secret"
+
+  port: 80
+
+  envVars:
+    URL_BACKEND: https://sistemas.apcode.com.br/roove-backend
+    URL_FRONTEND: https://sistemas.apcode.com.br/roove
+    URL_PORTAL: https://sistemas.apcode.com.br/portal/login
+
+ingress:
+  host: "sistemas.apcode.com.br"
+  context: "/roove"

@@ -3,9 +3,9 @@
 .PHONY: help \
         build-all build-frontend build-backend build-images \
         docker-login docker-logout \
-        k8s-deploy k8s-delete \
+        k8s-pre-init k8s-deploy k8s-delete \
         k8s-log-backend k8s-log-frontend \
-        k8s-update k8s-get
+        k8s-get
 
 SHELL := /bin/bash
 
@@ -14,13 +14,11 @@ SHELL := /bin/bash
 # =====================
 REGISTRY     := ghcr.io
 NAMESPACE    := andrepenteado/aproove
+MODULE_NAME  := roove
 ANGULAR_DIST := production
 K8S_NS       := aproove
-
-VERSAO_APP := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
-
-# URL onde o LOGIN já deve estar disponível
-LOGIN_HEALTH_URL := https://login.aproove.com.br/actuator/health
+CHART        := oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart
+VERSAO_APP   := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
 
 # =====================
 # HELP
@@ -40,8 +38,8 @@ help:
 	@echo "   build-all            → Build completo (frontend + backend + imagens)"
 	@echo ""
 	@echo "☸️ Kubernetes:"
+	@echo "   k8s-pre-init         → Cria namespace e secrets necessários para deploy"
 	@echo "   k8s-deploy           → Deploy com validação prévia do LOGIN"
-	@echo "   k8s-update           → Reinicia e acompanha o rollout"
 	@echo "   k8s-log-backend      → Logs do backend"
 	@echo "   k8s-log-frontend     → Logs do frontend"
 	@echo "   k8s-delete           → Remove o namespace aproove"
@@ -97,14 +95,17 @@ build-images:
 
 	@echo "   📦 Backend"
 	docker buildx build \
-		-f .deploy/dockerfiles/backend \
+		-f ./backend/Dockerfile \
+        --build-arg MODULE_NAME=$(MODULE_NAME) \
 		-t $(REGISTRY)/$(NAMESPACE)/backend \
 		-t $(REGISTRY)/$(NAMESPACE)/backend:$(VERSAO_APP) \
 		--push .
 
 	@echo "   📦 Frontend (produção)"
 	docker buildx build \
-		-f .deploy/dockerfiles/frontend \
+		-f ./frontend/Dockerfile \
+        --build-arg MODULE_NAME=$(MODULE_NAME) \
+        --build-arg ENV_NAME=$(ANGULAR_DIST) \
 		-t $(REGISTRY)/$(NAMESPACE)/frontend \
 		-t $(REGISTRY)/$(NAMESPACE)/frontend:$(VERSAO_APP) \
 		--push .
@@ -117,28 +118,23 @@ build-images:
 build-all: docker-login build-frontend build-backend build-images docker-logout
 	@echo "🎉 Build completo finalizado!"
 
+# ================================================
+# Criar namespace e baixar helm chart para deploy
+# ================================================
+k8s-pre-init:
+	@echo "🚀 Inicializando namespace e secrets"
+	kubectl apply -f .helm/namespace.yaml
+	kubectl apply -f .helm/github-secret.yaml
+
 # ============================================================
 # 🚀 Deploy Kubernetes (com validação de LOGIN)
 # ============================================================
 k8s-deploy:
-	@echo "🚀 [1/4] Inicializando namespace e secrets"
-	kubectl apply -f .deploy/kubernetes/00-namespace.yml
-	kubectl apply -f .deploy/kubernetes/01-secret.yml
-
-	@echo "🔐 [2/4] Validando LOGIN externo"
-	@for i in {1..60}; do \
-	  curl -sf $(LOGIN_HEALTH_URL) && break; \
-	  echo "⏳ Login ainda não disponível..."; \
-	  sleep 5; \
-	done || { echo "❌ LOGIN indisponível. Abortando deploy."; exit 1; }
-
-	@echo "🚀 [3/4] Deploy do backend e frontend"
-	kubectl apply -f .deploy/kubernetes/02-deployment-backend.yml
-	kubectl apply -f .deploy/kubernetes/02-deployment-frontend.yml
-
-	@echo "🌐 [4/4] Aplicando ingress"
-	kubectl apply -f .deploy/kubernetes/03-ingress.yml
-
+	@echo "🚀 Iniciando deploy do AProove no Kubernetes"
+	@echo "Entre com a senha do gitlab.com para baixar o helm chart"
+	helm registry login registry.gitlab.com -u andrepenteado
+	helm upgrade --install backend $(CHART) -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
+	helm upgrade --install frontend $(CHART) -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
 	@echo "✅ Deploy do AProove finalizado com sucesso"
 
 # =====================
@@ -158,17 +154,6 @@ k8s-log-backend:
 k8s-log-frontend:
 	@echo "📄 Logs do FRONTEND"
 	kubectl logs -n $(K8S_NS) service/aproove-frontend -f
-
-# =====================
-# ♻️ Rollout
-# =====================
-k8s-update:
-	@echo "♻️ Reiniciando BACKEND e FRONTEND"
-	kubectl rollout restart deployment aproove-backend -n $(K8S_NS)
-	kubectl rollout restart deployment aproove-frontend -n $(K8S_NS)
-	kubectl rollout status deployment aproove-backend -n $(K8S_NS)
-	kubectl rollout status deployment aproove-frontend -n $(K8S_NS)
-	@echo "✅ Rollout finalizado"
 
 # =====================
 # 🔍 Inspeção
