@@ -1,6 +1,5 @@
 package com.github.andrepenteado.roove.resources;
 
-import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.services.PacienteService;
 import com.github.andrepenteado.roove.services.ProntuarioService;
@@ -8,7 +7,6 @@ import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,7 +36,7 @@ public class PacienteResource {
     }
 
     @PostMapping
-    public Paciente incluir(@RequestBody Paciente paciente, @AuthenticationPrincipal UserLogin userLogin) {
+    public Paciente incluir(@RequestBody Paciente paciente) {
         log.info("Incluir novo paciente {}", paciente.toString());
         return pacienteService.incluir(paciente);
     }

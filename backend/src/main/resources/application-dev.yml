@@ -19,10 +19,16 @@ spring:
           "[com.github.andrepenteado.sso.portal]":
             issuer-uri: https://login.apcode.com.br
 
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: false
+
 management:
   tracing:
     export:
       enabled: false
 
 frontend:
-  pagina-inicial: http://localhost:4200/roove/pagina-inicial
+  base-url: http://localhost:4200 # CORS

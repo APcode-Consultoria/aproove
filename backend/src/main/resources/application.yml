@@ -45,6 +45,13 @@ server:
   port: 8080
   servlet:
     context-path: /roove-backend
+    session:
+      cookie:
+        same-site: lax
+        http-only: true
+        secure: true
+        name: roove-backend-session
+      timeout: 30m
 
 management:
   endpoints:
@@ -66,4 +73,6 @@ management:
         endpoint: http://sistemas.apcode.com.br:9411
 
 frontend:
-  pagina-inicial: https://sistemas.apcode.com.br/roove/pagina-inicial
+  base-url: https://sistemas.apcode.com.br # CORS
+  base-path: /roove
+  pos-logout-url: https://sistemas.apcode.com.br/portal/pagina-inicial

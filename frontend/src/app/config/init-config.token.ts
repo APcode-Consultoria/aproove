@@ -2,7 +2,6 @@ import { InjectionToken } from '@angular/core';
 
 export interface InitConfig {
   urlBackend: string;
-  urlFrontend: string;
   urlPortal: string;
 }
 

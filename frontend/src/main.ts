@@ -44,7 +44,6 @@ bootstrapApplication(
           menu: menu,
           sistema: MODULO,
           urlBackend: CONFIG.urlBackend,
-          urlFrontend: CONFIG.urlFrontend,
           urlPortal: CONFIG.urlPortal,
           prefixoPerfil: PREFIXO_PERFIL_SISTEMA
         }
