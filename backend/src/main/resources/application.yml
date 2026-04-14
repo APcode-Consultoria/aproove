@@ -75,4 +75,3 @@ management:
 frontend:
   base-url: https://sistemas.apcode.com.br # CORS
   base-path: /roove
-  pos-logout-url: https://sistemas.apcode.com.br/portal/pagina-inicial
