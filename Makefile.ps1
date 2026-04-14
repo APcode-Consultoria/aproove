@@ -77,7 +77,7 @@ function Build-Frontend {
 function Build-Backend {
     Write-Host "☕ Build do backend Java (Maven)" -ForegroundColor Cyan
 
-    mvn -U -f backend/pom.xml clean package -DskipTests
+    mvn -U -f backend/pom.xml clean package
     Assert-LastExit "mvn build"
 
     Write-Host "✅ Backend buildado com sucesso" -ForegroundColor Green

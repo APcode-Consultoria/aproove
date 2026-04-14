@@ -84,7 +84,6 @@ build-backend:
 	@echo "☕ Build do backend Java (Maven)"
 	mvn -U clean package \
 		--file backend/pom.xml \
-		-DskipTests
 	@echo "✅ Backend buildado com sucesso"
 
 # =====================
