@@ -2,6 +2,7 @@ param(
     [ValidateSet(
             "help",
             "build-all","build-frontend","build-backend","build-images",
+            "test-frontend",
             "docker-login","docker-logout",
             "k8s-pre-init","k8s-deploy","k8s-delete",
             "k8s-log-backend","k8s-log-frontend",
@@ -58,13 +59,28 @@ function Docker-Logout {
 # =====================
 # BUILD
 # =====================
-function Build-Frontend {
-    Write-Host "🎨 Build do frontend Angular ($Ambiente)" -ForegroundColor Cyan
+function Test-Frontend {
+    Write-Host "🧪 Rodando testes do frontend" -ForegroundColor Cyan
 
     Push-Location "frontend"
 
     npm ci
     Assert-LastExit "npm ci"
+
+    npx vitest run
+    Assert-LastExit "vitest run"
+
+    Pop-Location
+
+    Write-Host "✅ Testes do frontend aprovados" -ForegroundColor Green
+}
+
+function Build-Frontend {
+    Write-Host "🎨 Build do frontend Angular ($Ambiente)" -ForegroundColor Cyan
+
+    Test-Frontend
+
+    Push-Location "frontend"
 
     ng build --configuration=$Ambiente --output-path="dist/$Ambiente"
     Assert-LastExit "ng build"
@@ -150,8 +166,11 @@ switch ($exec) {
         Write-Host "   docker-login         → Login no GHCR"
         Write-Host "   docker-logout        → Logout do registry"
         Write-Host ""
+        Write-Host "🧪 Testes:"
+        Write-Host "   test-frontend        → Roda testes unitários do frontend"
+        Write-Host ""
         Write-Host "🚀 Build:"
-        Write-Host "   build-frontend       → Build do frontend Angular"
+        Write-Host "   build-frontend       → Testa + Build do frontend Angular"
         Write-Host "   build-backend        → Build do backend Java"
         Write-Host "   build-images         → Build & push das imagens Docker"
         Write-Host "   build-all            → Build completo"
@@ -169,6 +188,7 @@ switch ($exec) {
     "docker-login"   { Docker-Login }
     "docker-logout"  { Docker-Logout }
 
+    "test-frontend"  { Test-Frontend }
     "build-frontend" { Build-Frontend }
     "build-backend"  { Build-Backend }
     "build-images"   { Build-Images }

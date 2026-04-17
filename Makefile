@@ -2,6 +2,7 @@
 .SHELLFLAGS = -ec
 .PHONY: help \
         build-all build-frontend build-backend build-images \
+        test-frontend \
         docker-login docker-logout \
         k8s-pre-init k8s-deploy k8s-delete \
         k8s-log-backend k8s-log-frontend \
@@ -31,8 +32,11 @@ help:
 	@echo "   docker-login         → Login no GitHub Container Registry"
 	@echo "   docker-logout        → Logout do registry"
 	@echo ""
+	@echo "🧪 Testes:"
+	@echo "   test-frontend        → Roda testes unitários do frontend"
+	@echo ""
 	@echo "🚀 Build:"
-	@echo "   build-frontend       → Build do frontend Angular"
+	@echo "   build-frontend       → Testa + Build do frontend Angular"
 	@echo "   build-backend        → Build do backend Java (Maven)"
 	@echo "   build-images         → Build & push das imagens Docker"
 	@echo "   build-all            → Build completo (frontend + backend + imagens)"
@@ -67,12 +71,22 @@ docker-logout:
 	@docker logout $(REGISTRY)
 
 # =====================
-# BUILD FRONTEND
+# TESTES FRONTEND
 # =====================
-build-frontend:
-	@echo "🎨 Build do frontend Angular ($(ANGULAR_DIST))"
+test-frontend:
+	@echo "🧪 Rodando testes do frontend"
 	cd frontend
 	npm ci
+	npx vitest run
+	cd ..
+	@echo "✅ Testes do frontend aprovados"
+
+# =====================
+# BUILD FRONTEND
+# =====================
+build-frontend: test-frontend
+	@echo "🎨 Build do frontend Angular ($(ANGULAR_DIST))"
+	cd frontend
 	ng build --configuration=$(ANGULAR_DIST) --output-path=dist/$(ANGULAR_DIST)
 	cd ..
 	@echo "✅ Frontend buildado com sucesso"
