@@ -17,6 +17,7 @@ import { Prontuario } from "../../../domain/entities/prontuario";
 import { Exame } from "../../../domain/entities/exame";
 import { Paciente } from "../../../domain/entities/paciente";
 import { CommonModule } from "@angular/common";
+import { NgxMaskDirective } from "ngx-mask";
 
 @Component({
   selector: 'app-cadastro',
@@ -27,7 +28,8 @@ import { CommonModule } from "@angular/common";
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    NgxMaskDirective
   ]
 })
 export class CadastroComponent implements OnInit {
@@ -197,7 +199,6 @@ export class CadastroComponent implements OnInit {
   gravarPaciente(): void {
     this.formPacienteEnviado = true;
     if (this.formPaciente.valid) {
-      this.formPaciente.controls.dataCadastro.setValue(new Date());
       this.pacienteService.gravar(this.formPaciente.value).subscribe({
         next: paciente => {
           this.objetoPaciente = paciente;

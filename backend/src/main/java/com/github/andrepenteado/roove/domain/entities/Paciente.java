@@ -1,6 +1,5 @@
 package com.github.andrepenteado.roove.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.andrepenteado.roove.domain.enums.Parentesco;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,10 +24,8 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataCadastro;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataUltimaAtualizacao;
 
     private String usuarioCadastro;
@@ -41,7 +38,6 @@ public class Paciente {
     @NotNull(message = "CPF é um campo obrigatório")
     private Long cpf;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
 
     private Long telefone;
@@ -85,7 +81,6 @@ public class Paciente {
 
     private String objetivos;
 
-    @NotNull(message = "Responsável é um campo obrigatório")
     private String responsavel;
 
     @Override

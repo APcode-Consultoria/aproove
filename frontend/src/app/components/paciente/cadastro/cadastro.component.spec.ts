@@ -113,7 +113,6 @@ describe('CadastroComponent', () => {
     const pacienteSalvo = {
       ...component.formPaciente.getRawValue(),
       id: 1,
-      dataCadastro: new Date(),
       nome: 'Maria da Silva'
     } as Paciente;
 
@@ -125,7 +124,6 @@ describe('CadastroComponent', () => {
 
     const payloadEnviado = pacienteServiceMock.gravar.mock.calls[0][0] as Record<string, unknown>;
     expect(Object.keys(payloadEnviado).sort()).toEqual([...pacienteKeys].sort());
-    expect(payloadEnviado['dataCadastro']).toBeInstanceOf(Date);
   });
 
   it('deve considerar o formPaciente invalido quando os campos obrigatorios nao forem preenchidos', () => {
