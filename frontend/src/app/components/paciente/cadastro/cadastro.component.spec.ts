@@ -42,6 +42,7 @@ const pacienteKeys = [
   'queixaPrincipal',
   'remedios',
   'objetivos',
+  'observacao',
   'responsavel'
 ] satisfies Array<keyof Paciente>;
 
@@ -99,11 +100,7 @@ describe('CadastroComponent', () => {
 
   function preencherCamposObrigatorios(): void {
     component.formPaciente.patchValue({
-      nome: 'Maria da Silva',
-      cpf: 12345678901,
-      telefone: 11999999999,
-      queixaPrincipal: 'Dor lombar',
-      historiaMolestiaPregressa: 'Sem historico relevante'
+      nome: 'Maria da Silva'
     });
   }
 
@@ -128,21 +125,13 @@ describe('CadastroComponent', () => {
 
   it('deve considerar o formPaciente invalido quando os campos obrigatorios nao forem preenchidos', () => {
     component.formPaciente.patchValue({
-      nome: null,
-      cpf: null,
-      telefone: null,
-      queixaPrincipal: null,
-      historiaMolestiaPregressa: null
+      nome: null
     });
 
     component.gravarPaciente();
 
     expect(component.formPaciente.invalid).toBe(true);
     expect(component.nome.hasError('required')).toBe(true);
-    expect(component.cpf.hasError('required')).toBe(true);
-    expect(component.telefone.hasError('required')).toBe(true);
-    expect(component.queixaPrincipal.hasError('required')).toBe(true);
-    expect(component.historiaMolestiaPregressa.hasError('required')).toBe(true);
     expect(pacienteServiceMock.gravar).not.toHaveBeenCalled();
     expect(exibirMensagemServiceMock.showMessage).toHaveBeenCalledWith(
       'Preencha todos os dados obrigatórios antes de gravar os dados',
@@ -155,10 +144,6 @@ describe('CadastroComponent', () => {
     preencherCamposObrigatorios();
 
     expect(component.nome.valid).toBe(true);
-    expect(component.cpf.valid).toBe(true);
-    expect(component.telefone.valid).toBe(true);
-    expect(component.queixaPrincipal.valid).toBe(true);
-    expect(component.historiaMolestiaPregressa.valid).toBe(true);
     expect(component.formPaciente.valid).toBe(true);
   });
 });

@@ -35,7 +35,6 @@ public class Paciente {
     @NotNull(message = "Nome é um campo obrigatório")
     private String nome;
 
-    @NotNull(message = "CPF é um campo obrigatório")
     private Long cpf;
 
     private LocalDate dataNascimento;
@@ -71,10 +70,8 @@ public class Paciente {
 
     private Integer frequenciaSemanal;
 
-    @NotNull(message = "Queixa principal (QP) é um campo obrigatório")
     private String queixaPrincipal;
 
-    @NotNull(message = "História Moléstia Pregressa (HMP) é um campo obrigatório")
     private String historiaMolestiaPregressa;
 
     private String remedios;
@@ -82,6 +79,8 @@ public class Paciente {
     private String objetivos;
 
     private String responsavel;
+
+    private String observacao;
 
     @Override
     public final boolean equals(Object o) {

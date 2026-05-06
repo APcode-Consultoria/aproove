@@ -30,5 +30,6 @@ export class Paciente {
   remedios!: string;
   objetivos!: string;
   responsavel!: string;
+  observacao!: string;
 
 }

@@ -54,9 +54,9 @@ export class CadastroComponent implements OnInit {
   dataUltimaAtualizacao = new FormControl(null);
   usuarioUltimaAtualizacao = new FormControl(null);
   nome = new FormControl(null, Validators.required);
-  cpf = new FormControl(null, Validators.required);
+  cpf = new FormControl(null, null);
   dataNascimento = new FormControl(null);
-  telefone = new FormControl(null, Validators.required);
+  telefone = new FormControl(null, null);
   whatsapp = new FormControl(false);
   email = new FormControl(null);
   contatoEmergencia = new FormControl(null);
@@ -71,11 +71,12 @@ export class CadastroComponent implements OnInit {
   profissao = new FormControl(null);
   diaVencimento = new FormControl(null);
   frequenciaSemanal = new FormControl(0);
-  queixaPrincipal = new FormControl(null, Validators.required);
-  historiaMolestiaPregressa = new FormControl(null, Validators.required);
+  queixaPrincipal = new FormControl(null, null);
+  historiaMolestiaPregressa = new FormControl(null, null);
   remedios = new FormControl(null);
   objetivos = new FormControl(null);
   responsavel = new FormControl(null);
+  observacao = new FormControl(null);
   formPaciente = new FormGroup({
     id: this.id,
     dataCadastro: this.dataCadastro,
@@ -104,7 +105,8 @@ export class CadastroComponent implements OnInit {
     historiaMolestiaPregressa: this.historiaMolestiaPregressa,
     remedios: this.remedios,
     objetivos: this.objetivos,
-    responsavel: this.responsavel
+    responsavel: this.responsavel,
+    observacao: this.observacao
   });
 
   // Formulário exames
