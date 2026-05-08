@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+/* Importa os pesos que você pretende usar (ex: 400 para texto e 700 para títulos) */
+@import "@fontsource/raleway/400.css";
+@import "@fontsource/raleway/700.css";
+
+/* Define como a fonte padrão do sistema */
+body {
+  font-family: "Raleway", sans-serif;
+}
