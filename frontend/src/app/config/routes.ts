@@ -10,9 +10,9 @@ export const DECORATED_ROUTES: Routes = [
     component: PaginaInicialComponent
   },
 
-  { path: 'dashboard', loadChildren: () => import('../components/dashboard/dashboard.routes').then(m => m.dashboardRoutes) },
+  { path: 'dashboard', loadChildren: () => import('../pages/dashboard/dashboard.routes').then(m => m.dashboardRoutes) },
 
-  { path: 'paciente', loadChildren: () => import('../components/paciente/paciente.routes').then(m => m.pacienteRoutes) }
+  { path: 'paciente', loadChildren: () => import('../pages/paciente/paciente.routes').then(m => m.pacienteRoutes) }
 
 ]
 

@@ -1,0 +1,135 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="fa-solid fa-house"></i></a></li>
+    <li class="breadcrumb-item active">Pacientes</li>
+  </ol>
+</nav>
+
+<section class="container py-3">
+  <div class="row g-4 align-items-stretch mb-4">
+    <div class="col-12 col-lg">
+      <span class="badge rounded-pill text-bg-primary mb-3">
+        <i class="fa-solid fa-user-injured me-1"></i>
+        Cadastro clínico
+      </span>
+      <h1 class="display-5 fw-bold lh-1 mb-3">Pacientes</h1>
+      <p class="lead text-secondary mb-0">
+        Consulte pacientes, contatos e dados de acompanhamento para manutenção dos cadastros.
+      </p>
+    </div>
+
+    <div class="col-12 col-lg-auto d-flex align-items-lg-start">
+      <button class="btn btn-primary rounded-pill px-4 fw-semibold w-100 w-lg-auto" type="button" (click)="incluir()">
+        <i class="fa-solid fa-user-plus me-1"></i>
+        Novo paciente
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100 summary-card">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="btn btn-primary rounded-circle summary-icon"><i class="fa-solid fa-user-injured"></i></span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Pacientes</span>
+            <span class="h4 fw-bold mb-0">{{ lista.length }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100 summary-card">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="btn btn-primary rounded-circle summary-icon"><i class="fa-solid fa-notes-medical"></i></span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Atendimentos</span>
+            <span class="h4 fw-bold mb-0">{{ totalAtendimentos }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100 summary-card">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="btn btn-primary rounded-circle summary-icon"><i class="fa-solid fa-paperclip"></i></span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Exames</span>
+            <span class="h4 fw-bold mb-0">{{ totalExames }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm overflow-hidden">
+    <ngx-spinner color="rgba(var(--bs-secondary-bg-rgb), 0.8)" bdColor="rgba(var(--bs-secondary-color-rgb), 0.8)" type="ball-atom" [fullScreen]="false">
+      <p class="spinner-text">Aguarde, carregando ...</p>
+    </ngx-spinner>
+
+    <div class="card-header bg-white border-0 p-4 pb-0">
+      <div class="d-flex align-items-center gap-3">
+        <span class="btn btn-primary rounded-circle section-icon"><i class="fa-solid fa-table-list"></i></span>
+        <div class="min-w-0">
+          <h2 class="h4 fw-bold mb-1">Pacientes cadastrados</h2>
+          <p class="text-secondary mb-0">Acompanhe contatos e responsáveis vinculados aos pacientes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+      <div class="custom-datatable table-responsive">
+        <table id="datatable-pesquisar-paciente" class="table table-hover align-middle nowrap w-100 mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Paciente</th>
+              <th scope="col">Telefone</th>
+              <th scope="col">Bairro</th>
+              @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+                <th scope="col">Responsável</th>
+              }
+              <th scope="col" class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (paciente of this.lista ; track paciente) {
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="record-avatar"><i class="fa-solid fa-user"></i></span>
+                    <div class="min-w-0">
+                      <span class="fw-semibold d-block text-truncate">{{ paciente.nome }}</span>
+                      <span class="small text-secondary d-block text-truncate">{{ paciente.email || ('ID ' + paciente.id) }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span>{{ paciente.telefone || 'Não informado' }}</span>
+                  @if (paciente.whatsapp) {
+                    <span class="badge rounded-pill text-bg-success ms-1"><i class="fa-brands fa-whatsapp"></i></span>
+                  }
+                </td>
+                <td>{{ paciente.bairro || 'Não informado' }}</td>
+                @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+                  <td>{{ paciente.responsavel || 'Não informado' }}</td>
+                }
+                <td class="text-center">
+                  <div class="btn-group" role="group" aria-label="Ações do paciente">
+                    <button class="btn btn-outline-primary btn-sm" type="button" title="Editar paciente" (click)="editar(paciente)">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Excluir paciente" (click)="excluir(paciente)">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

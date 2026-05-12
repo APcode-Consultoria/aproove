@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Datatables, ExibirMensagemService, FloatingButtonComponent, LoginService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
+import { ExameService } from "../../../services/exame.service";
+import { ProntuarioService } from "../../../services/prontuario.service";
 import { Paciente } from "../../../domain/entities/paciente";
 import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
 import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
@@ -11,7 +13,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 @Component({
   selector: 'app-pesquisar',
   templateUrl: './pesquisar.component.html',
-  styles: ``,
   standalone: true,
   imports: [
     CommonModule,
@@ -27,8 +28,12 @@ export class PesquisarComponent implements OnInit {
   protected readonly PREFIXO_PERFIL_SISTEMA = PREFIXO_PERFIL_SISTEMA;
 
   lista: Paciente[] = [];
+  totalExames: number = 0;
+  totalAtendimentos: number = 0;
 
   private pacienteService = inject(PacienteService);
+  private exameService = inject(ExameService);
+  private prontuarioService = inject(ProntuarioService);
   private exibirMensagem = inject(ExibirMensagemService);
   private spinnerService = inject(NgxSpinnerService);
   protected loginService = inject(LoginService);
@@ -37,6 +42,7 @@ export class PesquisarComponent implements OnInit {
   ngOnInit(): void {
     this.spinnerService.show();
     this.pesquisar();
+    this.exibeTotais();
   }
 
   pesquisar(): void {
@@ -49,6 +55,11 @@ export class PesquisarComponent implements OnInit {
         }, 5);
       }
     });
+  }
+
+  exibeTotais(): void {
+    this.exameService.total().subscribe({ next: totalExames => this.totalExames = totalExames });
+    this.prontuarioService.total().subscribe({ next: totalAtendimentos => this.totalAtendimentos = totalAtendimentos });
   }
 
   incluir(): void {

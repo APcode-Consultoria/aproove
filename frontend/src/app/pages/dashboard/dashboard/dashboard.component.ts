@@ -10,7 +10,6 @@ import { RouterLink } from "@angular/router";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styles: [],
   standalone: true,
   imports: [
     CommonModule,

@@ -1,0 +1,77 @@
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb page-breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/pagina-inicial" class="text-decoration-none" aria-label="Página inicial">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active">Dashboard</li>
+  </ol>
+</nav>
+
+<section class="container py-3">
+
+  <div class="page-heading mb-4">
+    <div>
+      <span class="eyebrow">Visão geral</span>
+      <h1 class="h3 mb-1">Dashboard</h1>
+      <p class="text-body-secondary mb-0">Resumo operacional da clínica.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="card metric-card metric-card-patient h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+              <p class="metric-label mb-2">Pacientes</p>
+              <div class="metric-value">{{ totalPacientes }}</div>
+            </div>
+            <span class="metric-icon">
+              <i class="fa-solid fa-person"></i>
+            </span>
+          </div>
+          <div class="metric-rule mt-4"></div>
+          <p class="small text-body-secondary mb-0 mt-3">Cadastros ativos disponíveis para acompanhamento.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="card metric-card metric-card-care h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+              <p class="metric-label mb-2">Atendimentos</p>
+              <div class="metric-value">{{ totalAtendimentos }}</div>
+            </div>
+            <span class="metric-icon">
+              <i class="fa-solid fa-notes-medical"></i>
+            </span>
+          </div>
+          <div class="metric-rule mt-4"></div>
+          <p class="small text-body-secondary mb-0 mt-3">Registros clínicos lançados no prontuário.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="card metric-card metric-card-exam h-100">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+              <p class="metric-label mb-2">Exames</p>
+              <div class="metric-value">{{ totalExames }}</div>
+            </div>
+            <span class="metric-icon">
+              <i class="fa-solid fa-paperclip"></i>
+            </span>
+          </div>
+          <div class="metric-rule mt-4"></div>
+          <p class="small text-body-secondary mb-0 mt-3">Arquivos anexados aos cadastros de pacientes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -22,7 +22,6 @@ import { NgxMaskDirective } from "ngx-mask";
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
-  styles: ``,
   standalone: true,
   imports: [
     CommonModule,
