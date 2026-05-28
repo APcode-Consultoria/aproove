@@ -7,7 +7,7 @@ import { registerLocaleData } from '@angular/common';
 import { ToastrModule } from 'ngx-toastr';
 import { INIT_CONFIG, InitConfig } from "./app/config/init-config.token";
 import { AppComponent } from "./app/app.component";
-import { LOGOTIPO, MODULO, PREFIXO_PERFIL_SISTEMA } from "./app/config/layout";
+import { DESCRICAO, LOGOTIPO, MODULO, PREFIXO_PERFIL_SISTEMA } from "./app/config/layout";
 import { menu } from "./app/config/menu";
 import { PARAMS, provideApcoreHttpInterceptors } from '@andre.penteado/ngx-apcore';
 import localePT from '@angular/common/locales/pt';
@@ -44,6 +44,7 @@ bootstrapApplication(
           logotipo: LOGOTIPO,
           menu: menu,
           sistema: MODULO,
+          descricao: DESCRICAO,
           urlBackend: CONFIG.urlBackend,
           urlPortal: CONFIG.urlPortal,
           prefixoPerfil: PREFIXO_PERFIL_SISTEMA

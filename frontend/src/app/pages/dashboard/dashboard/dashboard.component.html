@@ -1,5 +1,5 @@
 <nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb page-breadcrumb">
+  <ol class="breadcrumb mb-0 small">
     <li class="breadcrumb-item">
       <a routerLink="/pagina-inicial" class="text-decoration-none" aria-label="Página inicial">
         <i class="fa-solid fa-house"></i>
@@ -11,9 +11,9 @@
 
 <section class="container py-3">
 
-  <div class="page-heading mb-4">
+  <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3 mb-4">
     <div>
-      <span class="eyebrow">Visão geral</span>
+      <span class="small text-primary fw-bold text-uppercase d-inline-flex align-items-center gap-1 mb-1">Visão geral</span>
       <h1 class="h3 mb-1">Dashboard</h1>
       <p class="text-body-secondary mb-0">Resumo operacional da clínica.</p>
     </div>
@@ -21,54 +21,54 @@
 
   <div class="row g-4">
     <div class="col-12 col-md-6 col-xl-4">
-      <div class="card metric-card metric-card-patient h-100">
+      <div class="card h-100 border shadow-sm overflow-hidden">
         <div class="card-body p-4">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div>
-              <p class="metric-label mb-2">Pacientes</p>
-              <div class="metric-value">{{ totalPacientes }}</div>
+              <p class="small text-secondary fw-bold text-uppercase mb-2">Pacientes</p>
+              <div class="display-5 fw-bold lh-1">{{ totalPacientes }}</div>
             </div>
-            <span class="metric-icon">
+            <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-3">
               <i class="fa-solid fa-person"></i>
             </span>
           </div>
-          <div class="metric-rule mt-4"></div>
+          <div class="border-top border-4 border-primary rounded mt-4"></div>
           <p class="small text-body-secondary mb-0 mt-3">Cadastros ativos disponíveis para acompanhamento.</p>
         </div>
       </div>
     </div>
 
     <div class="col-12 col-md-6 col-xl-4">
-      <div class="card metric-card metric-card-care h-100">
+      <div class="card h-100 border shadow-sm overflow-hidden">
         <div class="card-body p-4">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div>
-              <p class="metric-label mb-2">Atendimentos</p>
-              <div class="metric-value">{{ totalAtendimentos }}</div>
+              <p class="small text-secondary fw-bold text-uppercase mb-2">Atendimentos</p>
+              <div class="display-5 fw-bold lh-1">{{ totalAtendimentos }}</div>
             </div>
-            <span class="metric-icon">
+            <span class="d-inline-flex align-items-center justify-content-center rounded bg-success-subtle text-success p-3">
               <i class="fa-solid fa-notes-medical"></i>
             </span>
           </div>
-          <div class="metric-rule mt-4"></div>
+          <div class="border-top border-4 border-success rounded mt-4"></div>
           <p class="small text-body-secondary mb-0 mt-3">Registros clínicos lançados no prontuário.</p>
         </div>
       </div>
     </div>
 
     <div class="col-12 col-md-6 col-xl-4">
-      <div class="card metric-card metric-card-exam h-100">
+      <div class="card h-100 border shadow-sm overflow-hidden">
         <div class="card-body p-4">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div>
-              <p class="metric-label mb-2">Exames</p>
-              <div class="metric-value">{{ totalExames }}</div>
+              <p class="small text-secondary fw-bold text-uppercase mb-2">Exames</p>
+              <div class="display-5 fw-bold lh-1">{{ totalExames }}</div>
             </div>
-            <span class="metric-icon">
+            <span class="d-inline-flex align-items-center justify-content-center rounded bg-warning-subtle text-warning p-3">
               <i class="fa-solid fa-paperclip"></i>
             </span>
           </div>
-          <div class="metric-rule mt-4"></div>
+          <div class="border-top border-4 border-warning rounded mt-4"></div>
           <p class="small text-body-secondary mb-0 mt-3">Arquivos anexados aos cadastros de pacientes.</p>
         </div>
       </div>

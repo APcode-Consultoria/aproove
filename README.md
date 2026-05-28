@@ -1,87 +1,50 @@
-![image](https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot)
-![image](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
-![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
-![image](https://img.shields.io/badge/Ansible-000000?style=for-the-badge&logo=ansible&logoColor=white)
-![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+# Clínica PRO
 
-# AProove — Sistema de Gestão Clínica
+Sistema customizado para uma clínica de fisioterapia e pilates, voltado ao cadastro de pacientes e ao controle de prontuários clínicos.
 
-O **AProove** é um sistema voltado para **clínicas de saúde em geral**, como **fisioterapia, pilates, consultórios médicos e multiprofissionais**, com foco no **cadastro, acompanhamento e controle clínico de pacientes**, centralizando informações de **prontuários terapêuticos**, atendimentos e histórico de tratamentos.
+## Escopo
 
-A plataforma foi projetada para apoiar o **fluxo assistencial**, garantindo organização, rastreabilidade e segurança das informações clínicas, alinhando tecnologia moderna às necessidades do ambiente de saúde.
+- `Paciente`: dados cadastrais, contatos e informações necessárias ao atendimento.
+- `Prontuario`: registros clínicos vinculados ao acompanhamento terapêutico.
+- `Exame`: informações e arquivos complementares associados ao histórico do paciente.
+- `Dashboard`: visão inicial para navegação e acompanhamento operacional.
 
----
+Pacientes, prontuários e exames devem ser tratados como dados sensíveis. Mudanças nessas áreas devem priorizar consistência, rastreabilidade, controle de acesso e preservação do histórico clínico.
 
-## Funcionalidades Principais
+## Estrutura
 
-* **Cadastro Clínico de Pacientes**
-    * Dados pessoais, contatos e informações relevantes para o atendimento.
-    * Histórico longitudinal do paciente.
+- `backend/`: API, domínio, serviços, persistência e configurações do servidor.
+- `frontend/`: aplicação web usada pela clínica.
+- `.specs/`: padrões técnicos compartilhados e instruções para IA.
+- `.helm/`: configurações de deploy Kubernetes.
+- `Makefile` e `Makefile.ps1`: comandos operacionais de build, teste, imagem e deploy.
+- `mise.toml`: versões locais das ferramentas de desenvolvimento.
 
-* **Prontuário de Tratamento**
-    * Registro de avaliações, evoluções e condutas terapêuticas.
-    * Acompanhamento cronológico das sessões e procedimentos realizados.
-    * Suporte a diferentes especialidades clínicas.
+## Execução Local
 
-* **Gestão de Atendimentos**
-    * Organização de sessões e registros clínicos.
-    * Visualização clara do progresso terapêutico do paciente.
+Backend:
 
-* **Segurança e Confiabilidade**
-    * Controle de acesso baseado em perfis.
-    * Persistência estruturada e segura dos dados clínicos.
+```bash
+mvn clean package --file backend/pom.xml
+mvn test --file backend/pom.xml
+```
 
----
+Frontend:
 
-## Arquitetura do Sistema
+```bash
+cd frontend
+npm ci
+npm start
+```
 
-O AProove utiliza uma arquitetura moderna baseada em **separação clara de responsabilidades**, garantindo escalabilidade, manutenibilidade e segurança.
+Em desenvolvimento local, o frontend roda em `http://localhost:4200/roove`.
 
-### Componentes Principais
+## Referências Técnicas
 
-* **Backend (Clinical Core):**  
-  Desenvolvido em **Spring Boot**, concentra as **regras de negócio clínicas**, validações, persistência de dados e exposição de serviços **RESTful**. É responsável por garantir a integridade das informações do prontuário e do cadastro de pacientes.
+A stack, padrões de backend/frontend, convenções de código, critérios de aceite e orientações para IA ficam em `.specs/`.
 
-* **Frontend (Clinical UI):**  
-  Interface web desenvolvida como **Single Page Application (SPA)** com **Angular**, oferecendo uma experiência fluida para profissionais de saúde no registro e consulta de informações clínicas.
+Ao usar IA neste projeto, considere:
 
-* **Banco de Dados (Clinical Data Store):**  
-  Utiliza **PostgreSQL** como base relacional para armazenamento seguro dos dados de pacientes, prontuários e registros de atendimento.
-
----
-
-## Stack Tecnológica
-
-* **Backend:**  
-  Java com [Spring Boot Framework](https://spring.io)
-
-* **Frontend:**  
-  [Angular SPA](https://angular.io)
-
-* **Banco de Dados:**  
-  [PostgreSQL](https://www.postgresql.org)
-
-* **Containerização:**  
-  [Docker](https://www.docker.com)
-
-* **Automação e Infraestrutura:**  
-  [Ansible](https://www.ansible.com)
-
----
-
-## Deploy e Infraestrutura
-
-O AProove conta com automação completa do ciclo de entrega:
-
-* Build automatizado de aplicações backend e frontend.
-* Geração e publicação de imagens Docker.
-* Provisionamento e atualização de ambientes via **Kubernetes**.
-* Scripts **Makefile** e **PowerShell** para padronização dos processos de build, deploy e operação.
-
-Essa abordagem garante **padronização, reprodutibilidade e segurança**, facilitando a implantação do sistema em ambientes locais, homologação ou produção.
-
----
-
-## Objetivo do Projeto
-
-O AProove tem como objetivo **digitalizar e organizar o cuidado clínico**, oferecendo uma solução confiável para profissionais de saúde acompanharem seus pacientes de forma estruturada, segura e eficiente, respeitando a complexidade dos processos assistenciais
+- este README como contexto de negócio;
+- `.specs/` como referência técnica;
+- instruções de CRUD em `.specs/` como mecanismo operacional, não como objetivo do produto.

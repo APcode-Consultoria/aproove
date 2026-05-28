@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Datatables, ExibirMensagemService, FloatingButtonComponent, LoginService } from "@andre.penteado/ngx-apcore";
+import { Datatables, ExibirMensagemService, LoginService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
 import { ExameService } from "../../../services/exame.service";
 import { ProntuarioService } from "../../../services/prontuario.service";
 import { Paciente } from "../../../domain/entities/paciente";
-import { NgxSpinnerComponent, NgxSpinnerService } from "ngx-spinner";
 import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NgxUiLoaderModule, NgxUiLoaderService } from "ngx-ui-loader";
 
 @Component({
   selector: 'app-pesquisar',
@@ -19,8 +19,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     ReactiveFormsModule,
     FormsModule,
     RouterLink,
-    NgxSpinnerComponent,
-    FloatingButtonComponent
+    NgxUiLoaderModule
   ]
 })
 export class PesquisarComponent implements OnInit {
@@ -35,24 +34,27 @@ export class PesquisarComponent implements OnInit {
   private exameService = inject(ExameService);
   private prontuarioService = inject(ProntuarioService);
   private exibirMensagem = inject(ExibirMensagemService);
-  private spinnerService = inject(NgxSpinnerService);
+  private uiLoaderService = inject(NgxUiLoaderService);
   protected loginService = inject(LoginService);
   private router = inject(Router);
 
   ngOnInit(): void {
-    this.spinnerService.show();
     this.pesquisar();
     this.exibeTotais();
   }
 
   pesquisar(): void {
+    this.uiLoaderService.startLoader('paciente-pesquisar');
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
         this.lista = listaPacientes;
-        this.spinnerService.hide();
         setTimeout(() => {
-          $('#datatable-pesquisar-paciente').DataTable(Datatables.config);
+          $('#datatables-pesquisar-pacientes').DataTable(Datatables.config);
+          this.uiLoaderService.stopLoader('paciente-pesquisar');
         }, 5);
+      },
+      error: () => {
+        this.uiLoaderService.stopLoader('paciente-pesquisar');
       }
     });
   }
