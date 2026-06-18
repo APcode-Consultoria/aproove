@@ -146,8 +146,8 @@ k8s-deploy:
 	@echo "🚀 Iniciando deploy do AProove no Kubernetes"
 	@echo "Entre com a senha do gitlab.com para baixar o helm chart"
 	echo "$(GITLAB_TOKEN)" | helm registry login registry.gitlab.com -u andrepenteado --password-stdin
-	helm upgrade --install backend $(CHART) -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
-	helm upgrade --install frontend $(CHART) -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
+	helm upgrade --install backend $(CHART) --version 1.0.1 -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
+	helm upgrade --install frontend $(CHART) --version 1.0.1 -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
 	@echo "✅ Deploy do AProove finalizado com sucesso"
 
 # =====================
