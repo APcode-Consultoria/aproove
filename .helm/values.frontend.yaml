@@ -14,3 +14,5 @@ app:
 ingress:
   host: "sistemas.apcode.com.br"
   context: "/roove"
+  # TLS centralizado: cert refletido do namespace 'certs' (Secret sistemas-apcode-tls).
+  tlsSecretName: sistemas-apcode-tls

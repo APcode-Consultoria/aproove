@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:postgresql://db.apcode.com.br/aproove-dbname
     username: aproove-dbuser
-    password: ***REMOVED***
+    password: ${APROOVE_DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: aproove-pool
@@ -28,7 +28,7 @@ spring:
             provider: com.github.andrepenteado.sso.portal
             client-name: AProove
             client-id: PRODUCAO-roove
-            client-secret: ***REMOVED***
+            client-secret: ${APROOVE_OIDC_CLIENT_SECRET:}
             authorization-grant-type: authorization_code
             scope: openid
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"

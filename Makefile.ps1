@@ -129,17 +129,21 @@ function Build-Images {
 # =====================
 function K8s-Pre-Init {
     kubectl apply -f .helm/namespace.yaml
-    kubectl apply -f .helm/github-secret.yaml
-    Write-Host "✅ Namespace e Secret criados" -ForegroundColor Green
+    if (-not (Test-Path .helm/secret.yaml)) {
+        throw "❌ .helm/secret.yaml não encontrado. Copie de .helm/secret.template.yaml e preencha os valores reais."
+    }
+    kubectl apply -f .helm/secret.yaml
+    Write-Host "✅ Namespace e Secrets criados" -ForegroundColor Green
 }
 
 function K8s-Deploy {
     Write-Host "🚀 Iniciando deploy no Kubernetes (namespace: $K8sNS)" -ForegroundColor Cyan
     Write-Host "Entre com a senha do gitlab.com para baixar o helm chart" -ForegroundColor Blue
-    $CHART="oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart"
+    $Chart        = "oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart"
+    $ChartVersion = "1.4.0"
     helm registry login registry.gitlab.com -u andrepenteado
-    helm upgrade --install backend $CHART -f .helm/values.backend.yaml --set app.image.tag=$Versao -n aproove
-    helm upgrade --install frontend $CHART -f .helm/values.frontend.yaml --set app.image.tag=$Versao -n aproove
+    helm upgrade --install backend $Chart --version $ChartVersion -f .helm/values.backend.yaml --set app.image.tag=$Versao -n aproove
+    helm upgrade --install frontend $Chart --version $ChartVersion -f .helm/values.frontend.yaml --set app.image.tag=$Versao -n aproove
     Write-Host "✅ Deploy do AProove finalizado com sucesso" -ForegroundColor Green
 }
 

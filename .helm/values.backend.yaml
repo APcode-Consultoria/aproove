@@ -10,11 +10,20 @@ app:
   envVars:
     SPRING_PROFILES_ACTIVE: prod
 
+  # Segredos vindos do Secret 'aproove-secrets' (.helm/secret.yaml, fora do git).
+  secretName: aproove-secrets
+  envSecrets:
+    APROOVE_DB_PASSWORD: DB_PASSWORD
+    APROOVE_OIDC_CLIENT_SECRET: OIDC_CLIENT_SECRET
+
   livenessProbe: "/actuator/health/liveness"
   readinessProbe: "/actuator/health/readiness"
 
 ingress:
   host: "sistemas.apcode.com.br"
   context: "/roove-backend"
+  # TLS centralizado: cert do host sistemas.apcode.com.br emitido no namespace 'certs'
+  # e refletido para aproove (Secret sistemas-apcode-tls). O Ingress não gerencia cert.
+  tlsSecretName: sistemas-apcode-tls
 
 authServer: "https://login.apcode.com.br/actuator/health/readiness"

@@ -18,8 +18,9 @@ NAMESPACE    := andrepenteado/aproove
 MODULE_NAME  := roove
 ANGULAR_DIST := production
 K8S_NS       := aproove
-CHART        := oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart
-VERSAO_APP   := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
+CHART         := oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart
+CHART_VERSION := 1.4.0
+VERSAO_APP    := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
 
 # =====================
 # HELP
@@ -132,12 +133,16 @@ build-all: docker-login build-frontend build-backend build-images docker-logout
 	@echo "🎉 Build completo finalizado!"
 
 # ================================================
-# Criar namespace e baixar helm chart para deploy
+# Criar namespace e secrets (aproove-secrets + github-secret via secret.yaml)
 # ================================================
 k8s-pre-init:
 	@echo "🚀 Inicializando namespace e secrets"
 	kubectl apply -f .helm/namespace.yaml
-	kubectl apply -f .helm/github-secret.yaml
+	@if [ ! -f .helm/secret.yaml ]; then \
+		echo "❌ .helm/secret.yaml não encontrado. Copie de .helm/secret.template.yaml e preencha os valores reais."; \
+		exit 1; \
+	fi
+	kubectl apply -f .helm/secret.yaml
 
 # ============================================================
 # 🚀 Deploy Kubernetes (com validação de LOGIN)
@@ -146,8 +151,8 @@ k8s-deploy:
 	@echo "🚀 Iniciando deploy do AProove no Kubernetes"
 	@echo "Entre com a senha do gitlab.com para baixar o helm chart"
 	echo "$(GITLAB_TOKEN)" | helm registry login registry.gitlab.com -u andrepenteado --password-stdin
-	helm upgrade --install backend $(CHART) --version 1.0.1 -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
-	helm upgrade --install frontend $(CHART) --version 1.0.1 -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
+	helm upgrade --install backend $(CHART) --version $(CHART_VERSION) -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
+	helm upgrade --install frontend $(CHART) --version $(CHART_VERSION) -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
 	@echo "✅ Deploy do AProove finalizado com sucesso"
 
 # =====================

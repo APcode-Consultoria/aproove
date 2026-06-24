@@ -10,7 +10,7 @@ spring:
             provider: com.github.andrepenteado.sso.portal
             client-name: AProove
             client-id: LOCAL-roove
-            client-secret: ***REMOVED***
+            client-secret: ${APROOVE_OIDC_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             scope: openid
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
