@@ -33,12 +33,26 @@ spring:
             scope: openid
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-authentication-method: client_secret_basic
+          # Registro M2M (client_credentials) reutilizando o MESMO client/secret do login,
+          # usado para consultar a api do apsso (ex.: foto do usuário).
+          roove-api:
+            provider: com.github.andrepenteado.sso.portal
+            client-id: PRODUCAO-roove
+            client-secret: ${APROOVE_OIDC_CLIENT_SECRET:}
+            authorization-grant-type: client_credentials
+            scope: com.github.andrepenteado.sso.api_CONSULTAR_API
+            client-authentication-method: client_secret_basic
         provider:
           "[com.github.andrepenteado.sso.portal]":
             issuer-uri: https://login.apcode.com.br
   web:
     error:
       include-message: always
+
+# URL base da api de consulta do apsso (resource server). Override por env conforme o deploy.
+apsso:
+  api:
+    base-url: ${APSSO_API_BASE_URL:https://sistemas.apcode.com.br/api}
 
 server:
   forward-headers-strategy: framework

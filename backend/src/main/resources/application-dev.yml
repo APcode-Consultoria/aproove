@@ -15,9 +15,20 @@ spring:
             scope: openid
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-authentication-method: client_secret_basic
+          roove-api:
+            provider: com.github.andrepenteado.sso.portal
+            client-id: LOCAL-roove
+            client-secret: ${APROOVE_OIDC_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope: com.github.andrepenteado.sso.api_CONSULTAR_API
+            client-authentication-method: client_secret_basic
         provider:
           "[com.github.andrepenteado.sso.portal]":
             issuer-uri: https://login.apcode.com.br
+
+apsso:
+  api:
+    base-url: ${APSSO_API_BASE_URL:http://localhost:8080/api}
 
 server:
   servlet:
