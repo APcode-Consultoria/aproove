@@ -29,14 +29,14 @@
                 <div class="text-secondary fw-semibold">Criado por</div>
                 <div class="text-truncate">{{ objetoPaciente?.usuarioCadastro || 'Não informado' }}</div>
                 <div class="text-secondary fw-semibold mt-1">Criado em</div>
-                <div>{{ objetoPaciente?.dataCadastro | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+                <div>{{ $safeNavigationMigration(objetoPaciente?.dataCadastro) | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
               </div>
               @if (objetoPaciente?.dataUltimaAtualizacao != null) {
                 <div style="max-width: 12rem;">
                   <div class="text-secondary fw-semibold">Alterado por</div>
                   <div class="text-truncate">{{ objetoPaciente?.usuarioUltimaAtualizacao || 'Não informado' }}</div>
                   <div class="text-secondary fw-semibold mt-1">Alterado em</div>
-                  <div>{{ objetoPaciente?.dataUltimaAtualizacao | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+                  <div>{{ $safeNavigationMigration(objetoPaciente?.dataUltimaAtualizacao) | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
                 </div>
               }
             </div>

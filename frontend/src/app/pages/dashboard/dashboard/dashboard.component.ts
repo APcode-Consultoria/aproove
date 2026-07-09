@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ExameService } from "../../../services/exame.service";
 import { ProntuarioService } from "../../../services/prontuario.service";
 import { PacienteService } from "../../../services/paciente.service";
@@ -11,6 +11,7 @@ import { RouterLink } from "@angular/router";
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

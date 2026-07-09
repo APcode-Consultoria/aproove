@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Datatables, ExibirMensagemService, LoginService } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
@@ -14,6 +14,7 @@ import { NgxUiLoaderModule, NgxUiLoaderService } from "ngx-ui-loader";
   selector: 'app-pesquisar',
   templateUrl: './pesquisar.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

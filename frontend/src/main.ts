@@ -1,7 +1,7 @@
 import { importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import { ToastrModule } from 'ngx-toastr';
@@ -9,7 +9,7 @@ import { INIT_CONFIG, InitConfig } from "./app/config/init-config.token";
 import { AppComponent } from "./app/app.component";
 import { DESCRICAO, LOGOTIPO, MODULO, PREFIXO_PERFIL_SISTEMA } from "./app/config/layout";
 import { menu } from "./app/config/menu";
-import { PARAMS, provideApcoreHttpInterceptors } from '@andre.penteado/ngx-apcore';
+import { PARAMS, apcoreInterceptors } from '@andre.penteado/ngx-apcore';
 import localePT from '@angular/common/locales/pt';
 import { provideNgxMask } from "ngx-mask";
 import { appRoutes } from "./app/app.routes";
@@ -24,8 +24,8 @@ bootstrapApplication(
       provideZoneChangeDetection({eventCoalescing: true}),
       provideRouter(appRoutes),
       provideAnimations(),
-      provideHttpClient(withInterceptorsFromDi()),
-      provideApcoreHttpInterceptors(),
+      provideHttpClient(withXhr(), withInterceptorsFromDi()),
+      provideHttpClient(withXhr(), withInterceptors(apcoreInterceptors)),
       provideNgxMask(),
       importProvidersFrom(
         ToastrModule.forRoot()

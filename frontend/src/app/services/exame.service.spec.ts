@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { INIT_CONFIG } from '../config/init-config.token';
 import { Exame } from '../domain/entities/exame';
@@ -14,7 +14,7 @@ describe('ExameService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: INIT_CONFIG, useValue: { urlBackend: BASE_URL } },
       ],
