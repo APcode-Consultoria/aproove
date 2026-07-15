@@ -157,6 +157,7 @@ export class CadastroComponent implements OnInit {
   }
 
   pesquisar(id: number): void {
+    console.info(`Buscar paciente de ID #${id}`);
     this.pacienteService.buscar(id).subscribe(paciente => {
       this.objetoPaciente = paciente;
       this.formPaciente.patchValue(paciente);
@@ -201,6 +202,7 @@ export class CadastroComponent implements OnInit {
   gravarPaciente(): void {
     this.formPacienteEnviado = true;
     if (this.formPaciente.valid) {
+      console.info(`Gravar dados do paciente ${JSON.stringify(this.formPaciente.value)}`);
       this.pacienteService.gravar(this.formPaciente.value).subscribe({
         next: paciente => {
           this.objetoPaciente = paciente;
@@ -256,6 +258,7 @@ export class CadastroComponent implements OnInit {
 
       this.formExames.controls.paciente.setValue(this.objetoPaciente);
       this.formExames.controls.arquivo.setValue(upload.uuid);
+      console.info(`Incluir novo exame ${JSON.stringify(this.formExames.value)}`);
       this.exameService.incluir(this.formExames.value).subscribe({
         next: exame => {
           this.exames.unshift(exame);
@@ -283,6 +286,7 @@ export class CadastroComponent implements OnInit {
       .showConfirm(`Confirma a exclusão do exame ${exame.descricao}`, "Excluir?")
       .then((resposta) => {
         if (resposta.value) {
+          console.info(`Excluir exame de ID #${exame.id}`);
           this.exameService.excluir(exame.id).subscribe({
             next: () => this.pesquisar(exame.paciente.id)
           });
@@ -296,6 +300,7 @@ export class CadastroComponent implements OnInit {
     if (this.formProntuario.valid) {
       this.formProntuario.controls.dataRegistro.setValue(new Date());
       this.formProntuario.controls.paciente.setValue(this.objetoPaciente);
+      console.info(`Incluir novo prontuário ${JSON.stringify(this.formProntuario.value)}`);
       this.prontuarioService.incluir(this.formProntuario.value).subscribe({
         next: prontuario => {
           this.prontuarios.unshift(prontuario);
@@ -323,6 +328,7 @@ export class CadastroComponent implements OnInit {
       .showConfirm(`Confirma a exclusão do prontuário ${prontuario.id}`, "Excluir?")
       .then((resposta) => {
       if (resposta.value) {
+        console.info(`Excluir prontuário de ID #${prontuario.id}`);
         this.prontuarioService.excluir(prontuario.id).subscribe({
           next: () => this.pesquisar(prontuario.paciente.id),
           error: objetoErro => {

@@ -45,6 +45,7 @@ export class PesquisarComponent implements OnInit {
   }
 
   pesquisar(): void {
+    console.info('Listar todos pacientes');
     this.uiLoaderService.startLoader('paciente-pesquisar');
     this.pacienteService.listar().subscribe({
       next: listaPacientes => {
@@ -78,6 +79,7 @@ export class PesquisarComponent implements OnInit {
       .showConfirm(`Confirma a exclusão do paciente ${paciente.nome}`, "Excluir?")
       .then((resposta) => {
         if (resposta.value) {
+        console.info(`Excluir paciente de ID #${paciente.id}`);
         this.pacienteService.excluir(paciente.id).subscribe({
           next: () => {
             window.location.reload();

@@ -25,6 +25,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "allowedCommonJsDependencies": ["@opentelemetry/otlp-transformer", "ua-parser-js"],
             "outputPath": "dist/default",
             "index": "src/index.html",
             "browser": "src/main.ts",

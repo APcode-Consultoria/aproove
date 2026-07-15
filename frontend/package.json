@@ -31,6 +31,8 @@
     "@bugsplat/ngx-animated-counter": "^18.0.0",
     "@fontsource/raleway": "^5.2.8",
     "@fortawesome/fontawesome-free": "^7.1.0",
+    "@grafana/faro-web-sdk": "^2.8.2",
+    "@grafana/faro-web-tracing": "^2.8.2",
     "@ngx-loading-bar/core": "^7.0.1",
     "@ngx-loading-bar/http-client": "^7.0.1",
     "@ngx-loading-bar/router": "^7.0.1",
