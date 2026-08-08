@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import {
   DecoracaoMensagem,
   ExibirMensagemService,
+  LoginService,
   UploadService,
   ViaCepService
 } from '@andre.penteado/ngx-apcore';
@@ -80,6 +81,11 @@ describe('CadastroComponent', () => {
     incluir: vi.fn()
   };
 
+  const loginServiceMock = {
+    getUserLogin: vi.fn(() => null),
+    hasRole: vi.fn(() => false)
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -91,7 +97,8 @@ describe('CadastroComponent', () => {
         { provide: ExameService, useValue: exameServiceMock },
         { provide: ViaCepService, useValue: viaCepServiceMock },
         { provide: ExibirMensagemService, useValue: exibirMensagemServiceMock },
-        { provide: UploadService, useValue: uploadServiceMock }
+        { provide: UploadService, useValue: uploadServiceMock },
+        { provide: LoginService, useValue: loginServiceMock }
       ]
     }).compileComponents();
 
