@@ -1,6 +1,6 @@
 export const LOGOTIPO: string = "assets/images/logo-roove.png";
 
-export const MODULO: string = "Clínica PRO";
+export const MODULO: string = "Web Prontuário";
 
 export const DESCRICAO: string = "Gestão Inteligente de Pacientes";
 

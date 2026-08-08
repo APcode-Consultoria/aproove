@@ -1,4 +1,4 @@
-# Clínica PRO
+# Web Prontuário
 
 Sistema customizado para uma clínica de fisioterapia e pilates, voltado ao cadastro de pacientes e ao controle de prontuários clínicos.
 
