@@ -48,49 +48,73 @@
 
   <div class="card border-0 shadow-sm">
     <div class="card-body p-4 p-lg-5">
-      <ul class="nav nav-pills flex-column flex-md-row gap-2 mb-4" id="cadastroTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                  id="dados-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#dados-tab-pane"
-                  type="button"
-                  role="tab"
-                  aria-controls="dados-tab-pane"
-                  aria-selected="true">
-            <i class="fa-solid fa-address-card"></i>
-            Dados cadastrais
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                  [class.disabled]="!objetoPaciente.id"
-                  id="exames-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#exames-tab-pane"
-                  type="button"
-                  role="tab"
-                  aria-controls="exames-tab-pane"
-                  aria-selected="false">
-            <i class="fa-solid fa-paperclip"></i>
-            Exames
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                  [class.disabled]="!objetoPaciente.id"
-                  id="prontuario-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#prontuario-tab-pane"
-                  type="button"
-                  role="tab"
-                  aria-controls="prontuario-tab-pane"
-                  aria-selected="false">
-            <i class="fa-solid fa-notes-medical"></i>
-            Prontuário
-          </button>
-        </li>
-      </ul>
+      <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <ul class="nav nav-pills flex-column flex-md-row gap-2 mb-0" id="cadastroTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                    id="dados-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#dados-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="dados-tab-pane"
+                    aria-selected="true">
+              <i class="fa-solid fa-address-card"></i>
+              Dados cadastrais
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                    [class.disabled]="!objetoPaciente.id"
+                    id="exames-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#exames-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="exames-tab-pane"
+                    aria-selected="false">
+              <i class="fa-solid fa-paperclip"></i>
+              Exames
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                    [class.disabled]="!objetoPaciente.id"
+                    id="prontuario-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#prontuario-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="prontuario-tab-pane"
+                    aria-selected="false">
+              <i class="fa-solid fa-notes-medical"></i>
+              Prontuário
+            </button>
+          </li>
+        </ul>
+
+        <div class="flex-shrink-0" style="min-width: 15rem;">
+          <label class="form-label fw-semibold small mb-1" for="responsavel">Responsável</label>
+          @if (loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+            <div class="input-group input-group-sm">
+              <span class="input-group-text"><i class="fa-solid fa-user-tie"></i></span>
+              <input id="responsavel" type="text" name="responsavel" [formControl]="responsavel" class="form-control" autocomplete="off">
+              <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Selecionar responsável</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                @for (r of responsaveis; track r) {
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="responsavel.setValue(r)">{{ r }}</a></li>
+                } @empty {
+                  <li><span class="dropdown-item-text text-secondary">Nenhum responsável cadastrado</span></li>
+                }
+              </ul>
+            </div>
+          } @else {
+            <div id="responsavel" class="form-control-plaintext py-1 fw-semibold">{{ responsavel.value || 'Não informado' }}</div>
+          }
+        </div>
+      </div>
 
       <div class="tab-content" id="cadastroTabsContent">
         <section class="tab-pane fade show active" id="dados-tab-pane" role="tabpanel" aria-labelledby="dados-tab" tabindex="0">

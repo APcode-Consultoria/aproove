@@ -7,6 +7,7 @@ import { ExameService } from '../../../services/exame.service';
 import {
   DecoracaoMensagem,
   ExibirMensagemService,
+  LoginService,
   Upload,
   UploadService,
   ViaCepService
@@ -18,6 +19,7 @@ import { Exame } from "../../../domain/entities/exame";
 import { Paciente } from "../../../domain/entities/paciente";
 import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
+import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 
 @Component({
   selector: 'app-cadastro',
@@ -34,6 +36,8 @@ import { NgxMaskDirective } from "ngx-mask";
 })
 export class CadastroComponent implements OnInit {
 
+  protected readonly PREFIXO_PERFIL_SISTEMA = PREFIXO_PERFIL_SISTEMA;
+
   formPacienteEnviado = false;
   formProntuarioEnviado = false;
   formExamesEnviado = false;
@@ -43,6 +47,7 @@ export class CadastroComponent implements OnInit {
 
   prontuarios: Prontuario[] = [];
   exames: Exame[] = [];
+  responsaveis: string[] = [];
 
   objetoPaciente: Paciente = new Paciente();
   objetoArquivo: Upload = new Upload();
@@ -135,6 +140,8 @@ export class CadastroComponent implements OnInit {
     paciente: this.pacienteProntuario
   });
 
+  protected loginService = inject(LoginService);
+
   private activedRoute = inject(ActivatedRoute);
   private pacienteService = inject(PacienteService);
   private prontuarioService = inject(ProntuarioService);
@@ -153,7 +160,16 @@ export class CadastroComponent implements OnInit {
       if (id) {
         this.pesquisar(id);
       }
+      else {
+        this.responsavel.setValue(this.loginService.getUserLogin()?.login ?? null);
+      }
     });
+
+    if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+      this.pacienteService.listar().subscribe(pacientes => {
+        this.responsaveis = [...new Set(pacientes.map(paciente => paciente.responsavel).filter(Boolean))].sort();
+      });
+    }
   }
 
   pesquisar(id: number): void {
