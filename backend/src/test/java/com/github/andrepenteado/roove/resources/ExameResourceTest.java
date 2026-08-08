@@ -1,7 +1,7 @@
 package com.github.andrepenteado.roove.resources;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import com.github.andrepenteado.roove.domain.entities.Exame;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -13,9 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testes do resource {@link ExameResource}
  */
-/*@SpringBootTest
+@SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestExecutionListeners({
@@ -45,29 +48,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     DbUnitTestExecutionListener.class
 })
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
-@DatabaseSetup(
-    value = "/datasets/exame.xml",
-    type  = DatabaseOperation.CLEAN_INSERT
-)
-@DatabaseTearDown(
-    value = "/datasets/exame.xml",
-    type  = DatabaseOperation.DELETE_ALL
-)
+@DatabaseSetup("/datasets/exame.xml")
+@DatabaseTearDown(value = "/datasets/exame-teardown.xml", type = DatabaseOperation.DELETE_ALL)
 @Transactional
-@ActiveProfiles("test")*/
+@ActiveProfiles("test")
 public class ExameResourceTest {
 
-    /*@Autowired
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+
     private final String DESCRICAO_EXAME = "Descricao do exame de testes";
 
     private String getJsonExame() throws Exception {
         Exame exame = new Exame();
-        exame.setPaciente(getPaciente(100L));
+        exame.setPaciente(getPaciente(400L));
         exame.setArquivo(UUID.fromString("00000000-0000-0000-0000-000000000003"));
         exame.setDescricao(DESCRICAO_EXAME);
         exame.setDataUpload(LocalDateTime.now());
@@ -77,7 +77,7 @@ public class ExameResourceTest {
     @Test
     @DisplayName("Listar exames do paciente")
     void testListarPorPaciente() throws Exception {
-        String json = mockMvc.perform(get("/exames/100")
+        String json = mockMvc.perform(get("/exames/400")
                 .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -110,7 +110,7 @@ public class ExameResourceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new Exame())))
-            .andExpect(status().isUnprocessableEntity());
+            .andExpect(status().isUnprocessableContent());
     }
 
     @Test
@@ -126,6 +126,6 @@ public class ExameResourceTest {
                 .with(authentication(getToken()))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
-    }*/
+    }
 
 }

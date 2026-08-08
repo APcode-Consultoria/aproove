@@ -3,6 +3,7 @@ param(
             "help",
             "build-all","build-frontend","build-backend","build-images",
             "test-frontend",
+            "run-dev",
             "docker-login","docker-logout",
             "k8s-pre-init","k8s-deploy","k8s-delete",
             "k8s-log-backend","k8s-log-frontend",
@@ -125,6 +126,42 @@ function Build-Images {
 }
 
 # =====================
+# EXECUÇÃO LOCAL (DEV)
+# =====================
+function Run-Dev {
+    Write-Host "💻 Subindo backend (Spring, perfil dev) e frontend (Angular) em modo desenvolvimento" -ForegroundColor Cyan
+
+    $envFile = ".helm/backend.env"
+    if (-not (Test-Path $envFile)) {
+        throw "❌ $envFile não encontrado. Copie de .helm/dev.env.example e preencha os valores."
+    }
+
+    Get-Content $envFile | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -and -not $line.StartsWith("#") -and $line.Contains("=")) {
+            $key, $value = $line -split "=", 2
+            Set-Item -Path "Env:$($key.Trim())" -Value $value.Trim()
+        }
+    }
+
+    $backend = Start-Process -FilePath "mvn" `
+        -ArgumentList "spring-boot:run", "-Dspring-boot.run.profiles=dev", "--file", "backend/pom.xml" `
+        -NoNewWindow -PassThru
+
+    try {
+        Push-Location "frontend"
+        npm start
+    }
+    finally {
+        Pop-Location
+        if ($backend -and -not $backend.HasExited) {
+            Write-Host "🛑 Encerrando backend (PID $($backend.Id))" -ForegroundColor DarkGray
+            Stop-Process -Id $backend.Id -Force
+        }
+    }
+}
+
+# =====================
 # KUBERNETES
 # =====================
 function K8s-Pre-Init {
@@ -179,6 +216,9 @@ switch ($exec) {
         Write-Host "   build-images         → Build & push das imagens Docker"
         Write-Host "   build-all            → Build completo"
         Write-Host ""
+        Write-Host "💻 Desenvolvimento local:"
+        Write-Host "   run-dev              → Sobe backend (Spring, perfil dev) e frontend (Angular) juntos"
+        Write-Host ""
         Write-Host "☸️ Kubernetes:"
         Write-Host "   k8s-pre-init         → Cria namespace e secrets"
         Write-Host "   k8s-deploy           → Deploy com validação de LOGIN"
@@ -196,6 +236,8 @@ switch ($exec) {
     "build-frontend" { Build-Frontend }
     "build-backend"  { Build-Backend }
     "build-images"   { Build-Images }
+
+    "run-dev"        { Run-Dev }
 
     "build-all" {
         Docker-Login

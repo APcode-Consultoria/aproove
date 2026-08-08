@@ -3,6 +3,7 @@
 .PHONY: help \
         build-all build-frontend build-backend build-images \
         test-frontend \
+        run-dev \
         docker-login docker-logout \
         k8s-pre-init k8s-deploy k8s-delete \
         k8s-log-backend k8s-log-frontend \
@@ -41,6 +42,9 @@ help:
 	@echo "   build-backend        → Build do backend Java (Maven)"
 	@echo "   build-images         → Build & push das imagens Docker"
 	@echo "   build-all            → Build completo (frontend + backend + imagens)"
+	@echo ""
+	@echo "💻 Desenvolvimento local:"
+	@echo "   run-dev              → Sobe backend (Spring, perfil dev) e frontend (Angular) juntos"
 	@echo ""
 	@echo "☸️ Kubernetes:"
 	@echo "   k8s-pre-init         → Cria namespace e secrets necessários para deploy"
@@ -100,6 +104,23 @@ build-backend:
 	mvn -U clean package \
 		--file backend/pom.xml
 	@echo "✅ Backend buildado com sucesso"
+
+# =====================
+# EXECUÇÃO LOCAL (DEV)
+# =====================
+run-dev:
+	@echo "💻 Subindo backend (Spring, perfil dev) e frontend (Angular) em modo desenvolvimento"
+	@if [ ! -f .helm/backend.env ]; then \
+		echo "❌ .helm/backend.env não encontrado. Copie de .helm/dev.env.example e preencha os valores."; \
+		exit 1; \
+	fi
+	set -a
+	. ./.helm/backend.env
+	set +a
+	trap 'kill 0' EXIT INT TERM
+	mvn spring-boot:run -Dspring-boot.run.profiles=dev --file backend/pom.xml &
+	cd frontend && npm start &
+	wait
 
 # =====================
 # BUILD IMAGENS

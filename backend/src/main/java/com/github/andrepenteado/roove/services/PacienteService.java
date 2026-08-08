@@ -64,13 +64,15 @@ public class PacienteService {
         paciente.setId(null);
         paciente.setDataCadastro(LocalDateTime.now());
         paciente.setUsuarioCadastro(userLogin.getNome());
-        paciente.setResponsavel(userLogin.getLogin());
+        if (!securityService.hasPerfil(PERFIL_DIRETOR) || paciente.getResponsavel() == null || paciente.getResponsavel().isBlank())
+            paciente.setResponsavel(userLogin.getLogin());
         return pacienteRepository.save(paciente);
     }
 
     @Secured({ PERFIL_FISIOTERAPEUTA })
     public Paciente alterar(@Valid Paciente paciente, Long id) {
         Paciente pacienteAlterar = buscar(id);
+        String responsavelAtual = pacienteAlterar.getResponsavel();
 
         BeanUtils.copyProperties(paciente, pacienteAlterar);
 
@@ -78,6 +80,9 @@ public class PacienteService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format("Solicitado alterar paciente ID %s, porém enviado dados do paciente %s", id, pacienteAlterar.getId()));
 
         UserLogin userLogin = securityService.getUserLogin();
+
+        if (!securityService.hasPerfil(PERFIL_DIRETOR))
+            paciente.setResponsavel(responsavelAtual);
 
         paciente.setDataUltimaAtualizacao(LocalDateTime.now());
         paciente.setUsuarioUltimaAtualizacao(userLogin.getNome());
