@@ -1,32 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { PesquisarComponent } from './pesquisar/pesquisar.component';
 import { CadastroComponent } from './cadastro/cadastro.component';
-import { autorizarPerfilGuard } from "@andre.penteado/ngx-apcore";
+import { crudRoutes } from "@andre.penteado/ngx-apcore";
 import { PREFIXO_PERFIL_SISTEMA } from "../../config/layout";
 
-export const pacienteRoutes: Routes = [
-
-  {
-    path: 'pesquisar',
-    component: PesquisarComponent,
-    canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
-  },
-
-  {
-    path: 'cadastro',
-    component: CadastroComponent,
-    canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
-  },
-
-  {
-    path: 'cadastro/:id',
-    component: CadastroComponent,
-    canActivate: [ autorizarPerfilGuard ],
-    data: { perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`] }
-  }
-
-];
+export const pacienteRoutes: Routes = crudRoutes(PesquisarComponent, CadastroComponent, {
+  perfisAutorizados: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`]
+});

@@ -1,12 +1,3 @@
-<ngx-ui-loader
-  loaderId="paciente-pesquisar"
-  fgsType="ball-spin-clockwise"
-  fgsColor="#0d6efd"
-  overlayColor="rgba(255,255,255,0.6)"
-  pbColor="#0d6efd"
-  [hasProgressBar]="true">
-</ngx-ui-loader>
-
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb mb-0">
     <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="fa-solid fa-house me-1"></i>Início</a></li>
@@ -88,6 +79,7 @@
     </div>
 
     <div class="card-body p-4">
+      @if (tabelaPronta) {
       <div class="custom-datatable table-responsive">
         <table id="datatables-pesquisar-pacientes" class="table table-hover align-middle nowrap w-100 mb-0">
           <thead>
@@ -103,7 +95,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (paciente of this.lista ; track paciente.id) {
+            @for (paciente of this.listaFiltrada ; track paciente.id) {
               <tr>
                 <td>
                   <div class="action-stack" role="group" aria-label="Ações do paciente">
@@ -142,6 +134,7 @@
           </tbody>
         </table>
       </div>
+      }
     </div>
   </div>
 </section>

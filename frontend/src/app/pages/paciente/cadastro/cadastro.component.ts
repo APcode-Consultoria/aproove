@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PacienteService } from '../../../services/paciente.service';
@@ -25,7 +25,6 @@ import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -218,7 +217,7 @@ export class CadastroComponent implements OnInit {
   gravarPaciente(): void {
     this.formPacienteEnviado = true;
     if (this.formPaciente.valid) {
-      console.info(`Gravar dados do paciente ${JSON.stringify(this.formPaciente.value)}`);
+      console.info(`Gravar paciente ${this.formPaciente.value.nome}`);
       this.pacienteService.gravar(this.formPaciente.value).subscribe({
         next: paciente => {
           this.objetoPaciente = paciente;
@@ -274,7 +273,7 @@ export class CadastroComponent implements OnInit {
 
       this.formExames.controls.paciente.setValue(this.objetoPaciente);
       this.formExames.controls.arquivo.setValue(upload.uuid);
-      console.info(`Incluir novo exame ${JSON.stringify(this.formExames.value)}`);
+      console.info(`Incluir exame ${this.formExames.value.descricao}`);
       this.exameService.incluir(this.formExames.value).subscribe({
         next: exame => {
           this.exames.unshift(exame);
@@ -316,7 +315,7 @@ export class CadastroComponent implements OnInit {
     if (this.formProntuario.valid) {
       this.formProntuario.controls.dataRegistro.setValue(new Date());
       this.formProntuario.controls.paciente.setValue(this.objetoPaciente);
-      console.info(`Incluir novo prontuário ${JSON.stringify(this.formProntuario.value)}`);
+      console.info(`Incluir prontuário do paciente ${this.objetoPaciente?.nome}`);
       this.prontuarioService.incluir(this.formProntuario.value).subscribe({
         next: prontuario => {
           this.prontuarios.unshift(prontuario);
