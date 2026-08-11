@@ -1,0 +1,252 @@
+crud:
+  nome: paciente
+
+autor: André Penteado
+
+projeto:
+  nome: roove
+  perfis:
+    - RooveApplication.PERFIL_FISIOTERAPEUTA:FISIOTERAPEUTA
+    - RooveApplication.PERFIL_DIRETOR:DIRETOR
+
+# ATENÇÃO — este YAML foi escrito DEPOIS do código, para documentar um CRUD que
+# nasceu antes da spec e servir de modelo de `tipo: lista`. Divergências conhecidas
+# entre o que a spec geraria e o que existe hoje no projeto, todas deliberadas:
+#
+# 1. Auditoria: a spec deriva `criado_por`/`criado_em`/`alterado_por`/`alterado_em`.
+#    O paciente usa `usuario_cadastro`/`data_cadastro`/`usuario_ultima_atualizacao`/
+#    `data_ultima_atualizacao`. Renomear exigiria migração de banco sem ganho — vale
+#    a regra "padrões reais do projeto prevalecem" do orquestrador.
+# 2. Exame e Prontuário ainda não têm auditoria, embora sejam listas
+#    `persistencia: independente`. Pendência assumida, também por ser mudança de banco.
+# 3. O projeto não usa Liquibase; o passo `02-backend-liquibase.md` não se aplica aqui.
+# 4. Nenhum campo é `pesquisavel`: a tela de pesquisa lista tudo e usa a busca rápida
+#    do DataTables. Por isso não há `/pesquisar` nem filter QueryDSL, e isso está
+#    correto pela spec, que só os cria quando existe campo pesquisável.
+tabela:
+  nome: paciente
+  label: Paciente
+  plural: Pacientes
+  campos:
+    - nome: id
+      tipo: long
+      pk: true
+      autoincremento: true
+      exibe-grid: true
+
+    # --- Dados principais ---
+    - nome: nome
+      tipo: string
+      label: Nome
+      obrigatorio: true
+      indice: true
+      colunas-layout: 6
+      exibe-grid: true
+
+    - nome: cpf
+      tipo: long
+      label: CPF
+      mask: "000.000.000-00"
+      colunas-layout: 3
+      exibe-grid: true
+
+    - nome: data_nascimento
+      tipo: date
+      label: Nascimento
+      colunas-layout: 3*
+      exibe-grid: false
+
+    - nome: telefone
+      tipo: long
+      label: Telefone
+      mask: "(00) 00000-0000"
+      colunas-layout: 4
+      exibe-grid: true
+
+    - nome: whatsapp
+      tipo: boolean
+      label: WhatsApp?
+      colunas-layout: 2
+      exibe-grid: false
+
+    - nome: email
+      tipo: string
+      label: E-mail
+      colunas-layout: 6*
+      exibe-grid: false
+
+    - nome: contato_emergencia
+      tipo: string
+      label: Contato de emergência
+      colunas-layout: 6
+      exibe-grid: false
+
+    - nome: parentesco_contato_emergencia
+      tipo: string
+      label: Parentesco
+      enum: Parentesco
+      colunas-layout: 6*
+      exibe-grid: false
+
+    - nome: profissao
+      tipo: string
+      label: Profissão
+      colunas-layout: 5
+      exibe-grid: false
+
+    - nome: dia_vencimento
+      tipo: integer
+      label: Dia de vencimento
+      colunas-layout: 3
+      exibe-grid: false
+
+    - nome: frequencia_semanal
+      tipo: integer
+      label: Frequência semanal
+      colunas-layout: 4*
+      exibe-grid: false
+
+    # Responsável pelo paciente. Só o perfil DIRETOR pode trocar o valor; a regra
+    # está no PacienteService e não é expressável no contrato do YAML.
+    - nome: responsavel
+      tipo: string
+      label: Responsável
+      colunas-layout: 12*
+      exibe-grid: true
+
+    # --- Endereço ---
+    - nome: cep
+      tipo: long
+      label: CEP
+      mask: "00000-000"
+      colunas-layout: 4
+      exibe-grid: false
+
+    - nome: logradouro
+      tipo: string
+      label: Logradouro
+      colunas-layout: 8*
+      exibe-grid: false
+
+    - nome: numero_logradouro
+      tipo: integer
+      label: Número
+      colunas-layout: 3
+      exibe-grid: false
+
+    - nome: complemento
+      tipo: string
+      label: Complemento
+      colunas-layout: 5
+      exibe-grid: false
+
+    - nome: bairro
+      tipo: string
+      label: Bairro
+      colunas-layout: 4*
+      exibe-grid: false
+
+    - nome: cidade
+      tipo: string
+      label: Cidade
+      colunas-layout: 5
+      exibe-grid: false
+
+    - nome: estado
+      tipo: string
+      label: UF
+      colunas-layout: 2*
+      exibe-grid: false
+
+    # --- Informações clínicas ---
+    - nome: queixa_principal
+      tipo: texto3
+      label: Queixa principal (QP)
+      colunas-layout: 12*
+      exibe-grid: false
+
+    - nome: historia_molestia_pregressa
+      tipo: texto3
+      label: História Moléstia Pregressa (HMP)
+      colunas-layout: 12*
+      exibe-grid: false
+
+    - nome: remedios
+      tipo: texto3
+      label: Remédios
+      colunas-layout: 12*
+      exibe-grid: false
+
+    - nome: objetivos
+      tipo: texto3
+      label: Objetivos
+      colunas-layout: 12*
+      exibe-grid: false
+
+    - nome: observacao
+      tipo: texto3
+      label: Observação
+      colunas-layout: 12*
+      exibe-grid: false
+
+    # --- Listas ---
+    # Ambas são 1:N (nenhum subcampo tem `fk`) e `persistencia: independente`:
+    # exame e prontuário são registros de negócio próprios, consultados e auditados
+    # fora da tela do paciente. Perder um atendimento porque o usuário não clicou em
+    # Gravar na aba de dados cadastrais seria erro de domínio.
+    #
+    # `lista.tabela` é obrigatório aqui: o default seria `paciente_exames` e
+    # `paciente_prontuarios`, mas as tabelas reais são `exame` e `prontuario`.
+    - nome: exames
+      tipo: lista
+      lista:
+        label: Exames
+        tabela: exame
+        persistencia: independente
+        formato: sem-modal
+        campos:
+          - nome: descricao
+            tipo: string
+            label: Descrição
+            obrigatorio: true
+            colunas-layout: 6
+            exibe-grid: true
+
+          # Upload dentro de lista: coluna UUID para upload(uuid), UploadService no
+          # frontend. Na tabela da lista aparece o nome do anexo com botão de download.
+          - nome: arquivo
+            tipo: arquivo
+            label: Arquivo do exame
+            obrigatorio: true
+            colunas-layout: 6*
+            exibe-grid: true
+
+          # Preenchido pelo sistema na inclusão; oculto no formulário.
+          - nome: data_upload
+            tipo: datetime
+            label: Enviado em
+            colunas-layout: 0
+            exibe-grid: true
+
+    - nome: prontuarios
+      tipo: lista
+      lista:
+        label: Prontuário
+        tabela: prontuario
+        persistencia: independente
+        formato: sem-modal
+        campos:
+          # Preenchido pelo sistema na inclusão; oculto no formulário.
+          - nome: data_registro
+            tipo: datetime
+            label: Data do registro
+            obrigatorio: true
+            colunas-layout: 0
+            exibe-grid: true
+
+          - nome: atendimento
+            tipo: texto5
+            label: Atendimento
+            obrigatorio: true
+            colunas-layout: 12*
+            exibe-grid: true

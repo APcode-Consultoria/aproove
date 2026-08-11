@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { PacienteService } from '../../../services/paciente.service';
 import { ProntuarioService } from '../../../services/prontuario.service';
 import { ExameService } from '../../../services/exame.service';
 import {
+  CadastroBaseComponent,
   DecoracaoMensagem,
-  ExibirMensagemService,
   LoginService,
   Upload,
   UploadService,
@@ -33,25 +33,27 @@ import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
     NgxMaskDirective
   ]
 })
-export class CadastroComponent implements OnInit {
+export class CadastroComponent extends CadastroBaseComponent<Paciente> {
 
   protected readonly PREFIXO_PERFIL_SISTEMA = PREFIXO_PERFIL_SISTEMA;
 
-  formPacienteEnviado = false;
+  // Estado de envio dos subformulários das listas. O do formulário do paciente é o
+  // `formEnviado` herdado da base.
   formProntuarioEnviado = false;
   formExamesEnviado = false;
 
   parentescos: string[];
   enumParentescos = Parentesco;
 
+  // Listas `persistencia: independente`: arrays comuns, não FormArray. Cada item já
+  // foi persistido pelo service do filho.
   prontuarios: Prontuario[] = [];
   exames: Exame[] = [];
   responsaveis: string[] = [];
 
-  objetoPaciente: Paciente = new Paciente();
   objetoArquivo: Upload = new Upload();
 
-  // Formulário dados do paciente
+  // Formulário do paciente
   id = new FormControl(null);
   dataCadastro = new FormControl(null);
   usuarioCadastro = new FormControl(null);
@@ -81,7 +83,7 @@ export class CadastroComponent implements OnInit {
   objetivos = new FormControl(null);
   responsavel = new FormControl(null);
   observacao = new FormControl(null);
-  formPaciente = new FormGroup({
+  protected readonly form = new FormGroup({
     id: this.id,
     dataCadastro: this.dataCadastro,
     usuarioCadastro: this.usuarioCadastro,
@@ -113,13 +115,14 @@ export class CadastroComponent implements OnInit {
     observacao: this.observacao
   });
 
-  // Formulário exames
+  // Subformulário da lista de exames — fora do `form` principal, para os campos
+  // obrigatórios dele não travarem o Gravar do paciente.
   idExame = new FormControl(null);
   descricaoExame = new FormControl(null, Validators.required);
   arquivoExame = new FormControl(null, Validators.required);
   pacienteExame = new FormControl(null);
   arquivoUpload = new FormControl(null);
-  formExames = new FormGroup( {
+  formExames = new FormGroup({
     id: this.idExame,
     descricao: this.descricaoExame,
     arquivoExame: this.arquivoExame,
@@ -127,7 +130,7 @@ export class CadastroComponent implements OnInit {
     arquivo: this.arquivoUpload
   });
 
-  // Formulário prontuário
+  // Subformulário da lista de prontuários
   idProntuario = new FormControl(null);
   dataRegistro = new FormControl(null);
   atendimento = new FormControl(null, Validators.required);
@@ -141,48 +144,72 @@ export class CadastroComponent implements OnInit {
 
   protected loginService = inject(LoginService);
 
-  private activedRoute = inject(ActivatedRoute);
   private pacienteService = inject(PacienteService);
   private prontuarioService = inject(ProntuarioService);
   private exameService = inject(ExameService);
   private viaCepService = inject(ViaCepService);
-  private exibirMensagem = inject(ExibirMensagemService);
   private uploadService = inject(UploadService);
 
+  protected readonly tituloGravar = "Gravar Paciente";
+  protected readonly rotulo = 'paciente';
+
   constructor() {
+    super();
     this.parentescos = Object.keys(Parentesco);
   }
 
-  ngOnInit(): void {
-    this.activedRoute.params.subscribe(params => {
-      const id: number = params.id;
-      if (id) {
-        this.pesquisar(id);
-      }
-      else {
-        this.responsavel.setValue(this.loginService.getUserLogin()?.login ?? null);
-      }
-    });
-
-    if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
-      this.pacienteService.listar().subscribe(pacientes => {
-        this.responsaveis = [...new Set(pacientes.map(paciente => paciente.responsavel).filter(Boolean))].sort();
-      });
-    }
+  protected buscar(id: number): Observable<Paciente> {
+    return this.pacienteService.buscar(id);
   }
 
-  pesquisar(id: number): void {
-    console.info(`Buscar paciente de ID #${id}`);
-    this.pacienteService.buscar(id).subscribe(paciente => {
-      this.objetoPaciente = paciente;
-      this.formPaciente.patchValue(paciente);
-      this.prontuarioService.listarPorPaciente(paciente.id).subscribe(
-          prontuarios => this.prontuarios = prontuarios
-      );
-      this.exameService.listarPorPaciente(paciente.id).subscribe(
-          exames => this.exames = exames
-      );
+  protected incluirEntidade(valor: any): Observable<Paciente> {
+    return this.pacienteService.gravar(valor);
+  }
+
+  protected alterarEntidade(valor: any): Observable<Paciente> {
+    return this.pacienteService.gravar(valor);
+  }
+
+  protected mensagemGravarSucesso(paciente: Paciente): string {
+    return `Dados do paciente ${paciente.nome} gravados com sucesso`;
+  }
+
+  protected override carregarListasAuxiliares(): void {
+    if (!this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+      return;
+    }
+    this.pacienteService.listar().subscribe(pacientes => {
+      this.responsaveis = [...new Set(pacientes.map(paciente => paciente.responsavel).filter(Boolean))].sort();
     });
+  }
+
+  protected override novaEntidade(): Paciente {
+    return new Paciente();
+  }
+
+  /**
+   * Recarrega as listas independentes sempre que o paciente corrente muda. Em modo de
+   * inclusão não há paciente ainda: as listas ficam vazias e o responsável assume o
+   * usuário logado.
+   */
+  protected override aposCarregar(paciente: Paciente): void {
+    if (!paciente?.id) {
+      this.exames = [];
+      this.prontuarios = [];
+      this.responsavel.setValue(this.loginService.getUserLogin()?.login ?? null);
+      return;
+    }
+
+    this.exameService.listarPorPaciente(paciente.id).subscribe(exames => this.exames = exames);
+    this.prontuarioService.listarPorPaciente(paciente.id).subscribe(prontuarios => this.prontuarios = prontuarios);
+  }
+
+  tituloFormulario(): string {
+    return this.incluir ? 'Novo paciente' : 'Editar paciente';
+  }
+
+  subtituloFormulario(): string {
+    return 'Mantenha dados cadastrais, exames e registros de prontuário do paciente.';
   }
 
   toDate(data: any): Date {
@@ -214,32 +241,6 @@ export class CadastroComponent implements OnInit {
     });
   }
 
-  gravarPaciente(): void {
-    this.formPacienteEnviado = true;
-    if (this.formPaciente.valid) {
-      console.info(`Gravar paciente ${this.formPaciente.value.nome}`);
-      this.pacienteService.gravar(this.formPaciente.value).subscribe({
-        next: paciente => {
-          this.objetoPaciente = paciente;
-          this.formPaciente.reset();
-          this.formPaciente.patchValue(paciente);
-          this.exibirMensagem.showMessage(
-            `Dados do paciente ${paciente.nome} gravados com sucesso`,
-            'Gravar Paciente',
-            DecoracaoMensagem.SUCESSO
-          );
-        }
-      });
-    }
-    else {
-      this.exibirMensagem.showMessage(
-        'Preencha todos os dados obrigatórios antes de gravar os dados',
-        'Dados Obrigatórios',
-        DecoracaoMensagem.PRIMARIO
-      );
-    }
-  }
-
   selecionarArquivo(event: any): void {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -264,98 +265,85 @@ export class CadastroComponent implements OnInit {
     });
   }
 
-  async gravarExame() {
+  async adicionarExame(): Promise<void> {
     this.formExamesEnviado = true;
-    if (this.formExames.valid) {
-      let upload$: Observable<Upload>;
-      upload$ = this.uploadService.incluir(this.objetoArquivo);
-      let upload = await lastValueFrom(upload$);
 
-      this.formExames.controls.paciente.setValue(this.objetoPaciente);
-      this.formExames.controls.arquivo.setValue(upload.uuid);
-      console.info(`Incluir exame ${this.formExames.value.descricao}`);
-      this.exameService.incluir(this.formExames.value).subscribe({
-        next: exame => {
-          this.exames.unshift(exame);
-          this.formExames.reset();
-          this.formExamesEnviado = false;
-          this.exibirMensagem.showMessage(
-              'Arquivo de exame incluído com sucesso',
-              'Gravar Exame',
-              DecoracaoMensagem.SUCESSO
-          );
-        }
-      });
+    if (!this.registroGravado() || !this.subformularioValido(this.formExames)) {
+      return;
     }
-    else {
-      this.exibirMensagem.showMessage(
-          'Preencha todos os dados obrigatórios antes de gravar os dados',
-          'Dados Obrigatórios',
-          DecoracaoMensagem.PRIMARIO
-      );
-    }
+
+    const upload = await lastValueFrom(this.uploadService.incluir(this.objetoArquivo));
+    this.pacienteExame.setValue(this.entidade as any);
+    this.arquivoUpload.setValue(upload.uuid as any);
+
+    console.info(`Incluir exame ${this.formExames.value.descricao} do paciente de ID #${this.entidade.id}`);
+    this.exameService.incluir(this.formExames.value).subscribe({
+      next: exame => {
+        this.exames.unshift(exame);
+        this.formExames.reset();
+        this.formExamesEnviado = false;
+        this.exibirMensagem.showMessage(
+          'Arquivo de exame incluído com sucesso',
+          'Gravar Exame',
+          DecoracaoMensagem.SUCESSO
+        );
+      }
+    });
   }
 
   excluirExame(exame: Exame): void {
     this.exibirMensagem
       .showConfirm(`Confirma a exclusão do exame ${exame.descricao}`, "Excluir?")
-      .then((resposta) => {
-        if (resposta.value) {
-          console.info(`Excluir exame de ID #${exame.id}`);
-          this.exameService.excluir(exame.id).subscribe({
-            next: () => this.pesquisar(exame.paciente.id)
-          });
+      .then(resposta => {
+        if (!resposta.value) {
+          return;
         }
-      }
-    );
+
+        console.info(`Excluir exame de ID #${exame.id}`);
+        this.exameService.excluir(exame.id).subscribe({
+          next: () => this.exames = this.exames.filter(e => e.id !== exame.id)
+        });
+      });
   }
 
-  gravarProntuario(): void {
+  adicionarProntuario(): void {
     this.formProntuarioEnviado = true;
-    if (this.formProntuario.valid) {
-      this.formProntuario.controls.dataRegistro.setValue(new Date());
-      this.formProntuario.controls.paciente.setValue(this.objetoPaciente);
-      console.info(`Incluir prontuário do paciente ${this.objetoPaciente?.nome}`);
-      this.prontuarioService.incluir(this.formProntuario.value).subscribe({
-        next: prontuario => {
-          this.prontuarios.unshift(prontuario);
-          this.formProntuario.reset();
-          this.formProntuarioEnviado = false;
-          this.exibirMensagem.showMessage(
-            'Dados do atendimento incluído ao prontuário com sucesso',
-            'Gravar Prontuário',
-            DecoracaoMensagem.SUCESSO
-          );
-        }
-      });
+
+    if (!this.registroGravado() || !this.subformularioValido(this.formProntuario)) {
+      return;
     }
-    else {
-      this.exibirMensagem.showMessage(
-        'Preencha todos os dados obrigatórios antes de gravar os dados',
-        'Dados Obrigatórios',
-        DecoracaoMensagem.PRIMARIO
-      );
-    }
+
+    this.dataRegistro.setValue(new Date() as any);
+    this.pacienteProntuario.setValue(this.entidade as any);
+
+    console.info(`Incluir prontuário do paciente de ID #${this.entidade.id}`);
+    this.prontuarioService.incluir(this.formProntuario.value).subscribe({
+      next: prontuario => {
+        this.prontuarios.unshift(prontuario);
+        this.formProntuario.reset();
+        this.formProntuarioEnviado = false;
+        this.exibirMensagem.showMessage(
+          'Dados do atendimento incluído ao prontuário com sucesso',
+          'Gravar Prontuário',
+          DecoracaoMensagem.SUCESSO
+        );
+      }
+    });
   }
 
   excluirProntuario(prontuario: Prontuario): void {
     this.exibirMensagem
       .showConfirm(`Confirma a exclusão do prontuário ${prontuario.id}`, "Excluir?")
-      .then((resposta) => {
-      if (resposta.value) {
+      .then(resposta => {
+        if (!resposta.value) {
+          return;
+        }
+
         console.info(`Excluir prontuário de ID #${prontuario.id}`);
         this.prontuarioService.excluir(prontuario.id).subscribe({
-          next: () => this.pesquisar(prontuario.paciente.id),
-          error: objetoErro => {
-            this.exibirMensagem.showMessage(
-                `${objetoErro.error.message}`,
-                'Erro de processamento',
-              DecoracaoMensagem.ERRO
-            );
-          }
+          next: () => this.prontuarios = this.prontuarios.filter(p => p.id !== prontuario.id)
         });
-      }
-    });
+      });
   }
 
 }

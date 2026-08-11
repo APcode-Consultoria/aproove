@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import {
@@ -51,6 +52,7 @@ describe('CadastroComponent', () => {
   let component: CadastroComponent;
 
   const pacienteServiceMock = {
+    listar: vi.fn(),
     gravar: vi.fn(),
     buscar: vi.fn()
   };
@@ -86,8 +88,17 @@ describe('CadastroComponent', () => {
     hasRole: vi.fn(() => false)
   };
 
+  /** O `form` do CRUD é protected na base; nos testes acessamos por índice. */
+  function formPaciente(): FormGroup {
+    return component['form'] as FormGroup;
+  }
+
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    // As listas independentes são recarregadas pelo aposCarregar sempre que a entidade muda.
+    prontuarioServiceMock.listarPorPaciente.mockReturnValue(of([]));
+    exameServiceMock.listarPorPaciente.mockReturnValue(of([]));
 
     await TestBed.configureTestingModule({
       providers: [
@@ -106,23 +117,23 @@ describe('CadastroComponent', () => {
   });
 
   function preencherCamposObrigatorios(): void {
-    component.formPaciente.patchValue({
+    formPaciente().patchValue({
       nome: 'Maria da Silva'
     });
   }
 
-  it('deve enviar no gravarPaciente um payload com a mesma estrutura de Paciente', () => {
+  it('deve enviar no gravar um payload com a mesma estrutura de Paciente', async () => {
     preencherCamposObrigatorios();
 
     const pacienteSalvo = {
-      ...component.formPaciente.getRawValue(),
+      ...formPaciente().getRawValue(),
       id: 1,
       nome: 'Maria da Silva'
     } as Paciente;
 
     pacienteServiceMock.gravar.mockReturnValue(of(pacienteSalvo));
 
-    component.gravarPaciente();
+    await component.gravar();
 
     expect(pacienteServiceMock.gravar).toHaveBeenCalledTimes(1);
 
@@ -130,27 +141,50 @@ describe('CadastroComponent', () => {
     expect(Object.keys(payloadEnviado).sort()).toEqual([...pacienteKeys].sort());
   });
 
-  it('deve considerar o formPaciente invalido quando os campos obrigatorios nao forem preenchidos', () => {
-    component.formPaciente.patchValue({
+  it('deve recarregar as listas independentes apos gravar', async () => {
+    preencherCamposObrigatorios();
+    pacienteServiceMock.gravar.mockReturnValue(of({ id: 7, nome: 'Maria da Silva' } as Paciente));
+
+    await component.gravar();
+
+    expect(exameServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
+    expect(prontuarioServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
+  });
+
+  it('deve considerar o formulario invalido quando os campos obrigatorios nao forem preenchidos', async () => {
+    formPaciente().patchValue({
       nome: null
     });
 
-    component.gravarPaciente();
+    await component.gravar();
 
-    expect(component.formPaciente.invalid).toBe(true);
+    expect(formPaciente().invalid).toBe(true);
     expect(component.nome.hasError('required')).toBe(true);
     expect(pacienteServiceMock.gravar).not.toHaveBeenCalled();
     expect(exibirMensagemServiceMock.showMessage).toHaveBeenCalledWith(
       'Preencha todos os dados obrigatórios antes de gravar os dados',
-      'Dados Obrigatórios',
-      DecoracaoMensagem.PRIMARIO
+      'Dados obrigatórios',
+      DecoracaoMensagem.ATENCAO
     );
   });
 
-  it('deve considerar o formPaciente valido quando os campos obrigatorios forem preenchidos', () => {
+  it('deve considerar o formulario valido quando os campos obrigatorios forem preenchidos', () => {
     preencherCamposObrigatorios();
 
     expect(component.nome.valid).toBe(true);
-    expect(component.formPaciente.valid).toBe(true);
+    expect(formPaciente().valid).toBe(true);
+  });
+
+  it('nao deve incluir prontuario enquanto o paciente nao estiver gravado', () => {
+    component.formProntuario.patchValue({ atendimento: 'Sessão inicial' });
+
+    component.adicionarProntuario();
+
+    expect(prontuarioServiceMock.incluir).not.toHaveBeenCalled();
+    expect(exibirMensagemServiceMock.showMessage).toHaveBeenCalledWith(
+      'Grave o paciente antes de adicionar registros relacionados',
+      'Registro não gravado',
+      DecoracaoMensagem.ATENCAO
+    );
   });
 });

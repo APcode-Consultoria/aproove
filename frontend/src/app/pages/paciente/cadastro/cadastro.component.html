@@ -15,11 +15,11 @@
         <i class="fa-solid fa-user-pen"></i>
         Cadastro
       </span>
-      <h1 class="display-6 fw-bold mb-2">{{ objetoPaciente.id ? 'Editar paciente' : 'Novo paciente' }}</h1>
-      <p class="text-secondary mb-0">Mantenha dados cadastrais, exames e registros de prontuário do paciente.</p>
+      <h1 class="display-6 fw-bold mb-2">{{ tituloFormulario() }}</h1>
+      <p class="text-secondary mb-0">{{ subtituloFormulario() }}</p>
     </header>
 
-    @if (objetoPaciente.id) {
+    @if (!incluir) {
       <div class="col-auto d-none d-md-block">
         <aside class="card">
           <div class="card-body py-2 px-3">
@@ -27,16 +27,16 @@
               <span class="text-primary"><i class="fa-solid fa-clock-rotate-left fa-lg"></i></span>
               <div style="max-width: 12rem;">
                 <div class="text-secondary fw-semibold">Criado por</div>
-                <div class="text-truncate">{{ objetoPaciente?.usuarioCadastro || 'Não informado' }}</div>
+                <div class="text-truncate">{{ entidade?.usuarioCadastro || 'Não informado' }}</div>
                 <div class="text-secondary fw-semibold mt-1">Criado em</div>
-                <div>{{ $safeNavigationMigration(objetoPaciente?.dataCadastro) | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+                <div>{{ entidade?.dataCadastro | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
               </div>
-              @if (objetoPaciente?.dataUltimaAtualizacao != null) {
+              @if (entidade?.dataUltimaAtualizacao != null) {
                 <div style="max-width: 12rem;">
                   <div class="text-secondary fw-semibold">Alterado por</div>
-                  <div class="text-truncate">{{ objetoPaciente?.usuarioUltimaAtualizacao || 'Não informado' }}</div>
+                  <div class="text-truncate">{{ entidade?.usuarioUltimaAtualizacao || 'Não informado' }}</div>
                   <div class="text-secondary fw-semibold mt-1">Alterado em</div>
-                  <div>{{ $safeNavigationMigration(objetoPaciente?.dataUltimaAtualizacao) | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+                  <div>{{ entidade?.dataUltimaAtualizacao | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
                 </div>
               }
             </div>
@@ -46,425 +46,435 @@
     }
   </section>
 
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-4 p-lg-5">
-      <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
-        <ul class="nav nav-pills flex-column flex-md-row gap-2 mb-0" id="cadastroTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                    id="dados-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#dados-tab-pane"
-                    type="button"
-                    role="tab"
-                    aria-controls="dados-tab-pane"
-                    aria-selected="true">
-              <i class="fa-solid fa-address-card"></i>
-              Dados cadastrais
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                    [class.disabled]="!objetoPaciente.id"
-                    id="exames-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#exames-tab-pane"
-                    type="button"
-                    role="tab"
-                    aria-controls="exames-tab-pane"
-                    aria-selected="false">
-              <i class="fa-solid fa-paperclip"></i>
-              Exames
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
-                    [class.disabled]="!objetoPaciente.id"
-                    id="prontuario-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#prontuario-tab-pane"
-                    type="button"
-                    role="tab"
-                    aria-controls="prontuario-tab-pane"
-                    aria-selected="false">
-              <i class="fa-solid fa-notes-medical"></i>
-              Prontuário
-            </button>
-          </li>
-        </ul>
-
-        <div class="flex-shrink-0" style="min-width: 15rem;">
-          <label class="form-label fw-semibold small mb-1" for="responsavel">Responsável</label>
-          @if (loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
-            <div class="input-group input-group-sm">
-              <span class="input-group-text"><i class="fa-solid fa-user-tie"></i></span>
-              <input id="responsavel" type="text" name="responsavel" [formControl]="responsavel" class="form-control" autocomplete="off">
-              <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="visually-hidden">Selecionar responsável</span>
+  <!--
+    Um unico <form> do CRUD envolvendo as abas. Os subformularios das listas usam
+    <div [formGroup]>, nunca <form>, porque formularios aninhados sao HTML invalido.
+    O was-validated fica no conteudo da aba de dados, nao neste <form>: aqui ele
+    acenderia em vermelho tambem os campos dos subformularios.
+  -->
+  <form [formGroup]="form" novalidate>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 p-lg-5">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+          <ul class="nav nav-pills flex-column flex-md-row gap-2 mb-0" id="cadastroTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                      id="dados-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#dados-tab-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="dados-tab-pane"
+                      aria-selected="true">
+                <i class="fa-solid fa-address-card"></i>
+                Dados cadastrais
               </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                @for (r of responsaveis; track r) {
-                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="responsavel.setValue(r)">{{ r }}</a></li>
-                } @empty {
-                  <li><span class="dropdown-item-text text-secondary">Nenhum responsável cadastrado</span></li>
-                }
-              </ul>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                      [class.disabled]="incluir"
+                      [title]="incluir ? 'Grave o paciente para anexar exames' : 'Exames do paciente'"
+                      id="exames-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#exames-tab-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="exames-tab-pane"
+                      aria-selected="false">
+                <i class="fa-solid fa-paperclip"></i>
+                Exames
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                      [class.disabled]="incluir"
+                      [title]="incluir ? 'Grave o paciente para registrar atendimentos' : 'Prontuário do paciente'"
+                      id="prontuario-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#prontuario-tab-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="prontuario-tab-pane"
+                      aria-selected="false">
+                <i class="fa-solid fa-notes-medical"></i>
+                Prontuário
+              </button>
+            </li>
+          </ul>
+
+          <div class="flex-shrink-0" style="min-width: 15rem;">
+            <label class="form-label fw-semibold small mb-1" for="responsavel">Responsável</label>
+            @if (loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+              <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="fa-solid fa-user-tie"></i></span>
+                <input id="responsavel" type="text" name="responsavel" formControlName="responsavel" class="form-control" autocomplete="off">
+                <button class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span class="visually-hidden">Selecionar responsável</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  @for (r of responsaveis; track r) {
+                    <li><a class="dropdown-item" href="javascript:void(0)" (click)="responsavel.setValue(r)">{{ r }}</a></li>
+                  } @empty {
+                    <li><span class="dropdown-item-text text-secondary">Nenhum responsável cadastrado</span></li>
+                  }
+                </ul>
+              </div>
+            } @else {
+              <div id="responsavel" class="form-control-plaintext py-1 fw-semibold">{{ responsavel.value || 'Não informado' }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="tab-content" id="cadastroTabsContent">
+          <section class="tab-pane fade show active" id="dados-tab-pane" role="tabpanel" aria-labelledby="dados-tab" tabindex="0">
+            <div [ngClass]="{'was-validated': !form.valid && formEnviado}">
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-id-card"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Dados principais</h2>
+                  <p class="text-secondary mb-0">Identificação, contatos e informações clínicas do paciente.</p>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-lg-7">
+                  <label class="form-label fw-semibold required-label text-danger" for="nome">
+                    Nome <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                    <input id="nome" type="text" name="nome" formControlName="nome" class="form-control" required>
+                    <div class="invalid-feedback">Nome é um campo obrigatório</div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-5 col-lg-3">
+                  <label class="form-label fw-semibold" for="cpf">CPF</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-address-card"></i></span>
+                    <input id="cpf" type="text" name="cpf" formControlName="cpf" class="form-control" mask="000.000.000-00">
+                  </div>
+                </div>
+                <div class="col-12 col-md-7 col-lg-2">
+                  <label class="form-label fw-semibold" for="dataNascimento">Nascimento</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
+                    <input id="dataNascimento" type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="telefone">Telefone</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" mask="(00) 00000-0000">
+                  </div>
+                </div>
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold" for="whatsapp">WhatsApp?</label>
+                  <div class="form-check form-switch pt-2">
+                    <input id="whatsapp" type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp">
+                    <label class="form-check-label" for="whatsapp">Sim</label>
+                  </div>
+                </div>
+                <div class="col-12 col-md-5">
+                  <label class="form-label fw-semibold" for="email">E-mail</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                    <input id="email" type="email" name="email" formControlName="email" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-semibold" for="contatoEmergencia">Contato de emergência</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-phone-volume"></i></span>
+                    <input id="contatoEmergencia" type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-semibold" for="parentescoContatoEmergencia">Parentesco</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-people-arrows"></i></span>
+                    <select id="parentescoContatoEmergencia" name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-select">
+                      @for (p of parentescos; track p) {
+                        <option [value]="p">{{ enumParentescos[p] }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12 col-md-8">
+                  <label class="form-label fw-semibold" for="profissao">Profissão</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-briefcase"></i></span>
+                    <input id="profissao" type="text" name="profissao" formControlName="profissao" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="diaVencimento">Dia de vencimento</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
+                    <input id="diaVencimento" type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold d-block">Frequência semanal</label>
+                  <div class="d-flex flex-wrap gap-3">
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1">
+                      <label for="frequencia_1" class="form-check-label">Uma vez</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2">
+                      <label for="frequencia_2" class="form-check-label">Duas vezes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3">
+                      <label for="frequencia_3" class="form-check-label">Três vezes</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-4">
+
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Endereço</h2>
+                  <p class="text-secondary mb-0">Localização postal do paciente.</p>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="cep">CEP</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
+                    <button class="btn btn-outline-primary" type="button" (click)="consultaCep(cep.value)" [disabled]="!cep.value">Buscar</button>
+                  </div>
+                </div>
+                <div class="col-12 col-md-8">
+                  <label class="form-label fw-semibold" for="logradouro">Logradouro</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-road"></i></span>
+                    <input id="logradouro" type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
+                  </div>
+                </div>
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold" for="numeroLogradouro">Número</label>
+                  <input id="numeroLogradouro" type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
+                </div>
+                <div class="col-12 col-md-5">
+                  <label class="form-label fw-semibold" for="complemento">Complemento</label>
+                  <input id="complemento" type="text" name="complemento" formControlName="complemento" class="form-control">
+                </div>
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="bairro">Bairro</label>
+                  <input id="bairro" type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
+                </div>
+                <div class="col-12 col-md-5">
+                  <label class="form-label fw-semibold" for="cidade">Cidade</label>
+                  <input id="cidade" type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
+                </div>
+                <div class="col-12 col-md-2">
+                  <label class="form-label fw-semibold" for="estado">UF</label>
+                  <input id="estado" type="text" name="estado" formControlName="estado" class="form-control" readonly>
+                </div>
+              </div>
+
+              <hr class="my-4">
+
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-notes-medical"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Informações clínicas</h2>
+                  <p class="text-secondary mb-0">Dados usados no acompanhamento terapêutico.</p>
+                </div>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold" for="queixaPrincipal">Queixa principal (QP)</label>
+                  <input id="queixaPrincipal" type="text" class="form-control" name="queixaPrincipal" formControlName="queixaPrincipal">
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold" for="historiaMolestiaPregressa">História Moléstia Pregressa (HMP)</label>
+                  <textarea id="historiaMolestiaPregressa" class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa"></textarea>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold" for="remedios">Remédios</label>
+                  <textarea id="remedios" class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold" for="objetivos">Objetivos</label>
+                  <textarea id="objetivos" class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold" for="observacao">Observação</label>
+                  <textarea id="observacao" class="form-control" rows="4" name="observacao" formControlName="observacao"></textarea>
+                </div>
+              </div>
             </div>
-          } @else {
-            <div id="responsavel" class="form-control-plaintext py-1 fw-semibold">{{ responsavel.value || 'Não informado' }}</div>
-          }
+          </section>
+
+          <!-- Lista `exames`: persistencia independente, formato sem-modal -->
+          <section class="tab-pane fade" id="exames-tab-pane" role="tabpanel" aria-labelledby="exames-tab" tabindex="0">
+            <div [formGroup]="formExames" [ngClass]="{ 'was-validated': !formExames.valid && formExamesEnviado }">
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Exames</h2>
+                  <p class="text-secondary mb-0">Anexe arquivos vinculados ao paciente.</p>
+                </div>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold required-label text-danger" for="descricaoExame">
+                    Descrição <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="fa-solid fa-signature"></i></span>
+                    <input id="descricaoExame" type="text" formControlName="descricao" name="descricao" class="form-control" required>
+                    <div class="invalid-feedback">Descrição é um campo obrigatório</div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold required-label text-danger" for="arquivoExame">
+                    Arquivo do exame <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
+                  <input id="arquivoExame" type="file" (change)="selecionarArquivo($event)" formControlName="arquivoExame" name="arquivoExame" class="form-control" required>
+                  <div class="invalid-feedback">Arquivo do exame é um campo obrigatório</div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end my-4">
+                <button class="btn btn-primary" type="button" [disabled]="incluir" (click)="adicionarExame()">
+                  <i class="fa-solid fa-plus me-2"></i>
+                  Adicionar
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                @if (exames.length) {
+                  <table class="table table-hover align-middle w-100 mb-0">
+                    <thead>
+                      <tr>
+                        <th>Ações</th>
+                        <th>Descrição</th>
+                        <th>Arquivo</th>
+                        <th>Enviado em</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (exame of exames; track exame.id) {
+                        <tr>
+                          <td>
+                            <div class="action-stack d-flex gap-1">
+                              <button type="button" class="btn btn-outline-primary btn-sm" title="Baixar exame" aria-label="Baixar exame" (click)="downloadArquivo(exame)">
+                                <i class="fa-solid fa-download"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir exame" aria-label="Excluir exame" (click)="excluirExame(exame)">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            </div>
+                          </td>
+                          <td class="text-break">{{ exame.descricao }}</td>
+                          <td><i class="fa-solid fa-paperclip text-secondary me-1"></i>Exame #{{ exame.id }}</td>
+                          <td>{{ exame.dataUpload ? (toDate(exame.dataUpload) | date: 'dd/MM/yyyy') : '-' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <div class="alert alert-light border mb-0">Nenhum registro adicionado em Exames.</div>
+                }
+              </div>
+            </div>
+          </section>
+
+          <!-- Lista `prontuarios`: persistencia independente, formato sem-modal -->
+          <section class="tab-pane fade" id="prontuario-tab-pane" role="tabpanel" aria-labelledby="prontuario-tab" tabindex="0">
+            <div [formGroup]="formProntuario" [ngClass]="{ 'was-validated': !formProntuario.valid && formProntuarioEnviado }">
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-stethoscope"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Prontuário</h2>
+                  <p class="text-secondary mb-0">Registre informações no prontuário do paciente.</p>
+                </div>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold required-label text-danger" for="atendimento">
+                    Atendimento <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
+                  <textarea id="atendimento" name="atendimento" formControlName="atendimento" class="form-control" required rows="5"></textarea>
+                  <div class="invalid-feedback">Atendimento é um campo obrigatório</div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end my-4">
+                <button class="btn btn-primary" type="button" [disabled]="incluir" (click)="adicionarProntuario()">
+                  <i class="fa-solid fa-plus me-2"></i>
+                  Adicionar
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                @if (prontuarios.length) {
+                  <table class="table table-hover align-middle w-100 mb-0">
+                    <thead>
+                      <tr>
+                        <th>Ações</th>
+                        <th>Data do registro</th>
+                        <th>Atendimento</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (prontuario of prontuarios; track prontuario.id) {
+                        <tr>
+                          <td>
+                            <div class="action-stack">
+                              <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir prontuário" aria-label="Excluir prontuário" (click)="excluirProntuario(prontuario)">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            </div>
+                          </td>
+                          <td class="text-nowrap">{{ toDate(prontuario.dataRegistro) | date: "dd/MM/yyyy 'às' HH:mm" }}</td>
+                          <td class="text-break">{{ prontuario.atendimento }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <div class="alert alert-light border mb-0">Nenhum registro adicionado em Prontuário.</div>
+                }
+              </div>
+            </div>
+          </section>
         </div>
       </div>
+    </div>
 
-      <div class="tab-content" id="cadastroTabsContent">
-        <section class="tab-pane fade show active" id="dados-tab-pane" role="tabpanel" aria-labelledby="dados-tab" tabindex="0">
-          <form [formGroup]="formPaciente" [ngClass]="{'was-validated': !formPaciente.valid && formPacienteEnviado}" novalidate>
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-id-card"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Dados principais</h2>
-                <p class="text-secondary mb-0">Identificação, contatos e informações clínicas do paciente.</p>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-4">
-              <div class="col-12 col-lg-7">
-                <label class="form-label fw-semibold required-label text-danger" for="nome">
-                  Nome <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
-                </label>
-                <div class="input-group has-validation">
-                  <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                  <input id="nome" type="text" name="nome" formControlName="nome" class="form-control" required>
-                  <div class="invalid-feedback">Campo nome é obrigatório</div>
-                </div>
-              </div>
-              <div class="col-12 col-md-5 col-lg-3">
-                <label class="form-label fw-semibold" for="cpf">CPF</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-address-card"></i></span>
-                  <input id="cpf" type="text" name="cpf" formControlName="cpf" class="form-control" mask="000.000.000-00">
-                </div>
-              </div>
-              <div class="col-12 col-md-7 col-lg-2">
-                <label class="form-label fw-semibold" for="dataNascimento">Nascimento</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
-                  <input id="dataNascimento" type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold" for="telefone">Telefone</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                  <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" mask="(00) 00000-0000">
-                </div>
-              </div>
-              <div class="col-12 col-md-3">
-                <label class="form-label fw-semibold" for="whatsapp">WhatsApp?</label>
-                <div class="form-check form-switch pt-2">
-                  <input id="whatsapp" type="checkbox" class="form-check-input" name="whatsapp" formControlName="whatsapp">
-                  <label class="form-check-label" for="whatsapp">Sim</label>
-                </div>
-              </div>
-              <div class="col-12 col-md-5">
-                <label class="form-label fw-semibold" for="email">E-mail</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                  <input id="email" type="email" name="email" formControlName="email" class="form-control">
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <label class="form-label fw-semibold" for="contatoEmergencia">Contato de emergência</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-phone-volume"></i></span>
-                  <input id="contatoEmergencia" type="text" name="contatoEmergencia" formControlName="contatoEmergencia" class="form-control">
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <label class="form-label fw-semibold" for="parentescoContatoEmergencia">Parentesco</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-people-arrows"></i></span>
-                  <select id="parentescoContatoEmergencia" name="parentescoContatoEmergencia" formControlName="parentescoContatoEmergencia" class="form-select">
-                    @for (p of parentescos; track p) {
-                      <option [value]="p">{{ enumParentescos[p] }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-              <div class="col-12 col-md-8">
-                <label class="form-label fw-semibold" for="profissao">Profissão</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-briefcase"></i></span>
-                  <input id="profissao" type="text" name="profissao" formControlName="profissao" class="form-control">
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold" for="diaVencimento">Dia de vencimento</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
-                  <input id="diaVencimento" type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
-                </div>
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold d-block">Frequência semanal</label>
-                <div class="d-flex flex-wrap gap-3">
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1">
-                    <label for="frequencia_1" class="form-check-label">Uma vez</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2">
-                    <label for="frequencia_2" class="form-check-label">Duas vezes</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3">
-                    <label for="frequencia_3" class="form-check-label">Três vezes</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-location-dot"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Endereço</h2>
-                <p class="text-secondary mb-0">Localização postal do paciente.</p>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-4">
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold" for="cep">CEP</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                  <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
-                  <button class="btn btn-outline-primary" type="button" (click)="consultaCep(cep.value)" [disabled]="!cep.value">Buscar</button>
-                </div>
-              </div>
-              <div class="col-12 col-md-8">
-                <label class="form-label fw-semibold" for="logradouro">Logradouro</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-road"></i></span>
-                  <input id="logradouro" type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
-                </div>
-              </div>
-              <div class="col-12 col-md-3">
-                <label class="form-label fw-semibold" for="numeroLogradouro">Número</label>
-                <input id="numeroLogradouro" type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
-              </div>
-              <div class="col-12 col-md-5">
-                <label class="form-label fw-semibold" for="complemento">Complemento</label>
-                <input id="complemento" type="text" name="complemento" formControlName="complemento" class="form-control">
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold" for="bairro">Bairro</label>
-                <input id="bairro" type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
-              </div>
-              <div class="col-12 col-md-5">
-                <label class="form-label fw-semibold" for="cidade">Cidade</label>
-                <input id="cidade" type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
-              </div>
-              <div class="col-12 col-md-2">
-                <label class="form-label fw-semibold" for="estado">UF</label>
-                <input id="estado" type="text" name="estado" formControlName="estado" class="form-control" readonly>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-notes-medical"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Informações clínicas</h2>
-                <p class="text-secondary mb-0">Dados usados no acompanhamento terapêutico.</p>
-              </div>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-12">
-                <label class="form-label fw-semibold" for="queixaPrincipal">Queixa principal (QP)</label>
-                <input id="queixaPrincipal" type="text" class="form-control" name="queixaPrincipal" formControlName="queixaPrincipal">
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold" for="historiaMolestiaPregressa">História Moléstia Pregressa (HMP)</label>
-                <textarea id="historiaMolestiaPregressa" class="form-control" rows="4" name="historiaMolestiaPregressa" formControlName="historiaMolestiaPregressa"></textarea>
-              </div>
-              <div class="col-12 col-lg-6">
-                <label class="form-label fw-semibold" for="remedios">Remédios</label>
-                <textarea id="remedios" class="form-control" rows="4" name="remedios" formControlName="remedios"></textarea>
-              </div>
-              <div class="col-12 col-lg-6">
-                <label class="form-label fw-semibold" for="objetivos">Objetivos</label>
-                <textarea id="objetivos" class="form-control" rows="4" name="objetivos" formControlName="objetivos"></textarea>
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold" for="observacao">Observação</label>
-                <textarea id="observacao" class="form-control" rows="4" name="observacao" formControlName="observacao"></textarea>
-              </div>
-            </div>
-          </form>
-        </section>
-
-        <section class="tab-pane fade" id="exames-tab-pane" role="tabpanel" aria-labelledby="exames-tab" tabindex="0">
-          <form [formGroup]="formExames" [ngClass]="{ 'was-validated': !formExames.valid && formExamesEnviado }" novalidate>
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-file-arrow-up"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Novo exame</h2>
-                <p class="text-secondary mb-0">Anexe arquivos vinculados ao paciente.</p>
-              </div>
-            </div>
-
-            <div class="row g-3 align-items-end">
-              <div class="col-12 col-lg-5">
-                <label class="form-label fw-semibold required-label text-danger" for="descricaoExame">
-                  Descrição <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
-                </label>
-                <div class="input-group has-validation">
-                  <span class="input-group-text"><i class="fa-solid fa-signature"></i></span>
-                  <input id="descricaoExame" type="text" formControlName="descricao" name="descricao" class="form-control" required>
-                  <div class="invalid-feedback">Preencher a descrição do exame é obrigatório</div>
-                </div>
-              </div>
-              <div class="col-12 col-lg-5">
-                <label class="form-label fw-semibold required-label text-danger" for="arquivoExame">
-                  Upload do arquivo <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
-                </label>
-                <input id="arquivoExame" type="file" (change)="selecionarArquivo($event)" formControlName="arquivoExame" name="arquivoExame" class="form-control" required>
-                <div class="invalid-feedback">Selecionar o arquivo do exame é obrigatório</div>
-              </div>
-              <div class="col-12 col-lg-2 d-grid">
-                <button class="btn btn-primary rounded-pill fw-semibold" type="button" (click)="gravarExame()">
-                  <i class="fa-solid fa-plus me-1"></i>
-                  Adicionar
-                </button>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-paperclip"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Exames anexados</h2>
-                <p class="text-secondary mb-0">{{ exames.length }} exame(s) vinculado(s) ao paciente.</p>
-              </div>
-            </div>
-
-            @if (exames.length) {
-              <div class="vstack gap-3">
-                @for (exame of exames; track exame.id) {
-                  <div class="border rounded-3 p-3 d-flex flex-column flex-md-row align-items-md-center gap-3">
-                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary p-3 flex-shrink-0">
-                      <i class="fa-solid fa-paperclip"></i>
-                    </span>
-                    <div class="flex-grow-1 overflow-hidden">
-                      <span class="fw-semibold d-block text-truncate">{{ exame.descricao }}</span>
-                      <span class="small text-secondary d-block">Exame #{{ exame.id }}</span>
-                    </div>
-                    <div class="btn-group" role="group" aria-label="Ações do exame">
-                      <button type="button" class="btn btn-outline-primary btn-sm" title="Baixar exame" (click)="downloadArquivo(exame)">
-                        <i class="fa-solid fa-download"></i>
-                      </button>
-                      <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir exame" (click)="excluirExame(exame)">
-                        <i class="fa-solid fa-trash-can"></i>
-                      </button>
-                    </div>
-                  </div>
-                }
-              </div>
-            } @else {
-              <p class="text-secondary mb-0">Nenhum exame anexado.</p>
-            }
-          </form>
-        </section>
-
-        <section class="tab-pane fade" id="prontuario-tab-pane" role="tabpanel" aria-labelledby="prontuario-tab" tabindex="0">
-          <form [formGroup]="formProntuario" [ngClass]="{ 'was-validated': !formProntuario.valid && formProntuarioEnviado }" novalidate>
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-stethoscope"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Novo atendimento</h2>
-                <p class="text-secondary mb-0">Registre informações no prontuário do paciente.</p>
-              </div>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-12">
-                <label class="form-label fw-semibold required-label text-danger" for="atendimento">
-                  Atendimento <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
-                </label>
-                <textarea id="atendimento" name="atendimento" formControlName="atendimento" class="form-control" required rows="6"></textarea>
-                <div class="invalid-feedback">Preencher a descrição do atendimento é obrigatório</div>
-              </div>
-              <div class="col-12 d-flex justify-content-end">
-                <button class="btn btn-primary rounded-pill px-4 fw-semibold" type="button" (click)="gravarProntuario()">
-                  <i class="fa-solid fa-plus me-1"></i>
-                  Adicionar
-                </button>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <div class="d-flex align-items-center gap-3 mb-4">
-              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
-                <i class="fa-solid fa-notes-medical"></i>
-              </span>
-              <div>
-                <h2 class="h5 fw-bold mb-1">Histórico de atendimentos</h2>
-                <p class="text-secondary mb-0">{{ prontuarios.length }} registro(s) de prontuário.</p>
-              </div>
-            </div>
-
-            @if (prontuarios.length) {
-              <div class="vstack gap-3">
-                @for (prontuario of prontuarios; track prontuario.id) {
-                  <div class="border rounded-3 p-3">
-                    <div class="d-flex flex-column flex-lg-row justify-content-between gap-2 mb-2">
-                      <p class="small text-secondary mb-0">
-                        #{{ prontuario.id }} {{ toDate(prontuario.dataRegistro) | date: "'Registrado em' dd/MM/yyyy 'às' HH:mm" }}
-                      </p>
-                      <button type="button" class="btn btn-outline-danger btn-sm align-self-start align-self-lg-center" title="Excluir prontuário" (click)="excluirProntuario(prontuario)">
-                        <i class="fa-solid fa-trash-can me-1"></i>
-                        Excluir
-                      </button>
-                    </div>
-                    <p class="text-break mb-0">{{ prontuario.atendimento }}</p>
-                  </div>
-                }
-              </div>
-            } @else {
-              <p class="text-secondary mb-0">Nenhum atendimento registrado.</p>
-            }
-          </form>
-        </section>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-3">
+      <span class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Campos em vermelho são obrigatórios.</span>
+      <div class="d-flex gap-2 justify-content-end">
+        <a class="btn btn-light" routerLink="/paciente/pesquisar">Voltar</a>
+        <button class="btn btn-primary" type="button" (click)="gravar()">
+          <i class="fa-solid fa-floppy-disk me-2"></i>
+          Gravar
+        </button>
       </div>
     </div>
-  </div>
-
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-3">
-    <span class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Campos em vermelho são obrigatórios.</span>
-    <div class="d-flex gap-2 justify-content-end">
-      <a class="btn btn-light" routerLink="/paciente/pesquisar">Voltar</a>
-      <button class="btn btn-primary" type="button" (click)="gravarPaciente()">
-        <i class="fa-solid fa-floppy-disk me-2"></i>
-        Gravar
-      </button>
-    </div>
-  </div>
+  </form>
 </section>
