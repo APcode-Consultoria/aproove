@@ -6,11 +6,13 @@ import { NgxSpinnerModule } from "ngx-spinner";
   selector: 'app-root',
   template: `
     <ngx-spinner
-      color="rgba(var(--bs-secondary-bg-rgb), 0.8)"
-      bdColor="rgba(var(--bs-secondary-color-rgb), 0.8)"
-      type="ball-atom">
-      <p style="font-size: 20px; color: rgba(var(--bs-secondary-bg-rgb), 0.8); margin-top: 160px;">
-        Aguarde, carregando ...
+      bdColor="rgba(0, 0, 0, 0.8)"
+      size="large"
+      color="#87ceeb"
+      type="timer"
+      [fullScreen]="true">
+      <p style="color: #87ceeb">
+        Aguarde, carregando...
       </p>
     </ngx-spinner>
     <router-outlet></router-outlet>
