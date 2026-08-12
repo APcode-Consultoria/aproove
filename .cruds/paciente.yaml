@@ -17,8 +17,23 @@ projeto:
 #    O paciente usa `usuario_cadastro`/`data_cadastro`/`usuario_ultima_atualizacao`/
 #    `data_ultima_atualizacao`. Renomear exigiria migração de banco sem ganho — vale
 #    a regra "padrões reais do projeto prevalecem" do orquestrador.
-# 2. Exame e Prontuário ainda não têm auditoria, embora sejam listas
-#    `persistencia: independente`. Pendência assumida, também por ser mudança de banco.
+# 2. Exame e Prontuário têm só o `criado_por` da spec, sob os nomes que fazem par com
+#    a data que cada um já tinha: `usuario_upload`/`data_upload` e `usuario_registro`/
+#    `data_registro`. Nenhuma das duas listas permite alterar um registro depois de
+#    criado — só incluir e excluir —, logo `alterado_por`/`alterado_em` não fazem
+#    sentido aqui. Registros anteriores à migração 1.0.2 ficam nulos e a tela mostra
+#    "Usuário não identificado" — o banco não sabe quem os criou, e inventar autoria
+#    a partir de outro campo seria pior que admitir a lacuna.
+#
+#    REGRA: todo campo de auditoria de usuário grava o LOGIN
+#    (`securityService.getUserLogin().getLogin()`), nunca o nome. O login é a
+#    identidade estável do usuário — o nome pode mudar no provedor OIDC e não serve
+#    como chave. É o mesmo valor que `paciente.responsavel` guarda, o que deixa os
+#    dois campos comparáveis entre si.
+#
+#    PENDÊNCIA: as telas exibem o login como está. Resolver o nome a partir do login,
+#    para exibição, é tarefa à parte — o banco não tem tabela de usuários, então
+#    depende de consultar o provedor OIDC.
 # 3. O projeto não usa Liquibase; o passo `02-backend-liquibase.md` não se aplica aqui.
 # 4. Nenhum campo é `pesquisavel`: a tela de pesquisa lista tudo e usa a busca rápida
 #    do DataTables. Por isso não há `/pesquisar` nem filter QueryDSL, e isso está
@@ -197,6 +212,10 @@ tabela:
     #
     # `lista.tabela` é obrigatório aqui: o default seria `paciente_exames` e
     # `paciente_prontuarios`, mas as tabelas reais são `exame` e `prontuario`.
+    # Divergência deliberada da spec: o grid desta lista não é uma tabela, e sim uma
+    # galeria de cartões, um por anexo. O registro aqui é um arquivo, não um dado
+    # tabular — o que importa é reconhecer o anexo e agir sobre ele (baixar/excluir),
+    # não comparar linha a linha. Montada só com utilitários do Bootstrap.
     - nome: exames
       tipo: lista
       lista:
@@ -228,6 +247,19 @@ tabela:
             colunas-layout: 0
             exibe-grid: true
 
+          # Auditoria: nome do usuário logado, gravado pelo ExameService na inclusão.
+          # Nulo nos registros anteriores à coluna.
+          - nome: usuario_upload
+            tipo: string
+            label: Enviado por
+            colunas-layout: 0
+            exibe-grid: true
+
+    # Divergência deliberada da spec: o grid desta lista não é uma tabela, e sim uma
+    # linha do tempo (cada registro é um cartão com data/hora, autor e botão excluir).
+    # O motivo é o `atendimento` ser texto longo: numa coluna de tabela ele apareceria
+    # truncado, e o prontuário precisa ser lido inteiro. Montada só com utilitários do
+    # Bootstrap; o único CSS próprio é `.text-prewrap`, em `styles.css`.
     - nome: prontuarios
       tipo: lista
       lista:
@@ -241,6 +273,14 @@ tabela:
             tipo: datetime
             label: Data do registro
             obrigatorio: true
+            colunas-layout: 0
+            exibe-grid: true
+
+          # Auditoria: nome do usuário logado, gravado pelo ProntuarioService na
+          # inclusão. Nulo nos registros anteriores à coluna.
+          - nome: usuario_registro
+            tipo: string
+            label: Registrado por
             colunas-layout: 0
             exibe-grid: true
 

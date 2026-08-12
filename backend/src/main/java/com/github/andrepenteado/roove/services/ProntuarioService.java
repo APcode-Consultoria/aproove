@@ -1,5 +1,6 @@
 package com.github.andrepenteado.roove.services;
 
+import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.andrepenteado.roove.domain.entities.Prontuario;
 import com.github.andrepenteado.roove.domain.repositories.ProntuarioRepository;
@@ -26,6 +27,8 @@ public class ProntuarioService {
 
     private final PacienteService pacienteService;
 
+    private final SecurityService securityService;
+
     @Secured({ PERFIL_FISIOTERAPEUTA })
     public List<Prontuario> listarProntuariosPorPaciente(Long idPaciente) {
         Paciente paciente = pacienteService.buscar(idPaciente);
@@ -35,6 +38,7 @@ public class ProntuarioService {
     @Secured({ PERFIL_FISIOTERAPEUTA })
     public Prontuario incluir(@Valid Prontuario prontuario) {
         prontuario.setDataRegistro(LocalDateTime.now());
+        prontuario.setUsuarioRegistro(securityService.getUserLogin().getLogin());
         return prontuarioRepository.save(prontuario);
     }
 

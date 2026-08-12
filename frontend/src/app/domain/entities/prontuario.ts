@@ -6,5 +6,6 @@ export class Prontuario {
     dataRegistro!: Date;
     paciente!: Paciente;
     atendimento!: string;
+    usuarioRegistro!: string;
 
 }

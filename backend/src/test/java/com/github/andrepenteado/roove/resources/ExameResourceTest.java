@@ -42,10 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+// O DbUnit vem antes do listener transacional de proposito: os callbacks "after"
+// rodam na ordem inversa da declaracao, entao assim o @DatabaseTearDown so executa
+// depois do rollback do teste. Na ordem contraria, apagar uma tabela pai trava
+// esperando as linhas filhas ainda nao commitadas pela transacao do teste.
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
-    TransactionalTestExecutionListener.class,
-    DbUnitTestExecutionListener.class
+    DbUnitTestExecutionListener.class,
+    TransactionalTestExecutionListener.class
 })
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
 @DatabaseSetup("/datasets/exame.xml")
@@ -103,6 +107,7 @@ public class ExameResourceTest {
         Exame exameNovo = objectMapper.readValue(json, Exame.class);
         assertEquals(exameNovo.getDescricao(), DESCRICAO_EXAME);
         assertNotNull(exameNovo.getId());
+        assertEquals("arquiteto", exameNovo.getUsuarioUpload());
 
         // Sem dados obrigatórios
         mockMvc.perform(post("/exames")

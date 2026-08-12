@@ -7,5 +7,6 @@ export class Exame {
     arquivo!: string;
     dataUpload!: Date;
     descricao!: string;
+    usuarioUpload!: string;
 
 }

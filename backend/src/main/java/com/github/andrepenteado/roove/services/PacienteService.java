@@ -63,7 +63,7 @@ public class PacienteService {
 
         paciente.setId(null);
         paciente.setDataCadastro(LocalDateTime.now());
-        paciente.setUsuarioCadastro(userLogin.getNome());
+        paciente.setUsuarioCadastro(userLogin.getLogin());
         if (!securityService.hasPerfil(PERFIL_DIRETOR) || paciente.getResponsavel() == null || paciente.getResponsavel().isBlank())
             paciente.setResponsavel(userLogin.getLogin());
         return pacienteRepository.save(paciente);
@@ -85,7 +85,7 @@ public class PacienteService {
             paciente.setResponsavel(responsavelAtual);
 
         paciente.setDataUltimaAtualizacao(LocalDateTime.now());
-        paciente.setUsuarioUltimaAtualizacao(userLogin.getNome());
+        paciente.setUsuarioUltimaAtualizacao(userLogin.getLogin());
 
         return pacienteRepository.save(paciente);
     }

@@ -1,1 +1,7 @@
 /* Estilos globais customizados devem ser excecao; prefira Bootstrap 5 nos templates. */
+
+/* Bootstrap nao tem utilitario de white-space alem de text-nowrap. Necessario para
+   exibir textos longos de textarea preservando as quebras de linha digitadas. */
+.text-prewrap {
+  white-space: pre-line;
+}

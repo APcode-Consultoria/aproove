@@ -23,7 +23,7 @@ public class MockConfiguration {
         if (id != null)
             paciente.setId(id);
         paciente.setDataCadastro(LocalDateTime.now());
-        paciente.setUsuarioCadastro("Arquiteto");
+        paciente.setUsuarioCadastro("arquiteto");
         paciente.setNome(NOME_PACIENTE);
         paciente.setCpf(CPF_PACIENTE);
         paciente.setQueixaPrincipal("Queixa principal NOT NULL");

@@ -2,7 +2,9 @@ package com.github.andrepenteado.roove.resources;
 
 import com.github.andrepenteado.roove.domain.entities.Paciente;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,12 +37,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+// O DbUnit vem antes do listener transacional de proposito: os callbacks "after"
+// rodam na ordem inversa da declaracao, entao assim o @DatabaseTearDown so executa
+// depois do rollback do teste. Na ordem contraria, apagar uma tabela pai trava
+// esperando as linhas filhas ainda nao commitadas pela transacao do teste.
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
-    TransactionalTestExecutionListener.class,
-    DbUnitTestExecutionListener.class
+    DbUnitTestExecutionListener.class,
+    TransactionalTestExecutionListener.class
 })
 @DatabaseSetup("/datasets/paciente.xml")
+@DatabaseTearDown(value = "/datasets/paciente-teardown.xml", type = DatabaseOperation.DELETE_ALL)
 @Transactional
 @ActiveProfiles("test")
 public class PacienteResourceTest {

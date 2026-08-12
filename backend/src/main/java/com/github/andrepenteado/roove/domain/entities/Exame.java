@@ -35,6 +35,9 @@ public class Exame {
 
     private LocalDateTime dataUpload;
 
+    // Preenchido pelo sistema na inclusão. Nulo nos registros anteriores à auditoria.
+    private String usuarioUpload;
+
     @NotBlank(message = "Descrição é um campo obrigatório")
     private String descricao;
 

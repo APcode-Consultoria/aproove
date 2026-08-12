@@ -36,6 +36,9 @@ public class Prontuario {
     @NotBlank(message = "Descrição do atendimento é um campo obrigatório")
     private String atendimento;
 
+    // Preenchido pelo sistema na inclusão. Nulo nos registros anteriores à auditoria.
+    private String usuarioRegistro;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

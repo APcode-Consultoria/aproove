@@ -2,7 +2,7 @@
     <paciente
         id="400"
         data_cadastro="2022-01-01 08:00:00.0000"
-        usuario_cadastro="Arquiteto"
+        usuario_cadastro="arquiteto"
         nome="Paciente 400"
         cpf="10010010011"
         queixa_principal="Queixa paciente 100"
@@ -38,6 +38,7 @@
         fk_upload="00000000-0000-0000-0000-000000000001"
         descricao="Exame #1000"
         data_upload="2022-01-01 08:00:00.0000"
+        usuario_upload="arquiteto"
     />
     <exame
         id="2000"
@@ -45,5 +46,6 @@
         fk_upload="00000000-0000-0000-0000-000000000002"
         descricao="Exame #2000"
         data_upload="2022-01-01 08:00:00.0000"
+        usuario_upload="arquiteto"
     />
 </dataset>

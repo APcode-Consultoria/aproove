@@ -1,0 +1,9 @@
+<!--
+    Limpeza pós-teste do ProntuarioResourceTest. Ver o porquê em exame-teardown.xml.
+    Ordem igual à do dataset de carga: DELETE_ALL apaga na sequência inversa, logo o
+    prontuário sai antes do paciente que ele referencia.
+-->
+<dataset>
+    <paciente/>
+    <prontuario/>
+</dataset>

@@ -362,41 +362,54 @@
                 </button>
               </div>
 
-              <div class="table-responsive">
-                @if (exames.length) {
-                  <table class="table table-hover align-middle w-100 mb-0">
-                    <thead>
-                      <tr>
-                        <th>Ações</th>
-                        <th>Descrição</th>
-                        <th>Arquivo</th>
-                        <th>Enviado em</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (exame of exames; track exame.id) {
-                        <tr>
-                          <td>
-                            <div class="action-stack d-flex gap-1">
-                              <button type="button" class="btn btn-outline-primary btn-sm" title="Baixar exame" aria-label="Baixar exame" (click)="downloadArquivo(exame)">
-                                <i class="fa-solid fa-download"></i>
-                              </button>
-                              <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir exame" aria-label="Excluir exame" (click)="excluirExame(exame)">
-                                <i class="fa-solid fa-trash-can"></i>
-                              </button>
+              <!--
+                Grid da lista em formato de galeria de anexos: cada exame é um cartão com o
+                ladrilho de ícone (mesmo padrão dos cabeçalhos das abas), a descrição e o
+                rodapé de auditoria. Cartão em vez de tabela porque o registro aqui é um
+                arquivo, não um dado tabular: o destaque é o anexo e as ações sobre ele.
+                Só utilitários do Bootstrap.
+              -->
+              @if (exames.length) {
+                <div class="row row-cols-1 row-cols-lg-2 row-cols-xxl-3 g-3">
+                  @for (exame of exames; track exame.id) {
+                    <div class="col">
+                      <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex gap-3">
+                          <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary flex-shrink-0 fs-4 p-3" aria-hidden="true">
+                            <i class="fa-solid fa-file-medical fa-fw"></i>
+                          </span>
+                          <div class="flex-grow-1">
+                            <h3 class="h6 fw-bold mb-2 text-break">{{ exame.descricao }}</h3>
+                            <span class="badge text-bg-light border fw-normal">
+                              <i class="fa-solid fa-paperclip me-1"></i>Exame #{{ exame.id }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2">
+                          <div class="small text-secondary">
+                            <div>
+                              <i class="fa-regular fa-calendar fa-fw me-1"></i>{{ exame.dataUpload ? (toDate(exame.dataUpload) | date: "dd/MM/yyyy 'às' HH:mm") : '-' }}
                             </div>
-                          </td>
-                          <td class="text-break">{{ exame.descricao }}</td>
-                          <td><i class="fa-solid fa-paperclip text-secondary me-1"></i>Exame #{{ exame.id }}</td>
-                          <td>{{ exame.dataUpload ? (toDate(exame.dataUpload) | date: 'dd/MM/yyyy') : '-' }}</td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                } @else {
-                  <div class="alert alert-light border mb-0">Nenhum registro adicionado em Exames.</div>
-                }
-              </div>
+                            <div>
+                              <i class="fa-regular fa-user fa-fw me-1"></i>{{ exame.usuarioUpload || 'Usuário não identificado' }}
+                            </div>
+                          </div>
+                          <div class="btn-group btn-group-sm flex-shrink-0" role="group" aria-label="Ações do exame">
+                            <button type="button" class="btn btn-outline-primary" title="Baixar exame" aria-label="Baixar exame" (click)="downloadArquivo(exame)">
+                              <i class="fa-solid fa-download"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" title="Excluir exame" aria-label="Excluir exame" (click)="excluirExame(exame)">
+                              <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="alert alert-light border mb-0">Nenhum registro adicionado em Exames.</div>
+              }
             </div>
           </section>
 
@@ -430,36 +443,49 @@
                 </button>
               </div>
 
-              <div class="table-responsive">
-                @if (prontuarios.length) {
-                  <table class="table table-hover align-middle w-100 mb-0">
-                    <thead>
-                      <tr>
-                        <th>Ações</th>
-                        <th>Data do registro</th>
-                        <th>Atendimento</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (prontuario of prontuarios; track prontuario.id) {
-                        <tr>
-                          <td>
-                            <div class="action-stack">
-                              <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir prontuário" aria-label="Excluir prontuário" (click)="excluirProntuario(prontuario)">
+              <!--
+                Grid da lista em formato de linha do tempo: a trilha (bolinha + conector) e o
+                cartao do atendimento sao montados so com utilitarios do Bootstrap. O
+                atendimento aparece inteiro, sem truncar, o que uma coluna de tabela nao daria.
+              -->
+              @if (prontuarios.length) {
+                <ol class="list-unstyled mb-0">
+                  @for (prontuario of prontuarios; track prontuario.id) {
+                    <li class="d-flex gap-3">
+                      <div class="d-flex flex-column align-items-center flex-shrink-0">
+                        <!-- Marcador: span vazio com padding igual nos 4 lados vira circulo exato. -->
+                        <span class="d-inline-block rounded-circle bg-primary p-2 mt-3" aria-hidden="true"></span>
+                        @if (!$last) {
+                          <span class="flex-grow-1 border-start border-2 border-primary-subtle my-1"></span>
+                        }
+                      </div>
+                      <div class="flex-grow-1" [class.pb-4]="!$last">
+                        <div class="card border-0 shadow-sm">
+                          <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                              <div class="d-flex flex-wrap align-items-center gap-2 small text-secondary">
+                                <span class="fw-semibold text-body">
+                                  <i class="fa-regular fa-clock me-1"></i>{{ toDate(prontuario.dataRegistro) | date: "dd/MM/yyyy 'às' HH:mm" }}
+                                </span>
+                                <span class="vr d-none d-sm-block"></span>
+                                <span>
+                                  <i class="fa-regular fa-user me-1"></i>{{ prontuario.usuarioRegistro || 'Usuário não identificado' }}
+                                </span>
+                              </div>
+                              <button type="button" class="btn btn-outline-danger btn-sm flex-shrink-0" title="Excluir prontuário" aria-label="Excluir prontuário" (click)="excluirProntuario(prontuario)">
                                 <i class="fa-solid fa-trash-can"></i>
                               </button>
                             </div>
-                          </td>
-                          <td class="text-nowrap">{{ toDate(prontuario.dataRegistro) | date: "dd/MM/yyyy 'às' HH:mm" }}</td>
-                          <td class="text-break">{{ prontuario.atendimento }}</td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                } @else {
-                  <div class="alert alert-light border mb-0">Nenhum registro adicionado em Prontuário.</div>
-                }
-              </div>
+                            <p class="card-text text-break text-prewrap mb-0">{{ prontuario.atendimento }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  }
+                </ol>
+              } @else {
+                <div class="alert alert-light border mb-0">Nenhum registro adicionado em Prontuário.</div>
+              }
             </div>
           </section>
         </div>
