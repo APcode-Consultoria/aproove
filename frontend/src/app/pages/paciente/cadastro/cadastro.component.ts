@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PacienteService } from '../../../services/paciente.service';
@@ -25,6 +25,7 @@ import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

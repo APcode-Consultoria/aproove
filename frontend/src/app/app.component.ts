@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from "@angular/router";
 import { NgxSpinnerModule } from "ngx-spinner";
 
@@ -16,6 +16,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     <router-outlet></router-outlet>
   `,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ RouterOutlet, NgxSpinnerModule ]
 })
 export class AppComponent {

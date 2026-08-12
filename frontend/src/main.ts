@@ -34,8 +34,7 @@ bootstrapApplication(
       provideZoneChangeDetection({eventCoalescing: true}),
       provideRouter(appRoutes),
       provideAnimations(),
-      provideHttpClient(withXhr(), withInterceptorsFromDi()),
-      provideHttpClient(withXhr(), withInterceptors(apcoreInterceptors)),
+      provideHttpClient(withXhr(), withInterceptorsFromDi(), withInterceptors(apcoreInterceptors)),
       provideNgxMask(),
       importProvidersFrom(
         ToastrModule.forRoot()

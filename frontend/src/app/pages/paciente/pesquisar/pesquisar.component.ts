@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LoginService, PesquisarBaseComponent } from "@andre.penteado/ngx-apcore";
 import { PacienteService } from "../../../services/paciente.service";
@@ -13,6 +13,7 @@ import { CommonModule } from "@angular/common";
   selector: 'app-pesquisar',
   templateUrl: './pesquisar.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     RouterLink
