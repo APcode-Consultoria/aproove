@@ -19,7 +19,7 @@ NAMESPACE    := andrepenteado/aproove
 MODULE_NAME  := roove
 ANGULAR_DIST := production
 K8S_NS       := aproove
-CHART         := oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart
+CHART         := oci://git.apcode.com.br/andre.penteado/springboot-angular-chart
 CHART_VERSION := 1.4.0
 VERSAO_APP    := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
 
@@ -170,8 +170,8 @@ k8s-pre-init:
 # ============================================================
 k8s-deploy:
 	@echo "🚀 Iniciando deploy do AProove no Kubernetes"
-	@echo "Entre com a senha do gitlab.com para baixar o helm chart"
-	echo "$(GITLAB_TOKEN)" | helm registry login registry.gitlab.com -u andrepenteado --password-stdin
+	@echo "Entre com a senha do git.apcode.com.br para baixar o helm chart"
+	helm registry login git.apcode.com.br
 	helm upgrade --install backend $(CHART) --version $(CHART_VERSION) -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
 	helm upgrade --install frontend $(CHART) --version $(CHART_VERSION) -f .helm/values.frontend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
 	@echo "✅ Deploy do AProove finalizado com sucesso"

@@ -176,9 +176,9 @@ function K8s-Pre-Init {
 function K8s-Deploy {
     Write-Host "🚀 Iniciando deploy no Kubernetes (namespace: $K8sNS)" -ForegroundColor Cyan
     Write-Host "Entre com a senha do gitlab.com para baixar o helm chart" -ForegroundColor Blue
-    $Chart        = "oci://registry.gitlab.com/andrepenteado/apdevops/springboot-angular-chart"
+    $Chart        = "oci://git.apcode.com.br/andre.penteado/springboot-angular-chart"
     $ChartVersion = "1.4.0"
-    helm registry login registry.gitlab.com -u andrepenteado
+    helm registry login git.apcode.com.br
     helm upgrade --install backend $Chart --version $ChartVersion -f .helm/values.backend.yaml --set app.image.tag=$Versao -n aproove
     helm upgrade --install frontend $Chart --version $ChartVersion -f .helm/values.frontend.yaml --set app.image.tag=$Versao -n aproove
     Write-Host "✅ Deploy do AProove finalizado com sucesso" -ForegroundColor Green
