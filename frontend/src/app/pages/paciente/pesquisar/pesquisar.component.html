@@ -24,6 +24,7 @@
     </div>
   </header>
 
+  @if (isDiretor) {
   <section class="row g-3 mb-4 d-none d-md-flex" aria-label="Resumo de pacientes">
     <div class="col-12 col-md-4">
       <div class="card border-0 shadow-sm h-100">
@@ -67,6 +68,7 @@
       </div>
     </div>
   </section>
+  }
 
   <div class="card border-0 shadow-sm overflow-hidden">
     <div class="card-header bg-body border-bottom p-4">
@@ -89,7 +91,7 @@
               <th scope="col">Paciente</th>
               <th scope="col">Telefone</th>
               <th scope="col">Bairro</th>
-              @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+              @if (isDiretor) {
                 <th scope="col">Responsável</th>
               }
             </tr>
@@ -126,7 +128,7 @@
                   }
                 </td>
                 <td>{{ paciente.bairro || 'Não informado' }}</td>
-                @if (this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`)) {
+                @if (isDiretor) {
                   <td>{{ paciente.responsavel || 'Não informado' }}</td>
                 }
               </tr>

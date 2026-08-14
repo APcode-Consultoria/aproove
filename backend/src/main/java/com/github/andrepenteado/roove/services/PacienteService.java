@@ -56,7 +56,7 @@ public class PacienteService {
 
     @Secured({ PERFIL_FISIOTERAPEUTA })
     public Paciente incluir(@Valid Paciente paciente) {
-        if (pacienteRepository.findByCpf(paciente.getCpf()) != null)
+        if (paciente.getCpf() != null && pacienteRepository.findByCpf(paciente.getCpf()) != null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, String.format("CPF %s já se encontra cadastrado", paciente.getCpf()));
 
         UserLogin userLogin = securityService.getUserLogin();

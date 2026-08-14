@@ -37,7 +37,12 @@ export class PesquisarComponent extends PesquisarBaseComponent<Paciente> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.exibeTotais();
+    if (this.isDiretor)
+      this.exibeTotais();
+  }
+
+  get isDiretor(): boolean {
+    return this.loginService.hasRole(`${PREFIXO_PERFIL_SISTEMA}DIRETOR`);
   }
 
   protected listar(): Observable<Paciente[]> {
