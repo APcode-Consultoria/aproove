@@ -10,11 +10,13 @@ app:
   envVars:
     SPRING_PROFILES_ACTIVE: prod
 
-  # Segredos vindos do Secret 'aproove-secrets' (.helm/secret.yaml, fora do git).
-  secretName: aproove-secrets
+  # Segredos vindos do Vault, materializados pelo Vault Secrets Operator a
+  # partir do bloco `vault:` no fim deste arquivo. O valor de cada entrada é
+  # "<Secret>/<chave>" — sem `app.secretName`, porque agora são dois Secrets,
+  # um por caminho no cofre.
   envSecrets:
-    APROOVE_DB_PASSWORD: DB_PASSWORD
-    APROOVE_OIDC_CLIENT_SECRET: OIDC_CLIENT_SECRET
+    APROOVE_DB_PASSWORD: aproove-db/DB_PASSWORD
+    APROOVE_OIDC_CLIENT_SECRET: aproove-oidc/OIDC_CLIENT_SECRET
 
   livenessProbe: "/actuator/health/liveness"
   readinessProbe: "/actuator/health/readiness"
@@ -27,3 +29,22 @@ ingress:
   tlsSecretName: sistemas-apcode-tls
 
 authServer: "https://login.apcode.com.br/actuator/health/readiness"
+
+# Segredos lidos do HashiCorp Vault em runtime (ver k3s/vso/ no apdevops).
+# Pré-requisitos no cofre, uma vez por sistema, em k3s/vault/ do apdevops:
+#   make policy VAULT_TOKEN=<root>          (aplica policies/vso-aproove.hcl)
+#   make k8s-role NS=aproove VAULT_TOKEN=<root>
+#
+# Cada item vira um VaultStaticSecret + o Secret de mesmo nome no namespace, e
+# uma rotação no Vault reinicia este backend sozinha (rolloutRestartTargets).
+vault:
+  enabled: true
+  secrets:
+    - name: aproove-db
+      path: apcode/postgresql/aproove-dbuser
+      keys:
+        DB_PASSWORD: password
+    - name: aproove-oidc
+      path: k3s/aproove/oidc-client-secret
+      keys:
+        OIDC_CLIENT_SECRET: value

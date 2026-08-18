@@ -20,7 +20,7 @@ MODULE_NAME  := roove
 ANGULAR_DIST := production
 K8S_NS       := aproove
 CHART         := oci://git.apcode.com.br/andre.penteado/springboot-angular-chart
-CHART_VERSION := 1.4.0
+CHART_VERSION := 1.5.0
 VERSAO_APP    := $(shell sed -n 's:.*<version>\(.*\)</version>.*:\1:p' backend/pom.xml | head -n 1)
 
 # =====================
@@ -154,7 +154,9 @@ build-all: docker-login build-frontend build-backend build-images docker-logout
 	@echo "🎉 Build completo finalizado!"
 
 # ================================================
-# Criar namespace e secrets (aproove-secrets + github-secret via secret.yaml)
+# Criar namespace e o imagePullSecret (github-secret (imagePullSecret do ghcr.io)).
+# As senhas da app NÃO entram aqui: vêm do Vault em runtime, pelo Vault
+# Secrets Operator, a partir do bloco `vault:` do values do backend.
 # ================================================
 k8s-pre-init:
 	@echo "🚀 Inicializando namespace e secrets"
