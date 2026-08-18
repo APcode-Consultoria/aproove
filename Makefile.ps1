@@ -166,18 +166,14 @@ function Run-Dev {
 # =====================
 function K8s-Pre-Init {
     kubectl apply -f .helm/namespace.yaml
-    if (-not (Test-Path .helm/secret.yaml)) {
-        throw "❌ .helm/secret.yaml não encontrado. Copie de .helm/secret.template.yaml e preencha os valores reais."
-    }
-    kubectl apply -f .helm/secret.yaml
-    Write-Host "✅ Namespace e Secrets criados" -ForegroundColor Green
+    Write-Host "✅ Namespace criado (os Secrets vêm do Vault, pelo Vault Secrets Operator)" -ForegroundColor Green
 }
 
 function K8s-Deploy {
     Write-Host "🚀 Iniciando deploy no Kubernetes (namespace: $K8sNS)" -ForegroundColor Cyan
     Write-Host "Entre com a senha do git.apcode.com.br para baixar o helm chart" -ForegroundColor Blue
     $Chart        = "oci://git.apcode.com.br/andre.penteado/springboot-angular-chart"
-    $ChartVersion = "1.4.0"
+    $ChartVersion = "1.5.0"
     helm registry login git.apcode.com.br
     helm upgrade --install backend $Chart --version $ChartVersion -f .helm/values.backend.yaml --set app.image.tag=$Versao -n aproove
     helm upgrade --install frontend $Chart --version $ChartVersion -f .helm/values.frontend.yaml --set app.image.tag=$Versao -n aproove

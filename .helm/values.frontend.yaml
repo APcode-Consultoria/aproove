@@ -3,7 +3,7 @@ app:
   image:
     repository: "ghcr.io/andrepenteado/aproove/frontend"
     tag: ""
-    imagePullSecrets: "github-secret"
+    imagePullSecrets: "registry-pull"
 
   port: 80
 

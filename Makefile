@@ -47,7 +47,7 @@ help:
 	@echo "   run-dev              → Sobe backend (Spring, perfil dev) e frontend (Angular) juntos"
 	@echo ""
 	@echo "☸️ Kubernetes:"
-	@echo "   k8s-pre-init         → Cria namespace e secrets necessários para deploy"
+	@echo "   k8s-pre-init         → Cria o namespace (os Secrets vêm do Vault)"
 	@echo "   k8s-deploy           → Deploy com validação prévia do LOGIN"
 	@echo "   k8s-log-backend      → Logs do backend"
 	@echo "   k8s-log-frontend     → Logs do frontend"
@@ -154,18 +154,13 @@ build-all: docker-login build-frontend build-backend build-images docker-logout
 	@echo "🎉 Build completo finalizado!"
 
 # ================================================
-# Criar namespace e o imagePullSecret (github-secret (imagePullSecret do ghcr.io)).
-# As senhas da app NÃO entram aqui: vêm do Vault em runtime, pelo Vault
-# Secrets Operator, a partir do bloco `vault:` do values do backend.
+# Criar o namespace — e só. Nenhum Secret se cria à mão aqui: senhas da app e
+# credencial do registry vêm todas do Vault em runtime, materializadas pelo
+# Vault Secrets Operator a partir do bloco `vault:` do values do backend.
 # ================================================
 k8s-pre-init:
-	@echo "🚀 Inicializando namespace e secrets"
+	@echo "🚀 Criando o namespace"
 	kubectl apply -f .helm/namespace.yaml
-	@if [ ! -f .helm/secret.yaml ]; then \
-		echo "❌ .helm/secret.yaml não encontrado. Copie de .helm/secret.template.yaml e preencha os valores reais."; \
-		exit 1; \
-	fi
-	kubectl apply -f .helm/secret.yaml
 
 # ============================================================
 # 🚀 Deploy Kubernetes (com validação de LOGIN)

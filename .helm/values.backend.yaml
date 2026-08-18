@@ -3,7 +3,7 @@ app:
   image:
     repository: "ghcr.io/andrepenteado/aproove/backend"
     tag: ""
-    imagePullSecrets: "github-secret"
+    imagePullSecrets: "registry-pull"
 
   port: 8080
 
@@ -48,3 +48,13 @@ vault:
       path: k3s/aproove/oidc-client-secret
       keys:
         OIDC_CLIENT_SECRET: value
+    # Credencial do registry (ghcr.io), o último Secret que ainda se criava
+    # à mão neste namespace. Tipo próprio e chave `.dockerconfigjson` porque é
+    # o que o kubelet aceita; `restart: false` porque trocar a credencial não
+    # muda nada num pod já rodando — a imagem dele já foi baixada.
+    - name: registry-pull
+      path: k3s/registry/ghcr
+      type: kubernetes.io/dockerconfigjson
+      restart: false
+      keys:
+        .dockerconfigjson: dockerconfigjson
