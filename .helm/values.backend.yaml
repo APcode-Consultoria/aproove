@@ -3,7 +3,7 @@ app:
   image:
     repository: "ghcr.io/andrepenteado/aproove/backend"
     tag: ""
-    imagePullSecrets: "registry-pull"
+    imagePullSecrets: "github-secret"
 
   port: 8080
 
@@ -49,10 +49,16 @@ vault:
       keys:
         OIDC_CLIENT_SECRET: value
     # Credencial do registry (ghcr.io), o último Secret que ainda se criava
-    # à mão neste namespace. Tipo próprio e chave `.dockerconfigjson` porque é
-    # o que o kubelet aceita; `restart: false` porque trocar a credencial não
-    # muda nada num pod já rodando — a imagem dele já foi baixada.
-    - name: registry-pull
+    # à mão neste namespace. O nome é o mesmo de antes, de propósito — ele diz
+    # QUAL registry, e já são três em uso na casa. Em troca, o `github-secret`
+    # criado à mão precisa ser apagado ANTES do primeiro deploy com esta
+    # versão (`kubectl delete secret github-secret -n aproove`): o operador se
+    # recusa a assumir um Secret que não criou.
+    #
+    # Tipo próprio e chave `.dockerconfigjson` porque é o que o kubelet aceita;
+    # `restart: false` porque trocar a credencial não muda nada num pod já
+    # rodando — a imagem dele já foi baixada.
+    - name: github-secret
       path: k3s/registry/ghcr
       type: kubernetes.io/dockerconfigjson
       restart: false
