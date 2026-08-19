@@ -5,7 +5,7 @@ param(
             "test-frontend",
             "run-dev",
             "docker-login","docker-logout",
-            "k8s-pre-init","k8s-deploy","k8s-delete",
+            "k8s-deploy","k8s-delete",
             "k8s-log-backend","k8s-log-frontend",
             "k8s-get"
     )]
@@ -164,13 +164,12 @@ function Run-Dev {
 # =====================
 # KUBERNETES
 # =====================
-function K8s-Pre-Init {
-    kubectl apply -f .helm/namespace.yaml
-    Write-Host "✅ Namespace criado (os Secrets vêm do Vault, pelo Vault Secrets Operator)" -ForegroundColor Green
-}
-
 function K8s-Deploy {
     Write-Host "🚀 Iniciando deploy no Kubernetes (namespace: $K8sNS)" -ForegroundColor Cyan
+    # Namespace criado aqui (era o K8s-Pre-Init, que deixou de existir quando os
+    # Secrets saíram daqui): apply de Namespace é idempotente, e um comando
+    # separado só criava a chance de esquecê-lo. O resto vem do Vault.
+    kubectl apply -f .helm/namespace.yaml
     Write-Host "Entre com a senha do git.apcode.com.br para baixar o helm chart" -ForegroundColor Blue
     $Chart        = "oci://git.apcode.com.br/andre.penteado/springboot-angular-chart"
     $ChartVersion = "1.5.0"
@@ -216,7 +215,6 @@ switch ($exec) {
         Write-Host "   run-dev              → Sobe backend (Spring, perfil dev) e frontend (Angular) juntos"
         Write-Host ""
         Write-Host "☸️ Kubernetes:"
-        Write-Host "   k8s-pre-init         → Cria namespace e secrets"
         Write-Host "   k8s-deploy           → Deploy com validação de LOGIN"
         Write-Host "   k8s-log-backend      → Logs do backend"
         Write-Host "   k8s-log-frontend     → Logs do frontend"
@@ -245,7 +243,6 @@ switch ($exec) {
         Write-Host "🎉 Build completo finalizado com sucesso!" -ForegroundColor Green
     }
 
-    "k8s-pre-init"   { K8s-Pre-Init }
     "k8s-deploy"     { K8s-Deploy }
     "k8s-delete"     { K8s-Delete }
 

@@ -5,7 +5,7 @@
         test-frontend \
         run-dev \
         docker-login docker-logout \
-        k8s-pre-init k8s-deploy k8s-delete \
+        k8s-deploy k8s-delete \
         k8s-log-backend k8s-log-frontend \
         k8s-get
 
@@ -47,8 +47,7 @@ help:
 	@echo "   run-dev              → Sobe backend (Spring, perfil dev) e frontend (Angular) juntos"
 	@echo ""
 	@echo "☸️ Kubernetes:"
-	@echo "   k8s-pre-init         → Cria o namespace (os Secrets vêm do Vault)"
-	@echo "   k8s-deploy           → Deploy com validação prévia do LOGIN"
+	@echo "   k8s-deploy           → Cria o namespace e faz o deploy (Secrets vêm do Vault)"
 	@echo "   k8s-log-backend      → Logs do backend"
 	@echo "   k8s-log-frontend     → Logs do frontend"
 	@echo "   k8s-delete           → Remove o namespace aproove"
@@ -153,20 +152,19 @@ build-images:
 build-all: docker-login build-frontend build-backend build-images docker-logout
 	@echo "🎉 Build completo finalizado!"
 
-# ================================================
-# Criar o namespace — e só. Nenhum Secret se cria à mão aqui: senhas da app e
-# credencial do registry vêm todas do Vault em runtime, materializadas pelo
-# Vault Secrets Operator a partir do bloco `vault:` do values do backend.
-# ================================================
-k8s-pre-init:
-	@echo "🚀 Criando o namespace"
-	kubectl apply -f .helm/namespace.yaml
-
 # ============================================================
 # 🚀 Deploy Kubernetes (com validação de LOGIN)
+#
+# Cria o namespace aqui mesmo (era o antigo k8s-pre-init, que deixou de existir
+# quando os Secrets saíram daqui): `kubectl apply` de Namespace é idempotente, e
+# um alvo separado só criava a chance de esquecê-lo e ver o helm falhar por
+# namespace inexistente. Senhas da app e credencial do registry vêm do Vault em
+# runtime, materializadas pelo Vault Secrets Operator a partir do bloco `vault:`
+# do values do backend.
 # ============================================================
 k8s-deploy:
 	@echo "🚀 Iniciando deploy do AProove no Kubernetes"
+	kubectl apply -f .helm/namespace.yaml
 	@echo "Entre com a senha do git.apcode.com.br para baixar o helm chart"
 	helm registry login git.apcode.com.br
 	helm upgrade --install backend $(CHART) --version $(CHART_VERSION) -f .helm/values.backend.yaml --set app.image.tag=$(VERSAO_APP) -n aproove
