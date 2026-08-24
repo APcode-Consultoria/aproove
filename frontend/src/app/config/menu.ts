@@ -7,6 +7,9 @@ export const menu: Menu[] = [
   },
   {
     id: "paciente", texto: "Paciente", icone: "hospital-user", path: "/paciente/pesquisar", roles: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`], subMenus: []
+  },
+  {
+    id: "servico", texto: "Serviços", icone: "hand-holding-dollar", path: "/servico/pesquisar", roles: [`${PREFIXO_PERFIL_SISTEMA}DIRETOR`], subMenus: []
   }
 
 ];

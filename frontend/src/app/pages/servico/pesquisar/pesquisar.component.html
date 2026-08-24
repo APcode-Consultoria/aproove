@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb mb-0">
     <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="fa-solid fa-house me-1"></i>Início</a></li>
-    <li class="breadcrumb-item active">Pacientes</li>
+    <li class="breadcrumb-item active">Serviços</li>
   </ol>
 </nav>
 
@@ -12,28 +12,27 @@
         <i class="fa-solid fa-table-list"></i>
         Pesquisa
       </span>
-      <h1 class="display-6 fw-bold mb-2">Pacientes</h1>
-      <p class="text-secondary mb-0">Consulte pacientes, contatos e dados de acompanhamento para manutenção dos cadastros.</p>
+      <h1 class="display-6 fw-bold mb-2">Serviços</h1>
+      <p class="text-secondary mb-0">Consulte os serviços oferecidos e o valor cobrado na inscrição de cada um.</p>
     </div>
 
     <div>
       <button class="btn btn-primary btn-lg rounded-pill px-4 fw-semibold w-100 w-md-auto" type="button" (click)="incluir()">
-        <i class="fa-solid fa-user-plus me-1"></i>
+        <i class="fa-solid fa-plus me-1"></i>
         Novo
       </button>
     </div>
   </header>
 
-  @if (isDiretor) {
-  <section class="row g-3 mb-4 d-none d-md-flex" aria-label="Resumo de pacientes">
+  <section class="row g-3 mb-4 d-none d-md-flex" aria-label="Resumo de serviços">
     <div class="col-12 col-md-4">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white p-3 flex-shrink-0">
-            <i class="fa-solid fa-user-injured"></i>
+            <i class="fa-solid fa-hand-holding-dollar"></i>
           </span>
           <div>
-            <span class="small text-secondary fw-semibold text-uppercase d-block">Pacientes</span>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Serviços</span>
             <span class="h4 fw-bold mb-0">{{ lista.length }}</span>
           </div>
         </div>
@@ -44,11 +43,11 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white p-3 flex-shrink-0">
-            <i class="fa-solid fa-notes-medical"></i>
+            <i class="fa-solid fa-coins"></i>
           </span>
           <div>
-            <span class="small text-secondary fw-semibold text-uppercase d-block">Atendimentos</span>
-            <span class="h4 fw-bold mb-0">{{ totalAtendimentos }}</span>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Valor total</span>
+            <span class="h4 fw-bold mb-0">{{ valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
           </div>
         </div>
       </div>
@@ -58,24 +57,23 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary text-white p-3 flex-shrink-0">
-            <i class="fa-solid fa-paperclip"></i>
+            <i class="fa-solid fa-scale-balanced"></i>
           </span>
           <div>
-            <span class="small text-secondary fw-semibold text-uppercase d-block">Exames</span>
-            <span class="h4 fw-bold mb-0">{{ totalExames }}</span>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Valor médio</span>
+            <span class="h4 fw-bold mb-0">{{ valorMedio | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
           </div>
         </div>
       </div>
     </div>
   </section>
-  }
 
   <div class="card border-0 shadow-sm overflow-hidden">
     <div class="card-header bg-body border-bottom p-4">
       <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
         <button class="btn btn-outline-primary rounded-pill px-3 w-100 w-md-auto" type="button"
-                data-bs-toggle="collapse" data-bs-target="#filtros-pesquisa-pacientes"
-                aria-expanded="false" aria-controls="filtros-pesquisa-pacientes">
+                data-bs-toggle="collapse" data-bs-target="#filtros-pesquisa-servicos"
+                aria-expanded="false" aria-controls="filtros-pesquisa-servicos">
           <i class="fa-solid fa-filter me-2"></i>
           Filtrar Pesquisa
         </button>
@@ -83,23 +81,20 @@
     </div>
 
     <div class="card-body p-4">
-      <div class="collapse filters-collapse" id="filtros-pesquisa-pacientes">
+      <div class="collapse filters-collapse" id="filtros-pesquisa-servicos">
         <form class="row g-2 align-items-center border rounded bg-body-tertiary p-3 mb-4" (ngSubmit)="aplicarFiltro()">
           <div class="col-12 col-md">
             <input id="filtro-nome" type="text" name="nome" class="form-control" placeholder="Nome" aria-label="Nome"
                    [(ngModel)]="filtro.nome">
           </div>
           <div class="col-12 col-md">
-            <input id="filtro-cpf" type="text" name="cpf" class="form-control" placeholder="CPF" aria-label="CPF"
-                   [mask]="mascaraCpf" [validation]="false" [(ngModel)]="filtro.cpf">
-          </div>
-          <div class="col-12 col-md">
-            <input id="filtro-telefone" type="text" name="telefone" class="form-control" placeholder="Telefone" aria-label="Telefone"
-                   [mask]="mascaraTelefone" [validation]="false" [(ngModel)]="filtro.telefone">
-          </div>
-          <div class="col-12 col-md">
-            <input id="filtro-email" type="text" name="email" class="form-control" placeholder="E-mail" aria-label="E-mail"
-                   [(ngModel)]="filtro.email">
+            <select id="filtro-periodicidade" name="periodicidade" class="form-select" aria-label="Periodicidade"
+                    [(ngModel)]="filtro.periodicidade">
+              <option [ngValue]="undefined">Periodicidade</option>
+              @for (opcao of periodicidades; track opcao) {
+                <option [ngValue]="opcao">{{ periodicidadeLabels[opcao] }}</option>
+              }
+            </select>
           </div>
           <div class="col-6 col-md-auto">
             <button class="btn btn-primary w-100" type="submit" title="Pesquisar" aria-label="Pesquisar">
@@ -117,54 +112,55 @@
 
       @if (tabelaPronta) {
       <div class="custom-datatable table-responsive">
-        <table id="datatables-pesquisar-pacientes" class="table table-hover align-middle nowrap w-100 mb-0">
+        <table id="datatables-pesquisar-servicos" class="table table-hover align-middle nowrap w-100 mb-0">
           <thead>
             <tr>
               <th scope="col">Ações</th>
               <th scope="col">ID</th>
-              <th scope="col">Paciente</th>
-              <th scope="col">Telefone</th>
-              <th scope="col">Bairro</th>
-              @if (isDiretor) {
-                <th scope="col">Responsável</th>
-              }
+              <th scope="col">Serviço</th>
+              <th scope="col" class="text-end">Valor da Inscrição</th>
+              <th scope="col">Frequência por Periodicidade</th>
+              <th scope="col">Periodicidade</th>
             </tr>
           </thead>
           <tbody>
-            @for (paciente of this.listaFiltrada ; track paciente.id) {
+            @for (servico of this.listaFiltrada; track servico.id) {
               <tr>
                 <td>
-                  <div class="action-stack" role="group" aria-label="Ações do paciente">
-                    <button class="btn btn-outline-primary btn-sm" type="button" title="Editar paciente" (click)="editar(paciente)">
+                  <div class="action-stack" role="group" aria-label="Ações do serviço">
+                    <button class="btn btn-outline-primary btn-sm" type="button" title="Editar serviço" (click)="editar(servico)">
                       <i class="fa-solid fa-pen-to-square"></i>
                     </button>
-                    <button class="btn btn-outline-danger btn-sm" type="button" title="Excluir paciente" (click)="excluir(paciente)">
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Excluir serviço" (click)="excluir(servico)">
                       <i class="fa-solid fa-trash-can"></i>
                     </button>
                   </div>
                 </td>
-                <td>{{ paciente.id }}</td>
+                <td>{{ servico.id }}</td>
                 <td>
                   <div class="record-cell d-flex align-items-center gap-3">
                     <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary p-3 flex-shrink-0">
-                      <i class="fa-solid fa-user"></i>
+                      <i class="fa-solid fa-hand-holding-medical"></i>
                     </span>
                     <div class="flex-grow-1 overflow-hidden">
-                      <span class="record-main fw-semibold d-block text-truncate">{{ paciente.nome }}</span>
-                      <span class="record-sub small text-secondary d-block text-truncate">{{ paciente.email || 'Sem e-mail informado' }}</span>
+                      <span class="record-main fw-semibold d-block text-truncate">{{ servico.nome }}</span>
+                      <span class="record-sub small text-secondary d-block text-truncate">
+                        {{ servico.valor != null ? 'Inscrição de ' + (servico.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'Sem valor informado' }}
+                      </span>
                     </div>
                   </div>
                 </td>
+                <td class="text-end">
+                  {{ servico.valor != null ? (servico.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'Não informado' }}
+                </td>
+                <td>{{ servico.frequenciaPeriodicidade ?? 'Não informada' }}</td>
                 <td>
-                  <span>{{ paciente.telefone || 'Não informado' }}</span>
-                  @if (paciente.whatsapp) {
-                    <span class="badge rounded-pill text-bg-success ms-1"><i class="fa-brands fa-whatsapp"></i></span>
+                  @if (servico.periodicidade) {
+                    <span class="badge rounded-pill text-bg-secondary">{{ periodicidadeLabels[servico.periodicidade] }}</span>
+                  } @else {
+                    Não informada
                   }
                 </td>
-                <td>{{ paciente.bairro || 'Não informado' }}</td>
-                @if (isDiretor) {
-                  <td>{{ paciente.responsavel || 'Não informado' }}</td>
-                }
               </tr>
             }
           </tbody>

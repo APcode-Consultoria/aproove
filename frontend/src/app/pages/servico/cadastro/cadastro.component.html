@@ -1,0 +1,161 @@
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item">
+      <a routerLink="/pagina-inicial"><i class="fa-solid fa-house me-1"></i>Início</a>
+    </li>
+    <li class="breadcrumb-item"><a routerLink="/servico/pesquisar">Serviços</a></li>
+    <li class="breadcrumb-item active">Cadastro</li>
+  </ol>
+</nav>
+
+<section class="container py-3">
+  <section class="row g-3 align-items-start mb-4">
+    <header class="col-12 col-lg">
+      <span class="small text-primary fw-bold text-uppercase d-inline-flex align-items-center gap-1 mb-1">
+        <i class="fa-solid fa-hand-holding-dollar"></i>
+        Cadastro
+      </span>
+      <h1 class="display-6 fw-bold mb-2">{{ tituloFormulario() }}</h1>
+      <p class="text-secondary mb-0">{{ subtituloFormulario() }}</p>
+    </header>
+
+    @if (!incluir) {
+      <div class="col-auto d-none d-md-block">
+        <aside class="card">
+          <div class="card-body py-2 px-3">
+            <div class="d-flex align-items-center gap-3 small" style="font-size: .78rem;">
+              <span class="text-primary"><i class="fa-solid fa-clock-rotate-left fa-lg"></i></span>
+              <div style="max-width: 12rem;">
+                <div class="text-secondary fw-semibold">Criado por</div>
+                <div class="text-truncate">{{ entidade?.usuarioCadastro || 'Não informado' }}</div>
+                <div class="text-secondary fw-semibold mt-1">Criado em</div>
+                <div>{{ entidade?.dataCadastro | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+              </div>
+              @if (entidade?.dataUltimaAtualizacao != null) {
+                <div style="max-width: 12rem;">
+                  <div class="text-secondary fw-semibold">Alterado por</div>
+                  <div class="text-truncate">{{ entidade?.usuarioUltimaAtualizacao || 'Não informado' }}</div>
+                  <div class="text-secondary fw-semibold mt-1">Alterado em</div>
+                  <div>{{ entidade?.dataUltimaAtualizacao | date: "dd/MM/yyyy 'às' HH:mm" }}</div>
+                </div>
+              }
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+  </section>
+
+  <form [formGroup]="form" novalidate>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 p-lg-5">
+        <!--
+          O CRUD tem uma unica aba, mas o nav nav-pills e mantido: e o mesmo desenho de
+          todas as telas de cadastro do projeto.
+        -->
+        <ul class="nav nav-pills flex-column flex-md-row gap-2 mb-4" id="cadastroTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                    id="aba-dados-cadastrais-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#aba-dados-cadastrais"
+                    type="button"
+                    role="tab"
+                    aria-controls="aba-dados-cadastrais"
+                    aria-selected="true">
+              <i class="fa-solid fa-table-list"></i>
+              Dados cadastrais
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="cadastroTabsContent">
+          <section class="tab-pane fade show active" id="aba-dados-cadastrais" role="tabpanel" aria-labelledby="aba-dados-cadastrais-tab" tabindex="0">
+            <!--
+              O was-validated fica no conteudo da aba, nao no <form>: no <form> ele
+              acenderia em vermelho qualquer campo obrigatorio fora desta secao.
+            -->
+            <div [ngClass]="{'was-validated': !form.valid && formEnviado}">
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                  <i class="fa-solid fa-clipboard-list"></i>
+                </span>
+                <div>
+                  <h2 class="h5 fw-bold mb-1">Dados do serviço</h2>
+                  <p class="text-secondary mb-0">Identificação do serviço e o valor cobrado na inscrição.</p>
+                </div>
+              </div>
+              <hr class="mb-4">
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold required-label text-danger" for="nome">
+                    Nome <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="fa-solid fa-hand-holding-medical"></i></span>
+                    <input id="nome" type="text" name="nome" formControlName="nome" class="form-control" required>
+                    <div class="invalid-feedback">Nome é um campo obrigatório</div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-semibold" for="valor">Valor da Inscrição</label>
+                  <!--
+                    type="text" com a mascara do ngx-mask, nunca type="number": o number
+                    ignora a mascara e ainda mostra as setas de incremento, que nao fazem
+                    sentido em dinheiro.
+                  -->
+                  <div class="input-group has-validation">
+                    <span class="input-group-text">R$</span>
+                    <input id="valor" type="text" name="valor" formControlName="valor" class="form-control text-end"
+                           [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label fw-semibold" for="frequenciaPeriodicidade">Frequência por Periodicidade</label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="fa-solid fa-repeat"></i></span>
+                    <input id="frequenciaPeriodicidade" type="number" name="frequenciaPeriodicidade"
+                           formControlName="frequenciaPeriodicidade" class="form-control" min="0" step="1">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <!--
+                    Grupo de radio: o rotulo do conjunto nao pode ser um <label for>, que
+                    aponta para um controle unico. E um <span> mais role="radiogroup" com
+                    aria-labelledby, e cada opcao mantem o proprio <label for>.
+                  -->
+                  <span class="form-label fw-semibold d-block" id="rotulo-periodicidade">Periodicidade</span>
+                  <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-labelledby="rotulo-periodicidade">
+                    @for (opcao of periodicidades; track opcao) {
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="periodicidade"
+                               id="periodicidade_{{ opcao }}" [value]="opcao"
+                               formControlName="periodicidade">
+                        <label class="form-check-label" for="periodicidade_{{ opcao }}">{{ periodicidadeLabels[opcao] }}</label>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-3">
+      <span class="text-secondary small"><i class="fa-solid fa-circle-info me-1"></i>Campos em vermelho são obrigatórios.</span>
+      <div class="d-flex gap-2 justify-content-end">
+        <a class="btn btn-light" routerLink="/servico/pesquisar">Voltar</a>
+        <button class="btn btn-primary" type="button" (click)="gravar()">
+          <i class="fa-solid fa-floppy-disk me-2"></i>
+          Gravar
+        </button>
+      </div>
+    </div>
+  </form>
+</section>

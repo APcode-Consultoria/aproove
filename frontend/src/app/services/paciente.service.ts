@@ -1,9 +1,30 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_PACIENTES } from "../config/api";
 import { Paciente } from "../domain/entities/paciente";
 import { INIT_CONFIG } from "../config/init-config.token";
+
+// Campos pesquisáveis do paciente (`pesquisavel` no .cruds/paciente.yaml). Todos são
+// texto e a busca é parcial, sem diferenciar maiúsculas de minúsculas.
+export interface PacienteFiltro {
+
+  nome?: string;
+
+  cpf?: string;
+
+  telefone?: string;
+
+  email?: string;
+
+}
+
+export const PACIENTE_CAMPOS_PESQUISA: { campo: keyof PacienteFiltro; label: string; tipo: string }[] = [
+  { campo: 'nome', label: 'Nome', tipo: 'string' },
+  { campo: 'cpf', label: 'CPF', tipo: 'string' },
+  { campo: 'telefone', label: 'Telefone', tipo: 'string' },
+  { campo: 'email', label: 'E-mail', tipo: 'string' }
+];
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +36,16 @@ export class PacienteService {
 
   public listar(): Observable<Paciente[]> {
     return this.http.get<Paciente[]>(`${this.initConfig.urlBackend}${API_PACIENTES}`);
+  }
+
+  public pesquisar(filtro: PacienteFiltro): Observable<Paciente[]> {
+    let params = new HttpParams();
+    PACIENTE_CAMPOS_PESQUISA.forEach(({ campo }) => {
+      const valor = filtro[campo]?.trim();
+      if (valor)
+        params = params.set(campo, valor);
+    });
+    return this.http.get<Paciente[]>(`${this.initConfig.urlBackend}${API_PACIENTES}/pesquisar`, { params });
   }
 
   public buscar(id: number): Observable<Paciente> {

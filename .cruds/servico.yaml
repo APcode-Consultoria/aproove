@@ -1,0 +1,54 @@
+crud:
+  nome: servico
+
+autor: André Penteado
+
+projeto:
+  nome: roove
+  perfis:
+    - RooveApplication.PERFIL_DIRETOR:DIRETOR
+
+tabela:
+  nome: servico
+  label: Serviço
+  plural: Serviços
+  campos:
+    - nome: id
+      tipo: longo
+      pk: true
+      autoincremento: true
+      exibe-grid: true
+
+    - nome: nome
+      tipo: texto
+      label: Nome
+      obrigatorio: true
+      indice: true
+      colunas-layout: 12
+      exibe-grid: true
+      pesquisavel: contem
+
+    - nome: valor
+      tipo: moeda
+      label: Valor da Inscrição
+      colunas-layout: 6
+      exibe-grid: true
+
+    - nome: frequencia_periodicidade
+      tipo: inteiro
+      label: Frequência por Periodicidade
+      colunas-layout: 6
+      exibe-grid: true
+
+    - nome: periodicidade
+      tipo: texto
+      label: Periodicidade
+      colunas-layout: 12*
+      exibe-grid: true
+      pesquisavel: exato
+      enum:
+        nome: Periodicidade
+        valores:
+          SEMANAL: Semanal
+          QUINZENAL: Quinzenal
+          MENSAL: Mensal

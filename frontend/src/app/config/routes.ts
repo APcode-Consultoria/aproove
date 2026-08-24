@@ -12,7 +12,9 @@ export const DECORATED_ROUTES: Routes = [
 
   { path: 'dashboard', loadChildren: () => import('../pages/dashboard/dashboard.routes').then(m => m.dashboardRoutes) },
 
-  { path: 'paciente', loadChildren: () => import('../pages/paciente/paciente.routes').then(m => m.pacienteRoutes) }
+  { path: 'paciente', loadChildren: () => import('../pages/paciente/paciente.routes').then(m => m.pacienteRoutes) },
+
+  { path: 'servico', loadChildren: () => import('../pages/servico/servico.routes').then(m => m.servicoRoutes) }
 
 ]
 

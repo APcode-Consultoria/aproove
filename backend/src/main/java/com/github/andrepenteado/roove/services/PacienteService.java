@@ -3,10 +3,14 @@ package com.github.andrepenteado.roove.services;
 import br.unesp.fc.andrepenteado.core.web.dto.UserLogin;
 import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.entities.QPaciente;
+import com.github.andrepenteado.roove.domain.filter.PacienteFilter;
 import com.github.andrepenteado.roove.domain.repositories.PacienteRepository;
+import com.querydsl.core.BooleanBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
@@ -15,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +40,23 @@ public class PacienteService {
         if (securityService.hasPerfil(PERFIL_DIRETOR))
             return pacienteRepository.findAllByOrderByNomeAsc();
         return pacienteRepository.findAllByResponsavelOrderByNomeAsc(securityService.getUserLogin().getLogin());
+    }
+
+    @Secured({ PERFIL_FISIOTERAPEUTA })
+    public List<Paciente> pesquisar(PacienteFilter filtro) {
+        BooleanBuilder predicado = filtro.toPredicate();
+
+        // Mesma regra de visibilidade de listar(): quem não é diretor só enxerga os
+        // pacientes sob sua responsabilidade, e o filtro não pode contornar isso.
+        if (!securityService.hasPerfil(PERFIL_DIRETOR))
+            predicado.and(QPaciente.paciente.responsavel.eq(securityService.getUserLogin().getLogin()));
+
+        if (!predicado.hasValue())
+            return listar();
+
+        List<Paciente> pacientes = new ArrayList<>();
+        pacienteRepository.findAll(predicado, Sort.by("nome")).forEach(pacientes::add);
+        return pacientes;
     }
 
     @Secured({ PERFIL_FISIOTERAPEUTA })

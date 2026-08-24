@@ -9,6 +9,38 @@ projeto:
     - RooveApplication.PERFIL_FISIOTERAPEUTA:FISIOTERAPEUTA
     - RooveApplication.PERFIL_DIRETOR:DIRETOR
 
+# Regras de negócio e de tela que o contrato declarativo não cobre. As duas primeiras
+# valem no service do serviço contratado; a terceira é regra de tela, e vai para o
+# componente de cadastro do paciente.
+regras:
+  - nome: valor contratado só pelo diretor
+    prompt: >
+      Regra do service do serviço contratado. Ao incluir ou alterar um serviço
+      contratado, se o usuário logado não tiver o perfil DIRETOR, descartar o valor
+      contratado que veio no payload: na alteração, repor o valor do registro já
+      gravado; na inclusão, gravar nulo. Na aba do cadastro, o campo aparece somente
+      leitura para quem não é DIRETOR.
+      Declarado aqui, e não como `edicao` no subcampo, porque `edicao` é rejeitado em
+      `lista.campos` pelo contrato (01-yaml-contrato.md).
+
+  - nome: encerrar contratação
+    prompt: >
+      Regra do service do serviço contratado. Encerrar uma contratação grava a data de
+      hoje no fim da contratação, sem receber nenhum outro dado. Só é permitido quando
+      o fim da contratação está vazio; já preenchido, recusar com erro de negócio. Na
+      aba do cadastro, o botão de encerrar fica na primeira coluna da tabela, ao lado
+      do excluir, e só aparece nas linhas cujo fim da contratação está vazio.
+
+  - nome: campos de frequência conforme o serviço
+    prompt: >
+      Regra de tela, no cadastro do paciente. Ao escolher o serviço na aba de serviços
+      contratados, gerar tantos controles de frequência quanto for o valor de
+      `frequencia_periodicidade` do serviço escolhido. Periodicidade MENSAL: cada
+      controle é numérico de 1 a 31. QUINZENAL: numérico de 1 a 15. SEMANAL: combo com
+      os dias da semana, gravando o inteiro correspondente (0 = domingo, 1 = segunda,
+      e assim por diante). Os valores dos controles são concatenados e gravados na
+      coluna única `frequencia`, separados por ponto e vírgula.
+
 # ATENÇÃO — este YAML foi escrito DEPOIS do código, para documentar um CRUD que
 # nasceu antes da spec e servir de modelo de `tipo: lista`. Divergências conhecidas
 # entre o que a spec geraria e o que existe hoje no projeto, todas deliberadas:
@@ -35,90 +67,111 @@ projeto:
 #    para exibição, é tarefa à parte — o banco não tem tabela de usuários, então
 #    depende de consultar o provedor OIDC.
 # 3. O projeto não usa Liquibase; o passo `02-backend-liquibase.md` não se aplica aqui.
-# 4. Nenhum campo é `pesquisavel`: a tela de pesquisa lista tudo e usa a busca rápida
-#    do DataTables. Por isso não há `/pesquisar` nem filter QueryDSL, e isso está
-#    correto pela spec, que só os cria quando existe campo pesquisável.
+# 4. Campos pesquisáveis: `nome`, `cpf`, `telefone` e `email`. A spec define os valores
+#    `exato` e `contem`, e não `true`; como os quatro são texto, foram implementados
+#    como `contem` — busca parcial, sem diferenciar maiúsculas de minúsculas. Trocar
+#    para `pesquisavel: contem` no YAML deixaria o contrato explícito, sem mudar o
+#    código gerado.
+#    CPF e telefone são gravados só com dígitos, sem máscara, então o `PacienteFilter`
+#    extrai os dígitos do valor recebido antes de comparar. A tela abre listando tudo
+#    (não é tela de volume alto) e a busca rápida do DataTables continua valendo sobre
+#    o resultado já filtrado pelo backend.
 tabela:
   nome: paciente
   label: Paciente
   plural: Pacientes
   campos:
     - nome: id
-      tipo: long
+      tipo: longo
       pk: true
       autoincremento: true
       exibe-grid: true
 
     # --- Dados principais ---
     - nome: nome
-      tipo: string
+      tipo: texto
       label: Nome
       obrigatorio: true
       indice: true
       colunas-layout: 6
       exibe-grid: true
+      pesquisavel: contem
 
     - nome: cpf
-      # string, e nao long: o zero a esquerda e significativo e some no numerico
-      tipo: string
+      # texto, e nao longo: o zero a esquerda e significativo e some no numerico
+      tipo: texto
       label: CPF
       mask: "000.000.000-00"
       colunas-layout: 3
       exibe-grid: true
+      pesquisavel: contem
 
     - nome: data_nascimento
-      tipo: date
+      tipo: data
       label: Nascimento
       colunas-layout: 3*
       exibe-grid: false
 
     - nome: telefone
-      tipo: string
+      tipo: texto
       label: Telefone
       # Duas alternativas: fixo tem 10 digitos e celular 11
       mask: "(00) 0000-0000||(00) 00000-0000"
       colunas-layout: 4
       exibe-grid: true
+      pesquisavel: contem
 
     - nome: whatsapp
-      tipo: boolean
+      tipo: booleano
       label: WhatsApp?
       colunas-layout: 2
       exibe-grid: false
 
     - nome: email
-      tipo: string
+      tipo: texto
       label: E-mail
       colunas-layout: 6*
       exibe-grid: false
+      pesquisavel: contem
 
     - nome: contato_emergencia
-      tipo: string
+      tipo: texto
       label: Contato de emergência
       colunas-layout: 6
       exibe-grid: false
 
     - nome: parentesco_contato_emergencia
-      tipo: string
+      tipo: texto
       label: Parentesco
-      enum: Parentesco
       colunas-layout: 6*
       exibe-grid: false
+      enum:
+        nome: Parentesco
+        valores:
+          MARIDO: Marido
+          ESPOSA: Esposa
+          PAI: Pai
+          MAE: Mãe
+          TIO: Tio(a)
+          FILHO: Filho(a)
+          PRIMO: Primo(a)
+          AVO: Avô(á)
+          AMIGO: Amigo(a)
 
     - nome: profissao
-      tipo: string
+      tipo: texto
       label: Profissão
       colunas-layout: 5
       exibe-grid: false
 
     - nome: dia_vencimento
-      tipo: integer
+      tipo: inteiro
       label: Dia de vencimento
       colunas-layout: 3
       exibe-grid: false
 
     - nome: frequencia_semanal
-      tipo: integer
+      tipo: inteiro
       label: Frequência semanal
       colunas-layout: 4*
       exibe-grid: false
@@ -126,51 +179,51 @@ tabela:
     # Responsável pelo paciente. Só o perfil DIRETOR pode trocar o valor; a regra
     # está no PacienteService e não é expressável no contrato do YAML.
     - nome: responsavel
-      tipo: string
+      tipo: texto
       label: Responsável
       colunas-layout: 12*
       exibe-grid: true
 
     # --- Endereço ---
     - nome: cep
-      tipo: string
+      tipo: texto
       label: CEP
       mask: "00000-000"
       colunas-layout: 4
       exibe-grid: false
 
     - nome: logradouro
-      tipo: string
+      tipo: texto
       label: Logradouro
       colunas-layout: 8*
       exibe-grid: false
 
     - nome: numero_logradouro
-      tipo: integer
+      tipo: inteiro
       label: Número
       colunas-layout: 3
       exibe-grid: false
 
     - nome: complemento
-      tipo: string
+      tipo: texto
       label: Complemento
       colunas-layout: 5
       exibe-grid: false
 
     - nome: bairro
-      tipo: string
+      tipo: texto
       label: Bairro
       colunas-layout: 4*
       exibe-grid: false
 
     - nome: cidade
-      tipo: string
+      tipo: texto
       label: Cidade
       colunas-layout: 5
       exibe-grid: false
 
     - nome: estado
-      tipo: string
+      tipo: texto
       label: UF
       colunas-layout: 2*
       exibe-grid: false
@@ -227,7 +280,7 @@ tabela:
         formato: sem-modal
         campos:
           - nome: descricao
-            tipo: string
+            tipo: texto
             label: Descrição
             obrigatorio: true
             colunas-layout: 6
@@ -244,17 +297,17 @@ tabela:
 
           # Preenchido pelo sistema na inclusão; oculto no formulário.
           - nome: data_upload
-            tipo: datetime
+            tipo: data-hora
             label: Enviado em
-            colunas-layout: 0
+            exibe-formulario: false
             exibe-grid: true
 
           # Auditoria: nome do usuário logado, gravado pelo ExameService na inclusão.
           # Nulo nos registros anteriores à coluna.
           - nome: usuario_upload
-            tipo: string
+            tipo: texto
             label: Enviado por
-            colunas-layout: 0
+            exibe-formulario: false
             exibe-grid: true
 
     # Divergência deliberada da spec: o grid desta lista não é uma tabela, e sim uma
@@ -272,18 +325,18 @@ tabela:
         campos:
           # Preenchido pelo sistema na inclusão; oculto no formulário.
           - nome: data_registro
-            tipo: datetime
+            tipo: data-hora
             label: Data do registro
             obrigatorio: true
-            colunas-layout: 0
+            exibe-formulario: false
             exibe-grid: true
 
           # Auditoria: nome do usuário logado, gravado pelo ProntuarioService na
           # inclusão. Nulo nos registros anteriores à coluna.
           - nome: usuario_registro
-            tipo: string
+            tipo: texto
             label: Registrado por
-            colunas-layout: 0
+            exibe-formulario: false
             exibe-grid: true
 
           - nome: atendimento
@@ -291,4 +344,65 @@ tabela:
             label: Atendimento
             obrigatorio: true
             colunas-layout: 12*
+            exibe-grid: true
+
+    # N:M entre paciente e serviço: há subcampo `fk` (servico), então a tabela
+    # `servico_contratado` é a entidade intermediária, ligada por @OneToMany/@ManyToOne
+    # — nunca @ManyToMany. `persistencia: independente` porque a contratação é registro
+    # de negócio próprio: é gravada no "Contratar", consultada e auditada por si, e
+    # perdê-la porque o usuário não clicou em Gravar seria erro de domínio.
+    #
+    # `acoes`: os dois perfis contratam e encerram; só o diretor exclui, porque excluir
+    # apaga histórico de contratação.
+    - nome: servicos_contratados
+      tipo: lista
+      lista:
+        label: Serviços Contratados
+        tabela: servico_contratado
+        persistencia: independente
+        formato: sem-modal
+        acoes:
+          consultar: [FISIOTERAPEUTA, DIRETOR]
+          incluir: [FISIOTERAPEUTA, DIRETOR]
+          alterar: [FISIOTERAPEUTA, DIRETOR]
+          excluir: [DIRETOR]
+        campos:
+          - nome: servico
+            tipo: longo
+            label: Serviço
+            fk: servico
+            fk-display: nome
+            obrigatorio: true
+            colunas-layout: 6
+            exibe-grid: true
+
+          - nome: inicio_contratacao
+            tipo: data
+            label: Início da contratação
+            obrigatorio: true
+            colunas-layout: 3
+            exibe-grid: true
+
+          # Restrição de edição por perfil na regra "valor contratado só pelo diretor":
+          # `edicao` é rejeitado em `lista.campos`.
+          - nome: valor_contratado
+            tipo: moeda
+            label: Valor contratado
+            colunas-layout: 3*
+            exibe-grid: true
+
+          # Preenchido pelo botão "Encerrar", nunca digitado no subformulário.
+          - nome: fim_contratacao
+            tipo: data
+            label: Fim da contratação
+            exibe-formulario: false
+            exibe-grid: true
+
+          # Coluna única com os N valores separados por ponto e vírgula. Os controles
+          # que a alimentam são gerados pela regra "campos de frequência conforme o
+          # serviço", porque a quantidade e o tipo dependem do serviço escolhido.
+          - nome: frequencia
+            tipo: texto
+            label: Frequência
+            exibe-formulario: false
             exibe-grid: true

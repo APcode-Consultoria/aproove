@@ -1,6 +1,7 @@
 package com.github.andrepenteado.roove.resources;
 
 import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.filter.PacienteFilter;
 import com.github.andrepenteado.roove.services.PacienteService;
 import com.github.andrepenteado.roove.services.ProntuarioService;
 import io.micrometer.observation.annotation.Observed;
@@ -27,6 +28,12 @@ public class PacienteResource {
     public List<Paciente> listar() {
         log.info("Listar todos pacientes");
         return pacienteService.listar();
+    }
+
+    @GetMapping("/pesquisar")
+    public List<Paciente> pesquisar(PacienteFilter filtro) {
+        log.info("Pesquisar pacientes com filtro {}", filtro);
+        return pacienteService.pesquisar(filtro);
     }
 
     @GetMapping("/{id}")

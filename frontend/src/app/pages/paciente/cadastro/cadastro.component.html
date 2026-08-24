@@ -100,6 +100,24 @@
                 Prontuário
               </button>
             </li>
+            <!-- A aba existe só para quem tem `consultar` em lista.acoes. -->
+            @if (config.listas['servicosContratados'].consultar) {
+              <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                        [class.disabled]="incluir"
+                        [title]="incluir ? 'Grave o paciente para contratar serviços' : 'Serviços contratados pelo paciente'"
+                        id="aba-servicos-contratados-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#aba-servicos-contratados"
+                        type="button"
+                        role="tab"
+                        aria-controls="aba-servicos-contratados"
+                        aria-selected="false">
+                  <i class="fa-solid fa-list"></i>
+                  Serviços Contratados
+                </button>
+              </li>
+            }
           </ul>
 
           <div class="flex-shrink-0" style="min-width: 15rem;">
@@ -491,7 +509,184 @@
               }
             </div>
           </section>
+
+          @if (config.listas['servicosContratados'].consultar) {
+          <section class="tab-pane fade" id="aba-servicos-contratados" role="tabpanel" aria-labelledby="aba-servicos-contratados-tab" tabindex="0">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </span>
+              <div>
+                <h2 class="h5 fw-bold mb-1">Serviços Contratados</h2>
+                <p class="text-secondary mb-0">Serviços que o paciente contratou, com período, valor e frequência de atendimento.</p>
+              </div>
+            </div>
+            <hr class="mb-4">
+
+            <!--
+              Subformulario da lista: <div [formGroup]>, nunca <form>, porque esta dentro
+              do <form> do paciente e formulario aninhado e HTML invalido. O
+              was-validated tem flag propria, para nao acender os campos das outras abas.
+            -->
+            @if (config.listas['servicosContratados'].incluir) {
+              <div [formGroup]="formServicoContratado"
+                   [ngClass]="{'was-validated': !formServicoContratado.valid && formServicoContratadoEnviado}">
+                <div class="row g-3">
+                  <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold required-label text-danger" for="servicoContratacao">
+                      Serviço <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                    </label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text"><i class="fa-solid fa-hand-holding-medical"></i></span>
+                      <select id="servicoContratacao" name="servico" formControlName="servico" class="form-select"
+                              required (change)="aoSelecionarServico()">
+                        <option [ngValue]="null">Selecione o serviço</option>
+                        @for (opcao of servicos; track opcao.id) {
+                          <option [ngValue]="opcao">{{ opcao.nome }}</option>
+                        }
+                      </select>
+                      <div class="invalid-feedback">Serviço é um campo obrigatório</div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-3">
+                    <label class="form-label fw-semibold required-label text-danger" for="inicioContratacao">
+                      Início da contratação <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                    </label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
+                      <input id="inicioContratacao" type="date" name="inicioContratacao" formControlName="inicioContratacao"
+                             class="form-control" required>
+                      <div class="invalid-feedback">Início da contratação é um campo obrigatório</div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-3">
+                    <label class="form-label fw-semibold" for="valorContratado">Valor contratado</label>
+                    <!--
+                      Regra "valor contratado só pelo diretor": para os demais perfis o
+                      campo fica `readonly`, nunca `disabled` — desabilitado sairia de
+                      `formServicoContratado.value` e iria vazio ao backend. A barreira
+                      de verdade e a reposicao no ServicoContratadoService.
+                    -->
+                    <div class="input-group has-validation">
+                      <span class="input-group-text">R$</span>
+                      <input id="valorContratado" type="text" name="valorContratado" formControlName="valorContratado"
+                             class="form-control text-end" [class.bg-body-secondary]="!podeEditarValorContratado"
+                             [readonly]="!podeEditarValorContratado"
+                             [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                    </div>
+                    @if (!podeEditarValorContratado) {
+                      <div class="form-text">Somente o diretor edita o valor contratado.</div>
+                    }
+                  </div>
+                </div>
+
+                <!--
+                  Regra "campos de frequência conforme o serviço": a quantidade de
+                  controles vem de `frequenciaPeriodicidade` do serviço escolhido e o
+                  tipo, da periodicidade dele. Os N valores viram uma string separada por
+                  ponto e vírgula na coluna `frequencia`.
+                -->
+                @if (frequencias.length) {
+                  <div class="row g-3 mt-1" formArrayName="frequencias">
+                    <div class="col-12">
+                      <span class="form-label fw-semibold d-block mb-0">
+                        Frequência
+                        <span class="text-secondary fw-normal">
+                          — {{ servicoSelecionado?.frequenciaPeriodicidade }}x por
+                          {{ servicoSelecionado?.periodicidade ? (servicoSelecionado?.periodicidade === Periodicidade.SEMANAL ? 'semana' : servicoSelecionado?.periodicidade === Periodicidade.QUINZENAL ? 'quinzena' : 'mês') : 'período' }}
+                        </span>
+                      </span>
+                    </div>
+                    @for (controle of frequencias.controls; track $index) {
+                      <div class="col-6 col-md-4 col-lg-3">
+                        <label class="form-label small text-secondary" [for]="'frequencia_' + $index">{{ rotuloFrequencia($index) }}</label>
+                        @if (servicoSelecionado?.periodicidade === Periodicidade.SEMANAL) {
+                          <select [id]="'frequencia_' + $index" [formControlName]="$index" class="form-select" required>
+                            <option [ngValue]="null">Selecione</option>
+                            @for (dia of diasSemana; track dia.valor) {
+                              <option [ngValue]="dia.valor">{{ dia.label }}</option>
+                            }
+                          </select>
+                        } @else {
+                          <input [id]="'frequencia_' + $index" type="number" [formControlName]="$index" class="form-control"
+                                 min="1" [max]="limiteFrequencia" step="1" required>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <div class="d-flex justify-content-end mt-3 mb-4">
+                  <button class="btn btn-primary" type="button" (click)="contratar()">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Contratar
+                  </button>
+                </div>
+              </div>
+            }
+
+            @if (servicosContratados.length) {
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Ações</th>
+                      <th scope="col">Serviço</th>
+                      <th scope="col">Início</th>
+                      <th scope="col" class="text-end">Valor contratado</th>
+                      <th scope="col">Fim</th>
+                      <th scope="col">Frequência</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (contratado of servicosContratados; track contratado.id) {
+                      <tr>
+                        <td>
+                          <div class="action-stack" role="group" aria-label="Ações da contratação">
+                            <!-- Só nas linhas em aberto: encerrar duas vezes é erro de negócio. -->
+                            @if (!contratado.fimContratacao) {
+                              <button class="btn btn-outline-secondary btn-sm" type="button"
+                                      title="Encerrar contratação" aria-label="Encerrar contratação"
+                                      (click)="encerrarContratacao(contratado)">
+                                <i class="fa-solid fa-circle-stop"></i>
+                              </button>
+                            }
+                            @if (config.listas['servicosContratados'].excluir) {
+                              <button class="btn btn-outline-danger btn-sm" type="button"
+                                      title="Excluir contratação" aria-label="Excluir contratação"
+                                      (click)="excluirServicoContratado(contratado)">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            }
+                          </div>
+                        </td>
+                        <td class="fw-semibold">{{ contratado.servico?.nome }}</td>
+                        <td>{{ contratado.inicioContratacao | date: 'dd/MM/yyyy' }}</td>
+                        <td class="text-end">
+                          {{ contratado.valorContratado != null ? (contratado.valorContratado | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'Não informado' }}
+                        </td>
+                        <td>
+                          @if (contratado.fimContratacao) {
+                            {{ contratado.fimContratacao | date: 'dd/MM/yyyy' }}
+                          } @else {
+                            <span class="badge rounded-pill text-bg-success">Em vigor</span>
+                          }
+                        </td>
+                        <td>{{ descreverFrequencia(contratado) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="alert alert-light border mb-0">Nenhum registro adicionado em Serviços Contratados.</div>
+            }
+          </section>
+          }
         </div>
+
       </div>
     </div>
 

@@ -1,0 +1,26 @@
+crud: servico
+metadados: .cruds/servico.yaml
+checksumNormalizado: "sha256:997d3f29859099a9681f64d3280348b3729383b97d898f10497bbec82862919e"
+executadoEm: "2026-08-24T13:46:33-03:00"
+status: criado
+perfis: [DIRETOR]
+arquivos:
+  - backend/pom.xml
+  - backend/src/main/resources/db/migration/V2026.08.24.1__Versao_1.0.4.sql
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/enums/Periodicidade.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/Servico.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/repositories/ServicoRepository.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/filter/ServicoFilter.java
+  - backend/src/main/java/com/github/andrepenteado/roove/services/ServicoService.java
+  - backend/src/main/java/com/github/andrepenteado/roove/resources/ServicoResource.java
+  - frontend/src/app/config/api.ts
+  - frontend/src/app/config/menu.ts
+  - frontend/src/app/config/routes.ts
+  - frontend/src/app/pages/servico/servico.routes.ts
+  - frontend/src/app/domain/enums/periodicidade.ts
+  - frontend/src/app/domain/entities/servico.ts
+  - frontend/src/app/services/servico.service.ts
+  - frontend/src/app/pages/servico/pesquisar/pesquisar.component.ts
+  - frontend/src/app/pages/servico/pesquisar/pesquisar.component.html
+  - frontend/src/app/pages/servico/cadastro/cadastro.component.ts
+  - frontend/src/app/pages/servico/cadastro/cadastro.component.html

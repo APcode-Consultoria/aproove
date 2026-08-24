@@ -1,0 +1,25 @@
+crud: paciente
+metadados: .cruds/paciente.yaml
+checksumNormalizado: "sha256:9648b15251ae569b82f95d3b60bcaf9e434714f64de0a4f074abe21d38cd9ac3"
+executadoEm: "2026-08-24T14:07:24-03:00"
+status: criado
+perfis: [FISIOTERAPEUTA, DIRETOR]
+arquivos:
+  - backend/pom.xml
+  - backend/src/main/resources/db/migration/V2026.08.24.1__Versao_1.0.4.sql
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/ServicoContratado.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/repositories/ServicoContratadoRepository.java
+  - backend/src/main/java/com/github/andrepenteado/roove/services/ServicoContratadoService.java
+  - backend/src/main/java/com/github/andrepenteado/roove/resources/ServicoContratadoResource.java
+  - frontend/src/app/config/api.ts
+  - frontend/src/app/config/perfis-crud.ts
+  - frontend/src/app/pages/paciente/paciente.perfis.ts
+  - frontend/src/app/domain/enums/dia-semana.ts
+  - frontend/src/app/domain/entities/servico-contratado.ts
+  - frontend/src/app/services/servico-contratado.service.ts
+  - frontend/src/app/pages/paciente/cadastro/cadastro.component.ts
+  - frontend/src/app/pages/paciente/cadastro/cadastro.component.html
+observacoes: >
+  Só a lista servicos_contratados foi gerada: o restante do CRUD paciente é anterior à
+  spec e não foi tocado. ServicoService.listar() passou a aceitar FISIOTERAPEUTA, para
+  a aba popular o combo de serviços.
