@@ -5,3 +5,24 @@
 .text-prewrap {
   white-space: pre-line;
 }
+
+/* O `was-validated` do Bootstrap acende os campos pela pseudo-classe nativa `:invalid`,
+   que so responde a validacao HTML (required, type, pattern). Validadores de diretiva do
+   Angular — o da mascara do ngx-mask, por exemplo — invalidam o FormControl sem tocar na
+   validade nativa do input: o Gravar era recusado com a mensagem de dados obrigatorios e
+   nenhum campo ficava destacado. Estas regras espelham o estado invalido do Angular
+   (`ng-invalid`) no visual de validacao do Bootstrap. */
+.was-validated .form-control.ng-invalid,
+.was-validated .form-select.ng-invalid {
+  border-color: var(--bs-form-invalid-border-color);
+}
+
+.was-validated .form-control.ng-invalid:focus,
+.was-validated .form-select.ng-invalid:focus {
+  border-color: var(--bs-form-invalid-border-color);
+  box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25);
+}
+
+.was-validated .ng-invalid ~ .invalid-feedback {
+  display: block;
+}

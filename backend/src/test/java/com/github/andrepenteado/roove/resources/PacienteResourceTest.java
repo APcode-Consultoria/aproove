@@ -128,6 +128,33 @@ public class PacienteResourceTest {
     }
 
     @Test
+    @DisplayName("Preservar zero à esquerda de CPF, CEP e telefone")
+    void testPreservarZeroAEsquerda() throws Exception {
+        // CPF, CEP e telefone eram BIGINT: o zero à esquerda se perdia na gravação e o
+        // valor voltava curto demais para a máscara da tela, que passava a recusar o
+        // Gravar do paciente com a mensagem genérica de dados obrigatórios.
+        Paciente paciente = getPaciente(null);
+        paciente.setCpf("01234567890");
+        paciente.setCep("01310100");
+        paciente.setTelefone("1133334444");
+
+        String json = mockMvc.perform(post("/pacientes")
+                .with(authentication(getToken()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(paciente)))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        Paciente pacienteGravado = objectMapper.readValue(json, Paciente.class);
+        assertEquals("01234567890", pacienteGravado.getCpf());
+        assertEquals("01310100", pacienteGravado.getCep());
+        assertEquals("1133334444", pacienteGravado.getTelefone());
+    }
+
+    @Test
     @DisplayName("Alterar paciente existente")
     void testAlterar() throws Exception {
         String json = mockMvc.perform(put("/pacientes/100")

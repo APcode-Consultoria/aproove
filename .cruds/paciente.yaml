@@ -59,7 +59,8 @@ tabela:
       exibe-grid: true
 
     - nome: cpf
-      tipo: long
+      # string, e nao long: o zero a esquerda e significativo e some no numerico
+      tipo: string
       label: CPF
       mask: "000.000.000-00"
       colunas-layout: 3
@@ -72,9 +73,10 @@ tabela:
       exibe-grid: false
 
     - nome: telefone
-      tipo: long
+      tipo: string
       label: Telefone
-      mask: "(00) 00000-0000"
+      # Duas alternativas: fixo tem 10 digitos e celular 11
+      mask: "(00) 0000-0000||(00) 00000-0000"
       colunas-layout: 4
       exibe-grid: true
 
@@ -131,7 +133,7 @@ tabela:
 
     # --- Endereço ---
     - nome: cep
-      tipo: long
+      tipo: string
       label: CEP
       mask: "00000-000"
       colunas-layout: 4

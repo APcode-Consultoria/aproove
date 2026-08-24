@@ -21,6 +21,17 @@ import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
 import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 
+// Mascaras dos campos de digitos, aplicadas no template por binding. Ficam aqui, e nao
+// como literal no HTML, para o teste de regressao validar exatamente a mascara da tela.
+//
+// A do telefone tem duas alternativas porque fixo tem 10 digitos e celular 11: com a
+// mascara unica de 11 o ngx-mask reprovava todo telefone fixo, e como o Bootstrap so
+// destaca campo invalido pela validade nativa do HTML, o Gravar era recusado sem
+// apontar o culpado.
+export const MASCARA_CPF = "000.000.000-00";
+export const MASCARA_TELEFONE = "(00) 0000-0000||(00) 00000-0000";
+export const MASCARA_CEP = "00000-000";
+
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
@@ -37,6 +48,10 @@ import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 export class CadastroComponent extends CadastroBaseComponent<Paciente> {
 
   protected readonly PREFIXO_PERFIL_SISTEMA = PREFIXO_PERFIL_SISTEMA;
+
+  protected readonly mascaraCpf = MASCARA_CPF;
+  protected readonly mascaraTelefone = MASCARA_TELEFONE;
+  protected readonly mascaraCep = MASCARA_CEP;
 
   // Estado de envio dos subformulários das listas. O do formulário do paciente é o
   // `formEnviado` herdado da base.

@@ -61,7 +61,7 @@ describe('PacienteService', () => {
 
   describe('buscar()', () => {
     it('deve fazer GET em /pacientes/:id e retornar o paciente', () => {
-      const mockPaciente: Partial<Paciente> = { id: 1, nome: 'João Silva', cpf: 12345678901 };
+      const mockPaciente: Partial<Paciente> = { id: 1, nome: 'João Silva', cpf: '12345678901' };
 
       service.buscar(1).subscribe(paciente => {
         expect(paciente.id).toBe(1);

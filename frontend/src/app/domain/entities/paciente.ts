@@ -8,14 +8,14 @@ export class Paciente {
   usuarioCadastro!: string;
   usuarioUltimaAtualizacao!: string;
   nome!: string;
-  cpf!: number;
+  cpf!: string;
   dataNascimento!: Date;
-  telefone!: number;
+  telefone!: string;
   whatsapp!: boolean;
   email!: string;
   contatoEmergencia!: string;
   parentescoContatoEmergencia!: Parentesco;
-  cep!: number;
+  cep!: string;
   logradouro!: string;
   complemento!: string;
   numeroLogradouro!: number;

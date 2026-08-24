@@ -35,11 +35,13 @@ public class Paciente {
     @NotNull(message = "Nome é um campo obrigatório")
     private String nome;
 
-    private Long cpf;
+    // Digitos puros, sem mascara. TEXT e nao numerico porque o zero a esquerda e
+    // significativo: gravado como BIGINT, o CPF 012.345.678-90 voltava como 1234567890.
+    private String cpf;
 
     private LocalDate dataNascimento;
 
-    private Long telefone;
+    private String telefone;
 
     private Boolean whatsapp;
 
@@ -50,7 +52,7 @@ public class Paciente {
     @Enumerated(EnumType.STRING)
     private Parentesco parentescoContatoEmergencia;
 
-    private Long cep;
+    private String cep;
 
     private String logradouro;
 

@@ -16,7 +16,7 @@ public class MockConfiguration {
 
     public final static String NOME_PACIENTE = "Nome de Paciente de Testes";
 
-    public final static Long CPF_PACIENTE = 12345678901L;
+    public final static String CPF_PACIENTE = "12345678901";
 
     public static Paciente getPaciente(Long id) {
         Paciente paciente = new Paciente();

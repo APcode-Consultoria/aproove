@@ -151,9 +151,10 @@
                 </div>
                 <div class="col-12 col-md-5 col-lg-3">
                   <label class="form-label fw-semibold" for="cpf">CPF</label>
-                  <div class="input-group">
+                  <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-address-card"></i></span>
-                    <input id="cpf" type="text" name="cpf" formControlName="cpf" class="form-control" mask="000.000.000-00">
+                    <input id="cpf" type="text" name="cpf" formControlName="cpf" class="form-control" [mask]="mascaraCpf">
+                    <div class="invalid-feedback">CPF incompleto: informe os 11 dígitos ou deixe em branco</div>
                   </div>
                 </div>
                 <div class="col-12 col-md-7 col-lg-2">
@@ -165,9 +166,10 @@
                 </div>
                 <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="telefone">Telefone</label>
-                  <div class="input-group">
+                  <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" mask="(00) 00000-0000">
+                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" [mask]="mascaraTelefone">
+                    <div class="invalid-feedback">Telefone incompleto: informe DDD + número ou deixe em branco</div>
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
@@ -250,10 +252,11 @@
               <div class="row g-3 mb-4">
                 <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="cep">CEP</label>
-                  <div class="input-group">
+                  <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" mask="00000-000">
+                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" [mask]="mascaraCep">
                     <button class="btn btn-outline-primary" type="button" (click)="consultaCep(cep.value)" [disabled]="!cep.value">Buscar</button>
+                    <div class="invalid-feedback">CEP incompleto: informe os 8 dígitos ou deixe em branco</div>
                   </div>
                 </div>
                 <div class="col-12 col-md-8">
