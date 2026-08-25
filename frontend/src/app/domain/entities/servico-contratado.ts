@@ -18,6 +18,8 @@ export class ServicoContratado {
   valorContratado!: number;
   // Os N valores da frequência numa string só, separados por ponto e vírgula.
   frequencia!: string;
+  // Um horário por ocorrência da frequência, na mesma ordem.
+  horarios!: string;
   dataCadastro!: Date;
   dataUltimaAtualizacao!: Date;
   usuarioCadastro!: string;

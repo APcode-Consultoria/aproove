@@ -1,25 +1,47 @@
 crud: paciente
 metadados: .cruds/paciente.yaml
-checksumNormalizado: "sha256:9648b15251ae569b82f95d3b60bcaf9e434714f64de0a4f074abe21d38cd9ac3"
-executadoEm: "2026-08-24T14:07:24-03:00"
+checksumNormalizado: "sha256:111860d4a62a2148a30c0f77f407dc54ce68b12a825a180f3bd171b330248c1f"
+executadoEm: "2026-08-25T09:50:21-03:00"
 status: criado
 perfis: [FISIOTERAPEUTA, DIRETOR]
 arquivos:
   - backend/pom.xml
   - backend/src/main/resources/db/migration/V2026.08.24.1__Versao_1.0.4.sql
   - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/ServicoContratado.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/Pagamento.java
   - backend/src/main/java/com/github/andrepenteado/roove/domain/repositories/ServicoContratadoRepository.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/repositories/PagamentoRepository.java
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/filter/PagamentoFilter.java
   - backend/src/main/java/com/github/andrepenteado/roove/services/ServicoContratadoService.java
+  - backend/src/main/java/com/github/andrepenteado/roove/services/PagamentoService.java
   - backend/src/main/java/com/github/andrepenteado/roove/resources/ServicoContratadoResource.java
+  - backend/src/main/java/com/github/andrepenteado/roove/resources/PagamentoResource.java
   - frontend/src/app/config/api.ts
   - frontend/src/app/config/perfis-crud.ts
   - frontend/src/app/pages/paciente/paciente.perfis.ts
+  - backend/src/main/java/com/github/andrepenteado/roove/domain/enums/DiaSemana.java
   - frontend/src/app/domain/enums/dia-semana.ts
   - frontend/src/app/domain/entities/servico-contratado.ts
+  - frontend/src/app/domain/entities/pagamento.ts
   - frontend/src/app/services/servico-contratado.service.ts
+  - frontend/src/app/services/pagamento.service.ts
+  - frontend/src/app/config/menu.ts
+  - frontend/src/app/config/routes.ts
+  - frontend/src/app/pages/pagamento/pagamento.routes.ts
+  - frontend/src/app/pages/pagamento/pesquisar/pesquisar.component.ts
+  - frontend/src/app/pages/pagamento/pesquisar/pesquisar.component.html
   - frontend/src/app/pages/paciente/cadastro/cadastro.component.ts
   - frontend/src/app/pages/paciente/cadastro/cadastro.component.html
+  - frontend/src/app/pages/paciente/cadastro/cadastro.component.spec.ts
 observacoes: >
-  Só a lista servicos_contratados foi gerada: o restante do CRUD paciente é anterior à
-  spec e não foi tocado. ServicoService.listar() passou a aceitar FISIOTERAPEUTA, para
-  a aba popular o combo de serviços.
+  Só as listas servicos_contratados e pagamentos foram geradas: o restante do CRUD
+  paciente é anterior à spec e não foi tocado. ServicoService.listar() passou a aceitar
+  FISIOTERAPEUTA, para a aba popular o combo de serviços.
+  O campo frequencia_semanal foi removido do contrato e a coluna correspondente é
+  derrubada pela migration 1.0.4: quem define quantos atendimentos o paciente tem, e
+  quando, passou a ser a frequência do serviço contratado.
+  O enum DiaSemana nasce da regra "campos de frequência conforme o serviço", e não de um
+  bloco `enum` de campo, porque não é coluna própria — os valores vivem dentro da coluna
+  `frequencia` da contratação.
+  A regra "contratação avulsa nasce fechada" deriva início e fim das datas escolhidas:
+  sem ela o avulso ficaria em vigor para sempre e a renovação de pagamento não pararia.

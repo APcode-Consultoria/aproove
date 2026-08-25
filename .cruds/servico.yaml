@@ -28,17 +28,21 @@ tabela:
       exibe-grid: true
       pesquisavel: contem
 
+    - nome: duracao
+      tipo: inteiro
+      label: Duração (em minutos)
+      colunas-layout: 4
+
     - nome: valor
       tipo: moeda
-      label: Valor da Inscrição
-      colunas-layout: 6
+      label: Valor
+      colunas-layout: 4
       exibe-grid: true
 
-    - nome: frequencia_periodicidade
+    - nome: frequencia
       tipo: inteiro
-      label: Frequência por Periodicidade
-      colunas-layout: 6
-      exibe-grid: true
+      label: Frequência
+      colunas-layout: 4*
 
     - nome: periodicidade
       tipo: texto
@@ -49,6 +53,6 @@ tabela:
       enum:
         nome: Periodicidade
         valores:
+          AVULSO: Avulso (Pontual)
           SEMANAL: Semanal
-          QUINZENAL: Quinzenal
           MENSAL: Mensal

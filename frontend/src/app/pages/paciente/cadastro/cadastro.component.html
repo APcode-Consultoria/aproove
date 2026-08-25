@@ -118,6 +118,23 @@
                 </button>
               </li>
             }
+            @if (config.listas['pagamentos'].consultar) {
+              <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-3 fw-semibold d-inline-flex align-items-center justify-content-center gap-2 w-100"
+                        [class.disabled]="incluir"
+                        [title]="incluir ? 'Grave o paciente para ver os pagamentos' : 'Pagamentos das contratações'"
+                        id="aba-pagamentos-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#aba-pagamentos"
+                        type="button"
+                        role="tab"
+                        aria-controls="aba-pagamentos"
+                        aria-selected="false">
+                  <i class="fa-solid fa-list"></i>
+                  Pagamentos
+                </button>
+              </li>
+            }
           </ul>
 
           <div class="flex-shrink-0" style="min-width: 15rem;">
@@ -234,23 +251,6 @@
                   <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
                     <input id="diaVencimento" type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label class="form-label fw-semibold d-block">Frequência semanal</label>
-                  <div class="d-flex flex-wrap gap-3">
-                    <div class="form-check form-check-inline">
-                      <input type="radio" class="form-check-input" id="frequencia_1" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="1">
-                      <label for="frequencia_1" class="form-check-label">Uma vez</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input type="radio" class="form-check-input" id="frequencia_2" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="2">
-                      <label for="frequencia_2" class="form-check-label">Duas vezes</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input type="radio" class="form-check-input" id="frequencia_3" name="frequenciaSemanal" formControlName="frequenciaSemanal" [value]="3">
-                      <label for="frequencia_3" class="form-check-label">Três vezes</label>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -553,12 +553,28 @@
                     <label class="form-label fw-semibold required-label text-danger" for="inicioContratacao">
                       Início da contratação <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
                     </label>
+                    <!--
+                      Regra "contratação avulsa nasce fechada": no avulso o período sai
+                      das datas escolhidas, então o campo fica `readonly` — nunca
+                      `disabled`, que sairia de `formServicoContratado.value` e chegaria
+                      vazio ao backend.
+                    -->
                     <div class="input-group has-validation">
                       <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
                       <input id="inicioContratacao" type="date" name="inicioContratacao" formControlName="inicioContratacao"
-                             class="form-control" required>
+                             class="form-control" required
+                             [class.bg-body-secondary]="contratacaoAvulsa" [readonly]="contratacaoAvulsa">
                       <div class="invalid-feedback">Início da contratação é um campo obrigatório</div>
                     </div>
+                    @if (contratacaoAvulsa) {
+                      <div class="form-text">
+                        @if (fimContratacaoAvulsa) {
+                          Encerra em {{ fimContratacaoAvulsa | date: 'dd/MM/yyyy' }} — o período sai das datas escolhidas.
+                        } @else {
+                          Escolha as datas abaixo: elas definem o período da contratação.
+                        }
+                      </div>
+                    }
                   </div>
 
                   <div class="col-12 col-md-6 col-lg-3">
@@ -584,35 +600,55 @@
 
                 <!--
                   Regra "campos de frequência conforme o serviço": a quantidade de
-                  controles vem de `frequenciaPeriodicidade` do serviço escolhido e o
-                  tipo, da periodicidade dele. Os N valores viram uma string separada por
-                  ponto e vírgula na coluna `frequencia`.
+                  controles vem de `frequencia` do serviço escolhido e o tipo, da
+                  periodicidade dele — data no avulso, dia da semana no semanal e dia do
+                  mês no mensal. Os N valores viram uma string separada por ponto e
+                  vírgula na coluna `frequencia`.
                 -->
                 @if (frequencias.length) {
                   <div class="row g-3 mt-1" formArrayName="frequencias">
                     <div class="col-12">
                       <span class="form-label fw-semibold d-block mb-0">
                         Frequência
-                        <span class="text-secondary fw-normal">
-                          — {{ servicoSelecionado?.frequenciaPeriodicidade }}x por
-                          {{ servicoSelecionado?.periodicidade ? (servicoSelecionado?.periodicidade === Periodicidade.SEMANAL ? 'semana' : servicoSelecionado?.periodicidade === Periodicidade.QUINZENAL ? 'quinzena' : 'mês') : 'período' }}
-                        </span>
+                        <span class="text-secondary fw-normal">— {{ resumoFrequencia }}</span>
                       </span>
                     </div>
                     @for (controle of frequencias.controls; track $index) {
-                      <div class="col-6 col-md-4 col-lg-3">
+                      <div class="col-12 col-md-6 col-lg-4">
                         <label class="form-label small text-secondary" [for]="'frequencia_' + $index">{{ rotuloFrequencia($index) }}</label>
-                        @if (servicoSelecionado?.periodicidade === Periodicidade.SEMANAL) {
-                          <select [id]="'frequencia_' + $index" [formControlName]="$index" class="form-select" required>
-                            <option [ngValue]="null">Selecione</option>
-                            @for (dia of diasSemana; track dia.valor) {
-                              <option [ngValue]="dia.valor">{{ dia.label }}</option>
+                        <div class="input-group">
+                          @switch (servicoSelecionado?.periodicidade) {
+                            @case (Periodicidade.AVULSO) {
+                              <!--
+                                Sem recorrência: cada controle é a data do atendimento, e
+                                juntas elas fecham o período da contratação.
+                              -->
+                              <input [id]="'frequencia_' + $index" type="date" [formControlName]="$index"
+                                     class="form-control" required (change)="aoAlterarDataAvulsa()">
                             }
-                          </select>
-                        } @else {
-                          <input [id]="'frequencia_' + $index" type="number" [formControlName]="$index" class="form-control"
-                                 min="1" [max]="limiteFrequencia" step="1" required>
-                        }
+                            @case (Periodicidade.SEMANAL) {
+                              <select [id]="'frequencia_' + $index" [formControlName]="$index" class="form-select" required>
+                                <option [ngValue]="null">Selecione</option>
+                                @for (dia of diasSemana; track dia) {
+                                  <option [ngValue]="dia">{{ diaSemanaLabels[dia] }}</option>
+                                }
+                              </select>
+                            }
+                            @default {
+                              <input [id]="'frequencia_' + $index" type="number" [formControlName]="$index"
+                                     class="form-control" min="1" max="31" step="1" required>
+                            }
+                          }
+                          <!--
+                            O horário inicial fica no mesmo input-group porque é a mesma
+                            ocorrência: vão para colunas paralelas, na mesma ordem. O
+                            horário final não é digitado, sai da duração do serviço.
+                          -->
+                          <span class="input-group-text"><i class="fa-regular fa-clock"></i></span>
+                          <input [id]="'horario_' + $index" type="time" class="form-control"
+                                 [formControl]="horariosControles[$index]" required
+                                 [title]="'Horário inicial do atendimento'" aria-label="Horário inicial do atendimento">
+                        </div>
                       </div>
                     }
                   </div>
@@ -685,7 +721,143 @@
             }
           </section>
           }
+
+          @if (config.listas['pagamentos'].consultar) {
+          <section class="tab-pane fade" id="aba-pagamentos" role="tabpanel" aria-labelledby="aba-pagamentos-tab" tabindex="0">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <span class="d-inline-flex align-items-center justify-content-center rounded bg-primary-subtle text-primary p-2">
+                <i class="fa-solid fa-money-check-dollar"></i>
+              </span>
+              <div>
+                <h2 class="h5 fw-bold mb-1">Pagamentos</h2>
+                <p class="text-secondary mb-0">Cobranças das contratações. O registro nasce ao contratar e se renova a cada pagamento, enquanto a contratação estiver em aberto.</p>
+              </div>
+            </div>
+            <hr class="mb-4">
+
+            <!--
+              Sem botão de adicionar: o pagamento é criado pelo backend ao contratar. O
+              formulário só aparece quando uma linha é carregada pela ação Pagar.
+            -->
+            @if (pagamentoEmPagamento) {
+              <div class="card border-primary-subtle mb-4">
+                <div class="card-body">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <span class="fw-semibold">
+                      <i class="fa-solid fa-receipt me-2"></i>
+                      Pagar {{ pagamentoEmPagamento.servicoContratado?.servico?.nome }}
+                      <span class="text-secondary fw-normal">
+                        — vencimento {{ pagamentoEmPagamento.dataVencimento | date: 'dd/MM/yyyy' }},
+                        {{ pagamentoEmPagamento.valor != null ? (pagamentoEmPagamento.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'sem valor' }}
+                      </span>
+                    </span>
+                  </div>
+
+                  <div [formGroup]="formPagamento"
+                       [ngClass]="{'was-validated': !formPagamento.valid && formPagamentoEnviado}">
+                    <div class="row g-3 align-items-end">
+                      <div class="col-12 col-md-6 col-lg-4">
+                        <label class="form-label fw-semibold required-label text-danger" for="dataPagamento">
+                          Data do pagamento <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                        </label>
+                        <div class="input-group has-validation">
+                          <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
+                          <input id="dataPagamento" type="date" name="dataPagamento" formControlName="dataPagamento"
+                                 class="form-control" required>
+                          <div class="invalid-feedback">Data do pagamento é um campo obrigatório</div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-6 col-lg-4">
+                        <label class="form-label fw-semibold required-label text-danger" for="valorPago">
+                          Valor pago <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                        </label>
+                        <div class="input-group has-validation">
+                          <span class="input-group-text">R$</span>
+                          <input id="valorPago" type="text" name="valorPago" formControlName="valorPago"
+                                 class="form-control text-end" required
+                                 [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                          <div class="invalid-feedback">Valor pago é um campo obrigatório</div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-lg-4">
+                        <div class="d-flex gap-2 justify-content-lg-end">
+                          <button class="btn btn-light" type="button" (click)="cancelarPagamento()">Cancelar</button>
+                          <button class="btn btn-primary" type="button" (click)="pagar()">
+                            <i class="fa-solid fa-check me-2"></i>
+                            Pagar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (pagamentos.length) {
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Ações</th>
+                      <th scope="col">Contratação</th>
+                      <th scope="col">Vencimento</th>
+                      <th scope="col" class="text-end">Valor</th>
+                      <th scope="col">Data do pagamento</th>
+                      <th scope="col" class="text-end">Valor pago</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (pagamento of pagamentos; track pagamento.id) {
+                      <tr>
+                        <td>
+                          <div class="action-stack" role="group" aria-label="Ações do pagamento">
+                            <!-- Linha já paga não oferece a ação. -->
+                            @if (!pagamento.dataPagamento) {
+                              <button class="btn btn-outline-success btn-sm" type="button"
+                                      title="Pagar" aria-label="Pagar"
+                                      (click)="iniciarPagamento(pagamento)">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                              </button>
+                            }
+                            @if (config.listas['pagamentos'].excluir) {
+                              <button class="btn btn-outline-danger btn-sm" type="button"
+                                      title="Excluir pagamento" aria-label="Excluir pagamento"
+                                      (click)="excluirPagamento(pagamento)">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            }
+                          </div>
+                        </td>
+                        <td class="fw-semibold">{{ pagamento.servicoContratado?.servico?.nome }}</td>
+                        <td>{{ pagamento.dataVencimento | date: 'dd/MM/yyyy' }}</td>
+                        <td class="text-end">
+                          {{ pagamento.valor != null ? (pagamento.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'Não informado' }}
+                        </td>
+                        <td>
+                          @if (pagamento.dataPagamento) {
+                            {{ pagamento.dataPagamento | date: 'dd/MM/yyyy' }}
+                          } @else {
+                            <span class="badge rounded-pill text-bg-warning">Em aberto</span>
+                          }
+                        </td>
+                        <td class="text-end">
+                          {{ pagamento.valorPago != null ? (pagamento.valorPago | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="alert alert-light border mb-0">Nenhum registro adicionado em Pagamentos.</div>
+            }
+          </section>
+          }
         </div>
+
 
       </div>
     </div>

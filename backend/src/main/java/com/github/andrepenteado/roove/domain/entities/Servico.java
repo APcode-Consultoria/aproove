@@ -65,7 +65,11 @@ public class Servico implements Serializable {
     @Column(precision = 15, scale = 2)
     private BigDecimal valor;
 
-    private Integer frequenciaPeriodicidade;
+    // Duracao do atendimento em minutos. E o que a agenda soma ao horario inicial da
+    // contratacao para saber a que horas o atendimento termina.
+    private Integer duracao;
+
+    private Integer frequencia;
 
     // STRING e nao ORDINAL: o ordinal grava a posicao da constante, e inserir um valor
     // no meio da lista mudaria o significado dos registros ja gravados.

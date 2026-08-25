@@ -24,7 +24,6 @@ export class Paciente {
   estado!: string;
   profissao!: string;
   diaVencimento!: number;
-  frequenciaSemanal!: number;
   historiaMolestiaPregressa!: string;
   queixaPrincipal!: string;
   remedios!: string;

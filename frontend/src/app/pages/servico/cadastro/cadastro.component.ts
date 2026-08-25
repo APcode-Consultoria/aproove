@@ -47,7 +47,8 @@ export class CadastroComponent extends CadastroBaseComponent<Servico> {
   usuarioUltimaAtualizacao = new FormControl(null);
   nome = new FormControl(null, Validators.required);
   valor = new FormControl(null);
-  frequenciaPeriodicidade = new FormControl(null);
+  duracao = new FormControl(null);
+  frequencia = new FormControl(null);
   periodicidade = new FormControl(null);
   protected readonly form = new FormGroup({
     id: this.id,
@@ -57,7 +58,8 @@ export class CadastroComponent extends CadastroBaseComponent<Servico> {
     usuarioUltimaAtualizacao: this.usuarioUltimaAtualizacao,
     nome: this.nome,
     valor: this.valor,
-    frequenciaPeriodicidade: this.frequenciaPeriodicidade,
+    duracao: this.duracao,
+    frequencia: this.frequencia,
     periodicidade: this.periodicidade
   });
 
@@ -91,7 +93,7 @@ export class CadastroComponent extends CadastroBaseComponent<Servico> {
   }
 
   subtituloFormulario(): string {
-    return 'Informe o nome do serviço, o valor cobrado na inscrição e a frequência com que ele se repete.';
+    return 'Informe o nome do serviço, o valor cobrado na inscrição, quanto dura o atendimento e a frequência com que ele se repete.';
   }
 
 }

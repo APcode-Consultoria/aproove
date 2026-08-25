@@ -6,6 +6,7 @@ import { ProntuarioService } from '../../../services/prontuario.service';
 import { ExameService } from '../../../services/exame.service';
 import { ServicoService } from '../../../services/servico.service';
 import { ServicoContratadoService } from '../../../services/servico-contratado.service';
+import { PagamentoService } from '../../../services/pagamento.service';
 import {
   CadastroBaseComponent,
   DecoracaoMensagem,
@@ -21,8 +22,9 @@ import { Exame } from "../../../domain/entities/exame";
 import { Paciente } from "../../../domain/entities/paciente";
 import { Servico } from "../../../domain/entities/servico";
 import { ServicoContratado } from "../../../domain/entities/servico-contratado";
+import { Pagamento } from "../../../domain/entities/pagamento";
 import { Periodicidade } from "../../../domain/enums/periodicidade";
-import { DIAS_SEMANA, DIA_SEMANA_LABELS } from "../../../domain/enums/dia-semana";
+import { DiaSemana, DIAS_SEMANA, DIA_SEMANA_LABELS } from "../../../domain/enums/dia-semana";
 import { ConfigCrud, resolverPerfil } from "../../../config/perfis-crud";
 import { PERFIS_PACIENTE } from "../paciente.perfis";
 import { CommonModule } from "@angular/common";
@@ -74,6 +76,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   formProntuarioEnviado = false;
   formExamesEnviado = false;
   formServicoContratadoEnviado = false;
+  formPagamentoEnviado = false;
 
   parentescos: string[];
   enumParentescos = Parentesco;
@@ -83,6 +86,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   prontuarios: Prontuario[] = [];
   exames: Exame[] = [];
   servicosContratados: ServicoContratado[] = [];
+  pagamentos: Pagamento[] = [];
   responsaveis: string[] = [];
 
   // Alimenta o combo de serviço do subformulário de contratação.
@@ -113,7 +117,6 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   estado = new FormControl(null);
   profissao = new FormControl(null);
   diaVencimento = new FormControl(null);
-  frequenciaSemanal = new FormControl(0);
   queixaPrincipal = new FormControl(null, null);
   historiaMolestiaPregressa = new FormControl(null, null);
   remedios = new FormControl(null);
@@ -143,7 +146,6 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
     estado: this.estado,
     profissao: this.profissao,
     diaVencimento: this.diaVencimento,
-    frequenciaSemanal: this.frequenciaSemanal,
     queixaPrincipal: this.queixaPrincipal,
     historiaMolestiaPregressa: this.historiaMolestiaPregressa,
     remedios: this.remedios,
@@ -185,13 +187,35 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   inicioContratacao = new FormControl(null, Validators.required);
   valorContratado = new FormControl(null);
   // Um controle por ocorrência da frequência do serviço escolhido. A quantidade vem de
-  // `frequenciaPeriodicidade` e só é conhecida depois da escolha, por isso FormArray.
+  // `frequencia` do serviço e só é conhecida depois da escolha, por isso FormArray. O
+  // tipo de cada controle depende da periodicidade: data no AVULSO, combo de dia da
+  // semana no SEMANAL e numérico de 1 a 31 no MENSAL.
   frequencias = new FormArray<FormControl<any>>([]);
+  // Paralelo ao de frequências, uma posição para cada ocorrência: guarda o horário
+  // inicial do atendimento. Os dois viram colunas separadas por ponto e vírgula, na
+  // mesma ordem.
+  horarios = new FormArray<FormControl<any>>([]);
   formServicoContratado = new FormGroup({
     servico: this.servicoContratacao,
     inicioContratacao: this.inicioContratacao,
     valorContratado: this.valorContratado,
-    frequencias: this.frequencias
+    frequencias: this.frequencias,
+    horarios: this.horarios
+  });
+
+  // Fim derivado das datas escolhidas numa contratação avulsa, só para exibição: quem
+  // grava o campo é o ServicoContratadoService.
+  fimContratacaoAvulsa: string | null = null;
+
+  // Subformulário da ação Pagar. Só data e valor pagos: contratação, vencimento e valor
+  // vêm da contratação e o backend os repõe. `pagamentoEmPagamento` guarda qual linha
+  // está carregada — a aba não tem botão de adicionar, o registro já existe.
+  pagamentoEmPagamento: Pagamento | null = null;
+  dataPagamento = new FormControl(null, Validators.required);
+  valorPago = new FormControl(null, Validators.required);
+  formPagamento = new FormGroup({
+    dataPagamento: this.dataPagamento,
+    valorPago: this.valorPago
   });
 
   protected loginService = inject(LoginService);
@@ -205,6 +229,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   private exameService = inject(ExameService);
   private servicoService = inject(ServicoService);
   private servicoContratadoService = inject(ServicoContratadoService);
+  private pagamentoService = inject(PagamentoService);
   private viaCepService = inject(ViaCepService);
   private uploadService = inject(UploadService);
 
@@ -258,6 +283,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
       this.exames = [];
       this.prontuarios = [];
       this.servicosContratados = [];
+      this.pagamentos = [];
       this.responsavel.setValue(this.loginService.getUserLogin()?.login ?? null);
       return;
     }
@@ -265,6 +291,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
     this.exameService.listarPorPaciente(paciente.id).subscribe(exames => this.exames = exames);
     this.prontuarioService.listarPorPaciente(paciente.id).subscribe(prontuarios => this.prontuarios = prontuarios);
     this.servicoContratadoService.listarPorPaciente(paciente.id).subscribe(contratados => this.servicosContratados = contratados);
+    this.pagamentoService.listarPorPaciente(paciente.id).subscribe(pagamentos => this.pagamentos = pagamentos);
   }
 
   tituloFormulario(): string {
@@ -409,6 +436,11 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
       });
   }
 
+  /** Controles de horário, para o template parear cada um com o dia da mesma posição. */
+  get horariosControles(): FormControl<any>[] {
+    return this.horarios.controls as FormControl<any>[];
+  }
+
   /** Serviço escolhido no subformulário, base dos controles de frequência. */
   get servicoSelecionado(): Servico | null {
     return this.servicoContratacao.value;
@@ -421,36 +453,89 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
 
   /**
    * Regra "campos de frequência conforme o serviço" (.cruds/paciente.yaml): a
-   * quantidade de controles vem de `frequenciaPeriodicidade` do serviço escolhido, e o
-   * tipo de cada um, da periodicidade dele. Recria o FormArray do zero a cada troca de
-   * serviço — repopular acumularia controles da escolha anterior.
+   * quantidade de controles vem de `frequencia` do serviço escolhido, e o tipo de cada
+   * um, da periodicidade dele. Recria o FormArray do zero a cada troca de serviço —
+   * repopular acumularia controles da escolha anterior.
    */
   aoSelecionarServico(): void {
     this.frequencias.clear();
+    this.horarios.clear();
+    this.fimContratacaoAvulsa = null;
 
-    const quantidade = this.servicoSelecionado?.frequenciaPeriodicidade ?? 0;
+    // No avulso o início sai das datas escolhidas; limpar evita carregar para a nova
+    // escolha o que foi digitado para a anterior.
+    if (this.contratacaoAvulsa) {
+      this.inicioContratacao.setValue(null);
+    }
+
+    const quantidade = this.servicoSelecionado?.frequencia ?? 0;
     for (let i = 0; i < quantidade; i++) {
       this.frequencias.push(new FormControl(null, Validators.required));
+      this.horarios.push(new FormControl(null, Validators.required));
     }
   }
 
-  /** Maior dia aceito no controle numérico: 15 na quinzena, 31 no mês. */
-  get limiteFrequencia(): number {
-    return this.servicoSelecionado?.periodicidade === Periodicidade.QUINZENAL ? 15 : 31;
+  /** O serviço escolhido é avulso, e portanto tem período fechado. */
+  get contratacaoAvulsa(): boolean {
+    return this.servicoSelecionado?.periodicidade === Periodicidade.AVULSO;
+  }
+
+  /**
+   * Regra "contratação avulsa nasce fechada" (.cruds/paciente.yaml): sem recorrência, o
+   * período da contratação é o intervalo das datas escolhidas. Roda a cada data
+   * alterada, para o período aparecer antes de gravar — mas quem decide é o
+   * ServicoContratadoService, que refaz a conta ao receber o payload.
+   */
+  aoAlterarDataAvulsa(): void {
+    if (!this.contratacaoAvulsa) {
+      return;
+    }
+
+    // ISO ordena igual a cronológico, então basta ordenar como texto.
+    const datas = (this.frequencias.value as (string | null)[])
+      .filter((data): data is string => !!data)
+      .sort();
+
+    this.inicioContratacao.setValue(datas.length ? datas[0] : null);
+    this.fimContratacaoAvulsa = datas.length ? datas[datas.length - 1] : null;
+  }
+
+  /** Resumo do cabeçalho dos controles de frequência, conforme a periodicidade. */
+  get resumoFrequencia(): string {
+    const quantidade = this.servicoSelecionado?.frequencia ?? 0;
+
+    switch (this.servicoSelecionado?.periodicidade) {
+      case Periodicidade.AVULSO:
+        // Avulso nao se repete: cada controle e uma data especifica, e nao um ritmo.
+        return `${quantidade} ${quantidade === 1 ? 'data' : 'datas'}, sem recorrência`;
+      case Periodicidade.SEMANAL:
+        return `${quantidade}x por semana`;
+      case Periodicidade.MENSAL:
+        return `${quantidade}x por mês`;
+      default:
+        return `${quantidade}x por período`;
+    }
   }
 
   /** Rótulo de cada controle de frequência, conforme a periodicidade do serviço. */
   rotuloFrequencia(indice: number): string {
     const ordem = indice + 1;
-    return this.servicoSelecionado?.periodicidade === Periodicidade.SEMANAL
-      ? `${ordem}º dia da semana`
-      : `${ordem}º dia`;
+
+    switch (this.servicoSelecionado?.periodicidade) {
+      case Periodicidade.AVULSO:
+        return `${ordem}ª data`;
+      case Periodicidade.SEMANAL:
+        return `${ordem}º dia da semana`;
+      default:
+        return `${ordem}º dia do mês`;
+    }
   }
 
   /**
    * Traduz a coluna `frequencia` para leitura na tabela. Os valores chegam numa string
-   * só, separados por ponto e vírgula; na periodicidade semanal são inteiros de dia da
-   * semana (0 = domingo) e nas demais, dias do mês ou da quinzena.
+   * só, separados por ponto e vírgula, e o significado de cada um vem da periodicidade
+   * do serviço: data no AVULSO, nome de dia da semana no SEMANAL e dia do mês no
+   * MENSAL. O horário da mesma posição acompanha o valor.
    */
   descreverFrequencia(contratado: ServicoContratado): string {
     if (!contratado.frequencia) {
@@ -458,10 +543,37 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
     }
 
     const valores = contratado.frequencia.split(';').filter(valor => valor !== '');
+    const horarios = (contratado.horarios ?? '').split(';');
 
-    return contratado.servico?.periodicidade === Periodicidade.SEMANAL
-      ? valores.map(valor => this.diaSemanaLabels[Number(valor)] ?? valor).join(', ')
-      : valores.map(valor => `Dia ${valor}`).join(', ');
+    return valores
+      .map((valor, indice) => {
+        const quando = this.descreverValorFrequencia(contratado.servico?.periodicidade, valor);
+        const horario = horarios[indice];
+        return horario ? `${quando} às ${horario}` : quando;
+      })
+      .join(', ');
+  }
+
+  /** Um valor da coluna `frequencia` em texto, conforme a periodicidade. */
+  private descreverValorFrequencia(periodicidade: Periodicidade | undefined, valor: string): string {
+    if (periodicidade === Periodicidade.AVULSO) {
+      return this.formatarDataIso(valor);
+    }
+
+    if (periodicidade === Periodicidade.SEMANAL) {
+      return this.diaSemanaLabels[valor as DiaSemana] ?? valor;
+    }
+
+    return `Dia ${valor}`;
+  }
+
+  /**
+   * Data ISO da coluna em dd/mm/aaaa. Feito na mão, e não com `new Date()`: o
+   * construtor leria '2026-09-15' como UTC e o fuso local poderia voltar um dia.
+   */
+  private formatarDataIso(valor: string): string {
+    const partes = valor.split('-');
+    return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : valor;
   }
 
   /**
@@ -481,15 +593,21 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
       servico: valor.servico,
       inicioContratacao: valor.inicioContratacao,
       valorContratado: valor.valorContratado,
-      frequencia: (valor.frequencias ?? []).join(';')
+      frequencia: (valor.frequencias ?? []).join(';'),
+      horarios: (valor.horarios ?? []).join(';')
     };
 
     console.info(`Contratar serviço ${valor.servico?.nome} para o paciente de ID #${this.entidade.id}`);
     this.servicoContratadoService.incluir(contratacao).subscribe({
       next: contratado => {
         this.servicosContratados.unshift(contratado);
+        // A contratação gera o primeiro pagamento no backend (regra "pagamento gerado
+        // ao contratar"): a aba de pagamentos precisa recarregar para mostrá-lo.
+        this.recarregarPagamentos();
         this.formServicoContratado.reset();
         this.frequencias.clear();
+        this.horarios.clear();
+        this.fimContratacaoAvulsa = null;
         this.formServicoContratadoEnviado = false;
         this.exibirMensagem.showMessage(
           `Serviço ${contratado.servico?.nome} contratado com sucesso`,
@@ -538,6 +656,79 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
         console.info(`Excluir serviço contratado de ID #${contratado.id}`);
         this.servicoContratadoService.excluir(contratado.id).subscribe({
           next: () => this.servicosContratados = this.servicosContratados.filter(item => item.id !== contratado.id)
+        });
+      });
+  }
+
+  /** Recarrega a aba de pagamentos a partir do backend, que é quem cria os registros. */
+  private recarregarPagamentos(): void {
+    if (!this.entidade?.id) {
+      this.pagamentos = [];
+      return;
+    }
+
+    this.pagamentoService.listarPorPaciente(this.entidade.id).subscribe(pagamentos => this.pagamentos = pagamentos);
+  }
+
+  /** Carrega a linha no formulário da ação Pagar. Linha já paga não oferece a ação. */
+  iniciarPagamento(pagamento: Pagamento): void {
+    this.pagamentoEmPagamento = pagamento;
+    this.formPagamentoEnviado = false;
+    this.formPagamento.reset();
+    // Sugere a data de hoje e o valor cobrado; o usuário ajusta se pagou diferente.
+    this.dataPagamento.setValue(new Date().toISOString().substring(0, 10) as any);
+    this.valorPago.setValue(pagamento.valor as any);
+  }
+
+  cancelarPagamento(): void {
+    this.pagamentoEmPagamento = null;
+    this.formPagamentoEnviado = false;
+    this.formPagamento.reset();
+  }
+
+  /**
+   * Confirma o pagamento da linha carregada. O backend repõe contratação, vencimento e
+   * valor, e — pela regra "renovação ao pagar" — gera o próximo pagamento quando a
+   * contratação está em aberto; por isso a aba recarrega em vez de trocar só a linha.
+   */
+  pagar(): void {
+    this.formPagamentoEnviado = true;
+
+    if (!this.pagamentoEmPagamento || !this.subformularioValido(this.formPagamento)) {
+      return;
+    }
+
+    const pagamento = {
+      ...this.pagamentoEmPagamento,
+      dataPagamento: this.formPagamento.value.dataPagamento,
+      valorPago: this.formPagamento.value.valorPago
+    };
+
+    console.info(`Pagar pagamento de ID #${this.pagamentoEmPagamento.id}`);
+    this.pagamentoService.alterar(pagamento, this.pagamentoEmPagamento.id).subscribe({
+      next: pago => {
+        this.cancelarPagamento();
+        this.recarregarPagamentos();
+        this.exibirMensagem.showMessage(
+          `Pagamento de ${pago.servicoContratado?.servico?.nome} registrado com sucesso`,
+          'Pagar',
+          DecoracaoMensagem.SUCESSO
+        );
+      }
+    });
+  }
+
+  excluirPagamento(pagamento: Pagamento): void {
+    this.exibirMensagem
+      .showConfirm(`Confirma a exclusão do pagamento com vencimento em ${pagamento.dataVencimento}`, "Excluir?")
+      .then(resposta => {
+        if (!resposta.value) {
+          return;
+        }
+
+        console.info(`Excluir pagamento de ID #${pagamento.id}`);
+        this.pagamentoService.excluir(pagamento.id).subscribe({
+          next: () => this.pagamentos = this.pagamentos.filter(item => item.id !== pagamento.id)
         });
       });
   }

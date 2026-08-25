@@ -28,7 +28,6 @@ export const PERFIS_PACIENTE: PerfilCrud[] = [
       parentescoContatoEmergencia: { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       profissao:                   { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       diaVencimento:               { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
-      frequenciaSemanal:           { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       responsavel:                 { exibeFormulario: true, somenteLeitura: false, exibeGrid: true , exibeTitulo: false, pesquisavel: false },
       cep:                         { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       logradouro:                  { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
@@ -46,7 +45,8 @@ export const PERFIS_PACIENTE: PerfilCrud[] = [
     listas: {
       exames:              { consultar: true, incluir: true, alterar: true, excluir: true },
       prontuarios:         { consultar: true, incluir: true, alterar: true, excluir: true },
-      servicosContratados: { consultar: true, incluir: true, alterar: true, excluir: false }
+      servicosContratados: { consultar: true, incluir: true, alterar: true, excluir: false },
+      pagamentos:          { consultar: true, incluir: true, alterar: true, excluir: false }
     }
   },
   {
@@ -64,7 +64,6 @@ export const PERFIS_PACIENTE: PerfilCrud[] = [
       parentescoContatoEmergencia: { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       profissao:                   { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       diaVencimento:               { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
-      frequenciaSemanal:           { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       responsavel:                 { exibeFormulario: true, somenteLeitura: false, exibeGrid: true , exibeTitulo: false, pesquisavel: false },
       cep:                         { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
       logradouro:                  { exibeFormulario: true, somenteLeitura: false, exibeGrid: false, exibeTitulo: false, pesquisavel: false },
@@ -82,7 +81,8 @@ export const PERFIS_PACIENTE: PerfilCrud[] = [
     listas: {
       exames:              { consultar: true, incluir: true, alterar: true, excluir: true },
       prontuarios:         { consultar: true, incluir: true, alterar: true, excluir: true },
-      servicosContratados: { consultar: true, incluir: true, alterar: true, excluir: true }
+      servicosContratados: { consultar: true, incluir: true, alterar: true, excluir: true },
+      pagamentos:          { consultar: true, incluir: true, alterar: true, excluir: true }
     }
   }
 ];

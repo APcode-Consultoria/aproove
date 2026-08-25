@@ -12,11 +12,18 @@ package com.github.andrepenteado.roove.domain.enums;
  * {@link com.github.andrepenteado.roove.domain.entities.Servico}. Incluir uma constante
  * nova exige alterar o check constraint {@code CK_Servico_Periodicidade} em uma
  * migration própria, porque a que criou a tabela já foi aplicada.</p>
+ *
+ * <p>É a periodicidade que define o significado de cada valor da coluna
+ * {@code frequencia} de {@link com.github.andrepenteado.roove.domain.entities.ServicoContratado}:
+ * datas no {@link #AVULSO}, constantes de {@link DiaSemana} no {@link #SEMANAL} e dias
+ * do mês no {@link #MENSAL}.</p>
  */
 public enum Periodicidade {
 
+    // Sem recorrencia: cada valor da frequencia e uma data especifica, e o atendimento
+    // acontece so naquele dia.
+    AVULSO("Avulso (Pontual)"),
     SEMANAL("Semanal"),
-    QUINZENAL("Quinzenal"),
     MENSAL("Mensal");
 
     private final String descricao;

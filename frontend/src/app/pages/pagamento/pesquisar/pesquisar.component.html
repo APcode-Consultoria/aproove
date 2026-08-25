@@ -1,0 +1,186 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item"><a routerLink="/pagina-inicial"><i class="fa-solid fa-house me-1"></i>Início</a></li>
+    <li class="breadcrumb-item active">Pagamentos</li>
+  </ol>
+</nav>
+
+<section class="container py-3">
+  <!-- Somente leitura: sem botão Novo no header e sem coluna de ações no grid. -->
+  <header class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-end mb-4">
+    <div>
+      <span class="small text-primary fw-bold text-uppercase d-inline-flex align-items-center gap-1 mb-1">
+        <i class="fa-solid fa-table-list"></i>
+        Consulta
+      </span>
+      <h1 class="display-6 fw-bold mb-2">Pagamentos</h1>
+      <p class="text-secondary mb-0">Cobranças de todas as contratações. Os pagamentos são registrados na aba do paciente.</p>
+    </div>
+  </header>
+
+  <section class="row g-3 mb-4 d-none d-md-flex" aria-label="Resumo de pagamentos">
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success text-white p-3 flex-shrink-0">
+            <i class="fa-solid fa-circle-check"></i>
+          </span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Recebido</span>
+            <span class="h4 fw-bold mb-0">{{ totalRecebido | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning text-white p-3 flex-shrink-0">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Em aberto</span>
+            <span class="h4 fw-bold mb-0">{{ totalEmAberto | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-danger text-white p-3 flex-shrink-0">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </span>
+          <div>
+            <span class="small text-secondary fw-semibold text-uppercase d-block">Vencidos</span>
+            <span class="h4 fw-bold mb-0">{{ quantidadeVencidos }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-header bg-body border-bottom p-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
+        <button class="btn btn-outline-primary rounded-pill px-3 w-100 w-md-auto" type="button"
+                data-bs-toggle="collapse" data-bs-target="#filtros-pesquisa-pagamentos"
+                aria-expanded="false" aria-controls="filtros-pesquisa-pagamentos">
+          <i class="fa-solid fa-filter me-2"></i>
+          Filtrar Pesquisa
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+      <div class="collapse filters-collapse" id="filtros-pesquisa-pagamentos">
+        <form class="row g-2 align-items-center border rounded bg-body-tertiary p-3 mb-4" (ngSubmit)="aplicarFiltro()">
+          <!--
+            Os três switches são alternativas da mesma pergunta e somam entre si: nenhum
+            marcado não filtra situação nenhuma. Sem <label> visível fora do próprio
+            switch, que já identifica o campo.
+          -->
+          <div class="col-12 col-md-auto">
+            <div class="d-flex flex-wrap gap-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="filtro-pagos"
+                       name="pagos" [(ngModel)]="filtro.pagos">
+                <label class="form-check-label" for="filtro-pagos">Pagos</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="filtro-vencidos"
+                       name="vencidos" [(ngModel)]="filtro.vencidos">
+                <label class="form-check-label" for="filtro-vencidos">Vencidos</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="filtro-a-vencer"
+                       name="aVencer" [(ngModel)]="filtro.aVencer">
+                <label class="form-check-label" for="filtro-a-vencer">A vencer</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md">
+            <input id="filtro-inicio" type="date" name="inicio" class="form-control"
+                   title="Vencimento de" aria-label="Vencimento de" [(ngModel)]="filtro.inicio">
+          </div>
+          <div class="col-12 col-md">
+            <input id="filtro-fim" type="date" name="fim" class="form-control"
+                   title="Vencimento até" aria-label="Vencimento até" [(ngModel)]="filtro.fim">
+          </div>
+
+          <div class="col-6 col-md-auto">
+            <button class="btn btn-primary w-100" type="submit" title="Pesquisar" aria-label="Pesquisar">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <div class="col-6 col-md-auto">
+            <button class="btn btn-outline-secondary w-100" type="button" title="Limpar filtros" aria-label="Limpar filtros"
+                    (click)="limparFiltros()">
+              <i class="fa-solid fa-eraser"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      @if (tabelaPronta) {
+      <div class="custom-datatable table-responsive">
+        <table id="datatables-pesquisar-pagamentos" class="table table-hover align-middle nowrap w-100 mb-0">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Paciente</th>
+              <th scope="col">Vencimento</th>
+              <th scope="col" class="text-end">Valor</th>
+              <th scope="col">Situação</th>
+              <th scope="col">Data do pagamento</th>
+              <th scope="col" class="text-end">Valor pago</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pagamento of this.listaFiltrada; track pagamento.id) {
+              <tr>
+                <td>{{ pagamento.id }}</td>
+                <td>
+                  <div class="record-cell d-flex align-items-center gap-3">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary p-3 flex-shrink-0">
+                      <i class="fa-solid fa-money-check-dollar"></i>
+                    </span>
+                    <div class="flex-grow-1 overflow-hidden">
+                      <span class="record-main fw-semibold d-block text-truncate">{{ pagamento.paciente?.nome }}</span>
+                      <span class="record-sub small text-secondary d-block text-truncate">{{ pagamento.servicoContratado?.servico?.nome || 'Sem serviço vinculado' }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ pagamento.dataVencimento | date: 'dd/MM/yyyy' }}</td>
+                <td class="text-end">
+                  {{ pagamento.valor != null ? (pagamento.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR') : 'Não informado' }}
+                </td>
+                <td>
+                  @switch (situacao(pagamento)) {
+                    @case ('PAGO') {
+                      <span class="badge rounded-pill text-bg-success">Pago</span>
+                    }
+                    @case ('VENCIDO') {
+                      <span class="badge rounded-pill text-bg-danger">Vencido</span>
+                    }
+                    @default {
+                      <span class="badge rounded-pill text-bg-warning">A vencer</span>
+                    }
+                  }
+                </td>
+                <td>{{ pagamento.dataPagamento ? (pagamento.dataPagamento | date: 'dd/MM/yyyy') : '—' }}</td>
+                <td class="text-end">
+                  {{ pagamento.valorPago != null ? (pagamento.valorPago | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+  </div>
+</section>

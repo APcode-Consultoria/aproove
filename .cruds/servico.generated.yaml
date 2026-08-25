@@ -1,7 +1,7 @@
 crud: servico
 metadados: .cruds/servico.yaml
-checksumNormalizado: "sha256:997d3f29859099a9681f64d3280348b3729383b97d898f10497bbec82862919e"
-executadoEm: "2026-08-24T13:46:33-03:00"
+checksumNormalizado: "sha256:c6a035e088d59f275399e7a19eec2b688196e8a90451c5558340f60ec99f1614"
+executadoEm: "2026-08-24T18:42:18-03:00"
 status: criado
 perfis: [DIRETOR]
 arquivos:
@@ -24,3 +24,7 @@ arquivos:
   - frontend/src/app/pages/servico/pesquisar/pesquisar.component.html
   - frontend/src/app/pages/servico/cadastro/cadastro.component.ts
   - frontend/src/app/pages/servico/cadastro/cadastro.component.html
+observacoes: >
+  Remodelagem: `frequencia_periodicidade` virou `frequencia`, entrou `duracao` em
+  minutos e a periodicidade trocou QUINZENAL por AVULSO. A migration 1.0.4 foi editada
+  no lugar, e não sucedida por uma 1.0.5, porque ainda não foi para produção.

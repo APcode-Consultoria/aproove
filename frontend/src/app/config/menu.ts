@@ -10,6 +10,12 @@ export const menu: Menu[] = [
   },
   {
     id: "servico", texto: "Serviços", icone: "hand-holding-dollar", path: "/servico/pesquisar", roles: [`${PREFIXO_PERFIL_SISTEMA}DIRETOR`], subMenus: []
+  },
+  {
+    id: "pagamento", texto: "Pagamentos", icone: "money-check-dollar", path: "/pagamento/pesquisar", roles: [`${PREFIXO_PERFIL_SISTEMA}DIRETOR`], subMenus: []
+  },
+  {
+    id: "agenda", texto: "Agenda", icone: "calendar-days", path: "/agenda", roles: [`${PREFIXO_PERFIL_SISTEMA}FISIOTERAPEUTA`], subMenus: []
   }
 
 ];

@@ -70,8 +70,6 @@ public class Paciente {
 
     private Integer diaVencimento;
 
-    private Integer frequenciaSemanal;
-
     private String queixaPrincipal;
 
     private String historiaMolestiaPregressa;

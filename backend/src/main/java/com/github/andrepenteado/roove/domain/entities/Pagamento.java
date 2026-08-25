@@ -27,20 +27,19 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Serviço contratado por um paciente.
+ * Pagamento de uma contratação de serviço.
  *
- * <p>É a entidade intermediária do N:M entre {@link Paciente} e {@link Servico}, ligada
- * aos dois por {@code @ManyToOne} — nunca {@code @ManyToMany}. Como a lista é
- * {@code persistencia: independente}, a volta ao paciente <b>não</b> leva
- * {@code @JsonIgnore}: o filho é serializado sozinho e precisa carregar o pai, e não há
- * recursão porque o {@code Paciente} não declara a coleção.</p>
+ * <p>Nasce junto com o {@link ServicoContratado} e, a cada quitação, gera o próximo
+ * enquanto a contratação estiver em aberto. Como a lista é
+ * {@code persistencia: independente}, a volta ao paciente não leva {@code @JsonIgnore}:
+ * o pagamento é serializado sozinho e o {@code Paciente} não declara a coleção.</p>
  */
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
-@ToString(of = { "paciente", "servico" })
-public class ServicoContratado implements Serializable {
+@ToString(of = { "servicoContratado", "dataVencimento" })
+public class Pagamento implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -55,30 +54,20 @@ public class ServicoContratado implements Serializable {
     private Paciente paciente;
 
     @ManyToOne
-    @JoinColumn(name = "FK_Servico")
-    @NotNull(message = "Serviço é um campo obrigatório")
-    private Servico servico;
+    @JoinColumn(name = "FK_Servico_Contratado")
+    @NotNull(message = "Contratação é um campo obrigatório")
+    private ServicoContratado servicoContratado;
 
-    @NotNull(message = "Início da contratação é um campo obrigatório")
-    private LocalDate inicioContratacao;
-
-    // Preenchido pelo endpoint de encerrar, nunca digitado no subformulario da aba.
-    private LocalDate fimContratacao;
+    @NotNull(message = "Vencimento é um campo obrigatório")
+    private LocalDate dataVencimento;
 
     @Column(precision = 15, scale = 2)
-    private BigDecimal valorContratado;
+    private BigDecimal valor;
 
-    // Os N valores da frequencia numa coluna so, separados por ponto e virgula. A
-    // quantidade vem de Servico.frequencia e o significado, da periodicidade dele:
-    // AVULSO grava datas ISO ('2026-09-15'), sem recorrencia; SEMANAL grava o nome das
-    // constantes de DiaSemana ('SEGUNDA'); MENSAL grava dias do mes (1..31).
-    private String frequencia;
+    private LocalDate dataPagamento;
 
-    // Um horario inicial por ocorrencia da frequencia, na mesma ordem e tambem separado
-    // por ponto e virgula. Guardado como texto pelo mesmo motivo da frequencia: a
-    // quantidade varia com o servico. O horario final nao e gravado, e derivado somando
-    // Servico.duracao a este.
-    private String horarios;
+    @Column(precision = 15, scale = 2)
+    private BigDecimal valorPago;
 
     private LocalDateTime dataCadastro;
 
@@ -89,10 +78,19 @@ public class ServicoContratado implements Serializable {
     private String usuarioUltimaAtualizacao;
 
     /**
-     * Compara contratações pela chave primária, desembrulhando o proxy do Hibernate.
+     * Indica se o pagamento já foi quitado.
+     *
+     * @return {@code true} quando data e valor pagos estão preenchidos.
+     */
+    public boolean isPago() {
+        return Objects.nonNull(dataPagamento) && Objects.nonNull(valorPago);
+    }
+
+    /**
+     * Compara pagamentos pela chave primária, desembrulhando o proxy do Hibernate.
      *
      * @param o objeto a comparar.
-     * @return {@code true} quando as duas são contratações persistidas com o mesmo ID.
+     * @return {@code true} quando os dois são pagamentos persistidos com o mesmo ID.
      */
     @Override
     public final boolean equals(Object o) {
@@ -101,8 +99,8 @@ public class ServicoContratado implements Serializable {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        ServicoContratado that = (ServicoContratado) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        Pagamento pagamento = (Pagamento) o;
+        return getId() != null && Objects.equals(getId(), pagamento.getId());
     }
 
     /**

@@ -99,7 +99,17 @@
                   </div>
                 </div>
 
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="duracao">Duração (em minutos)</label>
+                  <div class="input-group has-validation">
+                    <span class="input-group-text"><i class="fa-regular fa-hourglass-half"></i></span>
+                    <input id="duracao" type="number" name="duracao" formControlName="duracao"
+                           class="form-control" min="0" step="5">
+                  </div>
+                  <div class="form-text">A agenda soma esta duração ao horário do atendimento.</div>
+                </div>
+
+                <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="valor">Valor da Inscrição</label>
                   <!--
                     type="text" com a mascara do ngx-mask, nunca type="number": o number
@@ -113,13 +123,14 @@
                   </div>
                 </div>
 
-                <div class="col-12 col-md-6">
-                  <label class="form-label fw-semibold" for="frequenciaPeriodicidade">Frequência por Periodicidade</label>
+                <div class="col-12 col-md-4">
+                  <label class="form-label fw-semibold" for="frequencia">Frequência</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-repeat"></i></span>
-                    <input id="frequenciaPeriodicidade" type="number" name="frequenciaPeriodicidade"
-                           formControlName="frequenciaPeriodicidade" class="form-control" min="0" step="1">
+                    <input id="frequencia" type="number" name="frequencia"
+                           formControlName="frequencia" class="form-control" min="0" step="1">
                   </div>
+                  <div class="form-text">Quantos atendimentos dentro da periodicidade escolhida.</div>
                 </div>
 
                 <div class="col-12">

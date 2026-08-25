@@ -14,7 +14,11 @@ export const DECORATED_ROUTES: Routes = [
 
   { path: 'paciente', loadChildren: () => import('../pages/paciente/paciente.routes').then(m => m.pacienteRoutes) },
 
-  { path: 'servico', loadChildren: () => import('../pages/servico/servico.routes').then(m => m.servicoRoutes) }
+  { path: 'servico', loadChildren: () => import('../pages/servico/servico.routes').then(m => m.servicoRoutes) },
+
+  { path: 'pagamento', loadChildren: () => import('../pages/pagamento/pagamento.routes').then(m => m.pagamentoRoutes) },
+
+  { path: 'agenda', loadChildren: () => import('../pages/agenda/agenda.routes').then(m => m.agendaRoutes) }
 
 ]
 

@@ -28,4 +28,15 @@ public interface ServicoContratadoRepository extends JpaRepository<ServicoContra
      */
     List<ServicoContratado> findByPacienteIdOrderByInicioContratacaoDesc(Long id);
 
+    /**
+     * Contratações em aberto de um fisioterapeuta, base da agenda dele.
+     *
+     * <p>Em aberto é {@code fim_contratacao} nulo: contratação encerrada não gera mais
+     * atendimento.</p>
+     *
+     * @param responsavel login do fisioterapeuta, como gravado em {@code Paciente}.
+     * @return contratações sem encerramento dos pacientes sob responsabilidade dele.
+     */
+    List<ServicoContratado> findByFimContratacaoIsNullAndPacienteResponsavel(String responsavel);
+
 }

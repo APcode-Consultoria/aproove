@@ -7,7 +7,9 @@ package com.github.andrepenteado.roove.services;
 
 import br.unesp.fc.andrepenteado.core.web.services.SecurityService;
 import com.github.andrepenteado.roove.domain.entities.Paciente;
+import com.github.andrepenteado.roove.domain.entities.Servico;
 import com.github.andrepenteado.roove.domain.entities.ServicoContratado;
+import com.github.andrepenteado.roove.domain.enums.Periodicidade;
 import com.github.andrepenteado.roove.domain.repositories.ServicoContratadoRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +46,8 @@ public class ServicoContratadoService {
     private final ServicoContratadoRepository servicoContratadoRepository;
 
     private final PacienteService pacienteService;
+
+    private final PagamentoService pagamentoService;
 
     private final SecurityService securityService;
 
@@ -91,10 +97,18 @@ public class ServicoContratadoService {
         if (!securityService.hasPerfil(PERFIL_DIRETOR))
             servicoContratado.setValorContratado(null);
 
+        fecharPeriodoAvulso(servicoContratado);
+
         servicoContratado.setDataCadastro(LocalDateTime.now());
         servicoContratado.setUsuarioCadastro(securityService.getUserLogin().getLogin());
 
-        return servicoContratadoRepository.save(servicoContratado);
+        ServicoContratado gravado = servicoContratadoRepository.save(servicoContratado);
+
+        // Regra "pagamento gerado ao contratar" (.cruds/paciente.yaml): a contratação
+        // já nasce com a primeira cobrança em aberto.
+        pagamentoService.gerarPrimeiroPagamento(gravado);
+
+        return gravado;
     }
 
     /**
@@ -117,6 +131,8 @@ public class ServicoContratadoService {
         // Esconder o campo na tela nunca foi barreira — a barreira é esta.
         if (!securityService.hasPerfil(PERFIL_DIRETOR))
             servicoContratado.setValorContratado(existente.getValorContratado());
+
+        fecharPeriodoAvulso(servicoContratado);
 
         servicoContratado.setDataCadastro(existente.getDataCadastro());
         servicoContratado.setUsuarioCadastro(existente.getUsuarioCadastro());
@@ -152,6 +168,71 @@ public class ServicoContratadoService {
         log.info("Encerrar contratação do serviço {}", servicoContratado.getServico().getNome());
 
         return servicoContratadoRepository.save(servicoContratado);
+    }
+
+    /**
+     * Regra "contratação avulsa nasce fechada" (.cruds/paciente.yaml): no avulso não há
+     * recorrência — a frequência já traz as datas exatas dos atendimentos, então o
+     * período da contratação é o intervalo entre a primeira e a última.
+     *
+     * <p>Deixar o fim em aberto faria a contratação avulsa se comportar como
+     * recorrente: ela ficaria "em vigor" para sempre e a regra "renovação ao pagar"
+     * geraria uma cobrança nova a cada quitação, sem nunca parar.</p>
+     *
+     * <p>Vale na inclusão e na alteração: reabrir um avulso pela alteração seria o mesmo
+     * problema por outra porta. A tela também deriva as duas datas, para quem contrata
+     * ver o período antes de gravar, mas quem decide é este método.</p>
+     *
+     * @param servicoContratado contratação a fechar; alterada no lugar.
+     */
+    private void fecharPeriodoAvulso(ServicoContratado servicoContratado) {
+        Servico servico = servicoContratado.getServico();
+
+        if (Objects.isNull(servico) || servico.getPeriodicidade() != Periodicidade.AVULSO)
+            return;
+
+        List<LocalDate> datas = datasDaFrequencia(servicoContratado.getFrequencia());
+
+        // Sem data nenhuma legivel nao ha periodo a derivar: preservar o que veio e
+        // melhor do que apagar o inicio que a tela exigiu como obrigatorio.
+        if (datas.isEmpty())
+            return;
+
+        servicoContratado.setInicioContratacao(datas.getFirst());
+        servicoContratado.setFimContratacao(datas.getLast());
+    }
+
+    /**
+     * Datas gravadas na frequência de uma contratação avulsa.
+     *
+     * @param frequencia coluna de frequência, com as datas ISO separadas por ponto e
+     *                   vírgula.
+     * @return datas em ordem crescente; vazia quando nenhuma pôde ser lida.
+     */
+    private List<LocalDate> datasDaFrequencia(String frequencia) {
+        if (Objects.isNull(frequencia) || frequencia.isBlank())
+            return List.of();
+
+        return Arrays.stream(frequencia.split(";"))
+            .map(this::paraData)
+            .filter(Objects::nonNull)
+            .sorted()
+            .toList();
+    }
+
+    /**
+     * Converte um valor da coluna de frequência em data.
+     *
+     * @param valor valor lido da coluna, em ISO.
+     * @return a data, ou {@code null} quando o valor não está no formato.
+     */
+    private LocalDate paraData(String valor) {
+        try {
+            return LocalDate.parse(valor.trim());
+        }
+        catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**

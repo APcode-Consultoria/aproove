@@ -14,6 +14,9 @@ import { CadastroComponent } from './cadastro.component';
 import { PacienteService } from '../../../services/paciente.service';
 import { ProntuarioService } from '../../../services/prontuario.service';
 import { ExameService } from '../../../services/exame.service';
+import { ServicoService } from '../../../services/servico.service';
+import { ServicoContratadoService } from '../../../services/servico-contratado.service';
+import { PagamentoService } from '../../../services/pagamento.service';
 import { Paciente } from '../../../domain/entities/paciente';
 
 const pacienteKeys = [
@@ -39,7 +42,6 @@ const pacienteKeys = [
   'estado',
   'profissao',
   'diaVencimento',
-  'frequenciaSemanal',
   'historiaMolestiaPregressa',
   'queixaPrincipal',
   'remedios',
@@ -66,6 +68,25 @@ describe('CadastroComponent', () => {
   const exameServiceMock = {
     listarPorPaciente: vi.fn(),
     incluir: vi.fn(),
+    excluir: vi.fn()
+  };
+
+  // Alimenta o combo da aba de contratação. Sem o mock, o componente injetaria o
+  // service de verdade e ele pediria o INIT_CONFIG, que não existe no TestBed.
+  const servicoServiceMock = {
+    listar: vi.fn()
+  };
+
+  const servicoContratadoServiceMock = {
+    listarPorPaciente: vi.fn(),
+    incluir: vi.fn(),
+    encerrar: vi.fn(),
+    excluir: vi.fn()
+  };
+
+  const pagamentoServiceMock = {
+    listarPorPaciente: vi.fn(),
+    alterar: vi.fn(),
     excluir: vi.fn()
   };
 
@@ -99,6 +120,9 @@ describe('CadastroComponent', () => {
     // As listas independentes são recarregadas pelo aposCarregar sempre que a entidade muda.
     prontuarioServiceMock.listarPorPaciente.mockReturnValue(of([]));
     exameServiceMock.listarPorPaciente.mockReturnValue(of([]));
+    servicoContratadoServiceMock.listarPorPaciente.mockReturnValue(of([]));
+    pagamentoServiceMock.listarPorPaciente.mockReturnValue(of([]));
+    servicoServiceMock.listar.mockReturnValue(of([]));
 
     await TestBed.configureTestingModule({
       providers: [
@@ -106,6 +130,9 @@ describe('CadastroComponent', () => {
         { provide: PacienteService, useValue: pacienteServiceMock },
         { provide: ProntuarioService, useValue: prontuarioServiceMock },
         { provide: ExameService, useValue: exameServiceMock },
+        { provide: ServicoService, useValue: servicoServiceMock },
+        { provide: ServicoContratadoService, useValue: servicoContratadoServiceMock },
+        { provide: PagamentoService, useValue: pagamentoServiceMock },
         { provide: ViaCepService, useValue: viaCepServiceMock },
         { provide: ExibirMensagemService, useValue: exibirMensagemServiceMock },
         { provide: UploadService, useValue: uploadServiceMock },
@@ -149,6 +176,8 @@ describe('CadastroComponent', () => {
 
     expect(exameServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
     expect(prontuarioServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
+    expect(servicoContratadoServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
+    expect(pagamentoServiceMock.listarPorPaciente).toHaveBeenCalledWith(7);
   });
 
   it('deve considerar o formulario invalido quando os campos obrigatorios nao forem preenchidos', async () => {

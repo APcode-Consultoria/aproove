@@ -35,11 +35,59 @@ regras:
     prompt: >
       Regra de tela, no cadastro do paciente. Ao escolher o serviço na aba de serviços
       contratados, gerar tantos controles de frequência quanto for o valor de
-      `frequencia_periodicidade` do serviço escolhido. Periodicidade MENSAL: cada
-      controle é numérico de 1 a 31. QUINZENAL: numérico de 1 a 15. SEMANAL: combo com
-      os dias da semana, gravando o inteiro correspondente (0 = domingo, 1 = segunda,
-      e assim por diante). Os valores dos controles são concatenados e gravados na
-      coluna única `frequencia`, separados por ponto e vírgula.
+      `frequencia` do serviço escolhido. O tipo de cada controle vem da periodicidade
+      dele. AVULSO: controle de data, porque não há recorrência — cada valor é o dia
+      exato do atendimento. SEMANAL: combo com os dias da semana, gravando o nome da
+      constante do enum DiaSemana (DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA,
+      SABADO); o enum é criado por esta regra, e não por um bloco `enum` de campo,
+      porque não é coluna própria — vive dentro da coluna `frequencia`. MENSAL: controle
+      numérico de 1 a 31, o dia do mês. Cada controle de dia tem ao lado um controle de
+      horário inicial. Os valores são concatenados e gravados em duas colunas únicas,
+      `frequencia` e `horarios`, separados por ponto e vírgula e na mesma ordem. O
+      horário final não é digitado nem gravado: a agenda o deriva somando `duracao` do
+      serviço ao horário inicial.
+
+  - nome: contratação avulsa nasce fechada
+    prompt: >
+      Regra do service do serviço contratado. Ao incluir ou alterar uma contratação de
+      serviço com periodicidade AVULSO, derivar o período dela das datas gravadas na
+      frequência: o início da contratação é a menor data e o fim, a maior. Vale também
+      na alteração, senão reabrir um avulso seria só questão de gravar de novo. Se
+      nenhuma data puder ser lida, preservar o que veio. A aba do cadastro deriva as
+      mesmas duas datas enquanto o usuário escolhe, exibindo o início somente leitura e
+      o fim como texto, mas quem decide é o service.
+      Sem isso a contratação avulsa se comportaria como recorrente: ficaria "em vigor"
+      para sempre e a regra "renovação ao pagar" geraria uma cobrança nova a cada
+      quitação, sem nunca parar.
+
+  - nome: pagamento gerado ao contratar
+    prompt: >
+      Regra do service do serviço contratado. Ao incluir um serviço contratado, gerar
+      também um pagamento para ele. O vencimento é o dia de vencimento cadastrado no
+      paciente, no mês do início da contratação, sem adiantar para o mês seguinte
+      quando a data já passou — pode nascer vencido, e é o comportamento desejado. Se o
+      paciente não tiver dia de vencimento, usar a própria data de início; se o dia não
+      existir no mês, usar o último dia do mês. O valor é o valor contratado, e data e
+      valor pagos nascem vazios.
+
+  - nome: renovação ao pagar
+    prompt: >
+      Regra do service do pagamento. Ao alterar um pagamento que passa a ter data e
+      valor pagos preenchidos, verificar a contratação dele: se o fim da contratação
+      estiver vazio, gerar um novo pagamento para a mesma contratação, com vencimento
+      um mês depois do vencimento do pagamento quitado — no dia de vencimento do
+      paciente, ajustando para o último dia quando o mês for curto — e valor igual ao
+      valor contratado. Contratação já encerrada não renova. A renovação é mensal
+      independente da periodicidade do serviço, porque o dia de vencimento do paciente
+      é um dia do mês.
+
+  - nome: ação pagar na aba de pagamentos
+    prompt: >
+      Regra de tela, no cadastro do paciente. A aba de pagamentos não tem botão de
+      adicionar: o pagamento nasce da contratação do serviço. Cada linha ainda não paga
+      oferece a ação Pagar, que carrega o registro num formulário fora de modal, na
+      própria aba, com data e valor pagos; confirmar grava aquele pagamento. Linha já
+      paga não oferece a ação.
 
 # ATENÇÃO — este YAML foi escrito DEPOIS do código, para documentar um CRUD que
 # nasceu antes da spec e servir de modelo de `tipo: lista`. Divergências conhecidas
@@ -167,12 +215,6 @@ tabela:
     - nome: dia_vencimento
       tipo: inteiro
       label: Dia de vencimento
-      colunas-layout: 3
-      exibe-grid: false
-
-    - nome: frequencia_semanal
-      tipo: inteiro
-      label: Frequência semanal
       colunas-layout: 4*
       exibe-grid: false
 
@@ -405,4 +447,75 @@ tabela:
             tipo: texto
             label: Frequência
             exibe-formulario: false
+            exibe-grid: true
+
+          # Um horário por ocorrência da frequência, na mesma ordem. É o que permite
+          # montar a agenda por fisioterapeuta.
+          - nome: horarios
+            tipo: texto
+            label: Horários
+            exibe-formulario: false
+            exibe-grid: true
+
+    # Pagamentos das contratações. É lista de `paciente`, e não de `servico_contratado`,
+    # porque coleção dentro de coleção é rejeitada pelo contrato — e porque a aba mostra
+    # os pagamentos do paciente inteiro, de todas as contratações. O vínculo com a
+    # contratação é o subcampo `fk`.
+    #
+    # `independente`: o pagamento é gravado no momento da contratação e na ação Pagar,
+    # nunca no Gravar do paciente. Perder um pagamento por falta de clique seria erro de
+    # domínio.
+    #
+    # Não há botão de adicionar na aba: quem cria o registro é a regra "pagamento gerado
+    # ao contratar". `incluir` fica com os dois perfis mesmo assim, porque é o service do
+    # pagamento que grava, chamado a partir da contratação.
+    - nome: pagamentos
+      tipo: lista
+      lista:
+        label: Pagamentos
+        tabela: pagamento
+        persistencia: independente
+        formato: sem-modal
+        acoes:
+          consultar: [FISIOTERAPEUTA, DIRETOR]
+          incluir: [FISIOTERAPEUTA, DIRETOR]
+          alterar: [FISIOTERAPEUTA, DIRETOR]
+          excluir: [DIRETOR]
+        campos:
+          # A tabela da aba exibe o nome do serviço da contratação, não o id: `id` é só
+          # o fallback de `fk-display`, porque ServicoContratado não tem label/nome.
+          - nome: servico_contratado
+            tipo: longo
+            label: Contratação
+            fk: servico_contratado
+            fk-display: id
+            obrigatorio: true
+            exibe-formulario: false
+            exibe-grid: true
+
+          # Vencimento e valor vêm da contratação; o usuário não os digita.
+          - nome: data_vencimento
+            tipo: data
+            label: Vencimento
+            obrigatorio: true
+            exibe-formulario: false
+            exibe-grid: true
+
+          - nome: valor
+            tipo: moeda
+            label: Valor
+            exibe-formulario: false
+            exibe-grid: true
+
+          # Os dois campos do formulário da ação Pagar.
+          - nome: data_pagamento
+            tipo: data
+            label: Data do pagamento
+            colunas-layout: 6
+            exibe-grid: true
+
+          - nome: valor_pago
+            tipo: moeda
+            label: Valor pago
+            colunas-layout: 6*
             exibe-grid: true
