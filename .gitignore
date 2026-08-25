@@ -5,10 +5,5 @@
 .specs/
 # Cache do vitest quando ele roda da raiz em vez de frontend/
 node_modules/
-### Resíduo da migração para o Vault ###
-# Os Secrets desta app agora vêm do cofre, materializados pelo Vault Secrets
-# Operator (bloco `vault:` em .helm/values.*.yaml). O .helm/secret.yaml só
-# existe enquanto o corte não é feito — apague-o depois e remova estas linhas.
-.helm/secret.yaml
 ### Variáveis de ambiente de DEV (modelo em dev.env.example) ###
 .helm/*.env

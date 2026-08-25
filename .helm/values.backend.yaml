@@ -48,12 +48,8 @@ vault:
       path: k3s/aproove/oidc-client-secret
       keys:
         OIDC_CLIENT_SECRET: value
-    # Credencial do registry (ghcr.io), o último Secret que ainda se criava
-    # à mão neste namespace. O nome é o mesmo de antes, de propósito — ele diz
-    # QUAL registry, e já são três em uso na casa. Em troca, o `github-secret`
-    # criado à mão precisa ser apagado ANTES do primeiro deploy com esta
-    # versão (`kubectl delete secret github-secret -n aproove`): o operador se
-    # recusa a assumir um Secret que não criou.
+    # Credencial do registry (ghcr.io). O nome é o mesmo de quando se criava
+    # à mão, de propósito — ele diz QUAL registry, e já são três em uso na casa.
     #
     # Tipo próprio e chave `.dockerconfigjson` porque é o que o kubelet aceita;
     # `restart: false` porque trocar a credencial não muda nada num pod já
