@@ -22,8 +22,8 @@ import java.util.List;
 /**
  * Endpoint da agenda de atendimentos.
  *
- * <p>Não é CRUD: a agenda é derivada das contratações em aberto e não tem tabela, então
- * só existe a consulta.</p>
+ * <p>Não é CRUD: a agenda é derivada das contratações vigentes no período e não tem
+ * tabela, então só existe a consulta.</p>
  */
 @RestController
 @RequestMapping("/agenda")

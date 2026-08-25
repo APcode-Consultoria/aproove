@@ -30,11 +30,15 @@ import static com.github.andrepenteado.roove.RooveApplication.PERFIL_FISIOTERAPE
 /**
  * Agenda de atendimentos de um fisioterapeuta.
  *
- * <p>Não há tabela de agenda: os atendimentos são <b>derivados</b> das contratações em
- * aberto dos pacientes sob responsabilidade dele, expandindo a frequência de cada uma
- * dentro do período consultado. Como cada valor da coluna {@code frequencia} significa
- * uma coisa diferente conforme a {@link Periodicidade} do serviço, a expansão tem um
- * caminho por periodicidade.</p>
+ * <p>Não há tabela de agenda: os atendimentos são <b>derivados</b> das contratações dos
+ * pacientes sob responsabilidade dele que estão vigentes no período consultado,
+ * expandindo a frequência de cada uma dentro dele. Como cada valor da coluna
+ * {@code frequencia} significa uma coisa diferente conforme a {@link Periodicidade} do
+ * serviço, a expansão tem um caminho por periodicidade.</p>
+ *
+ * <p>Vigente não é o mesmo que em aberto: a contratação AVULSO nasce com fim preenchido
+ * e mesmo assim tem atendimento nas datas dela, e a encerrada continua tendo tido os
+ * seus até o dia do encerramento. É a expansão que corta no fim, não a consulta.</p>
  */
 @Service
 @RequiredArgsConstructor
@@ -66,8 +70,30 @@ public class AgendaService {
 
         log.info("Montar agenda de {} entre {} e {}", alvo, inicio, fim);
 
+        return expandir(servicoContratadoRepository.buscarVigentesNoPeriodo(alvo, inicio, fim), inicio, fim);
+    }
+
+    /**
+     * Expande contratações nas ocorrências que caem no período, já ordenadas.
+     *
+     * <p>É a montagem da agenda sem a consulta e sem a regra de responsável do
+     * {@link #listar}: quem chama já escolheu as contratações. Existe separado porque a
+     * regra "sem choque de horário" do
+     * {@link com.github.andrepenteado.roove.services.ServicoContratadoService} precisa
+     * das mesmas ocorrências, e derivá-las duas vezes seria manter duas leituras da
+     * coluna {@code frequencia}.</p>
+     *
+     * <p>Sem {@code @Secured} de propósito: não consulta nada e não decide de quem é a
+     * agenda — quem autoriza é o método público que a chama.</p>
+     *
+     * @param contratacoes contratações a expandir.
+     * @param inicio primeiro dia do período.
+     * @param fim último dia do período.
+     * @return atendimentos ordenados por data e horário.
+     */
+    public List<AgendaAtendimento> expandir(List<ServicoContratado> contratacoes, LocalDate inicio, LocalDate fim) {
         List<AgendaAtendimento> atendimentos = new ArrayList<>();
-        for (ServicoContratado contratacao : servicoContratadoRepository.findByFimContratacaoIsNullAndPacienteResponsavel(alvo)) {
+        for (ServicoContratado contratacao : contratacoes) {
             expandir(contratacao, inicio, fim, atendimentos);
         }
 
@@ -82,7 +108,7 @@ public class AgendaService {
     /**
      * Expande uma contratação nas ocorrências que caem no período.
      *
-     * @param contratacao contratação em aberto.
+     * @param contratacao contratação vigente em algum dia do período.
      * @param inicio primeiro dia do período.
      * @param fim último dia do período.
      * @param destino lista que recebe as ocorrências.
@@ -105,13 +131,25 @@ public class AgendaService {
             ? contratacao.getInicioContratacao()
             : inicio;
 
+        // Nem depois do fim dela: contratação encerrada parou de gerar atendimento
+        // naquele dia, e sem este corte uma SEMANAL encerrada em março continuaria
+        // ocupando as terças de agosto. Não fazia diferença enquanto a agenda lia só
+        // contratação em aberto — passou a fazer quando ela passou a ler as encerradas
+        // e as avulsas, que nascem com fim preenchido.
+        LocalDate ultimoDia = Objects.nonNull(contratacao.getFimContratacao()) && contratacao.getFimContratacao().isBefore(fim)
+            ? contratacao.getFimContratacao()
+            : fim;
+
+        if (primeiroDia.isAfter(ultimoDia))
+            return;
+
         for (int i = 0; i < valores.length; i++) {
             LocalTime horario = paraHorario(i < horarios.length ? horarios[i] : null);
 
             switch (periodicidade) {
-                case AVULSO -> expandirAvulso(contratacao, valores[i], horario, primeiroDia, fim, destino);
-                case SEMANAL -> expandirSemanal(contratacao, valores[i], horario, primeiroDia, fim, destino);
-                case MENSAL -> expandirMensal(contratacao, valores[i], horario, primeiroDia, fim, destino);
+                case AVULSO -> expandirAvulso(contratacao, valores[i], horario, primeiroDia, ultimoDia, destino);
+                case SEMANAL -> expandirSemanal(contratacao, valores[i], horario, primeiroDia, ultimoDia, destino);
+                case MENSAL -> expandirMensal(contratacao, valores[i], horario, primeiroDia, ultimoDia, destino);
             }
         }
     }

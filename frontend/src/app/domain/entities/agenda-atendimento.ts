@@ -4,7 +4,7 @@
  * Observação: arquivo criado com ajuda da IA.
  */
 
-// Não é entidade: é a expansão das contratações em aberto no período consultado, sem
+// Não é entidade: é a expansão das contratações vigentes no período consultado, sem
 // tabela por trás. `data` e os horários chegam como texto ISO ('2026-09-02', '08:00').
 export class AgendaAtendimento {
 

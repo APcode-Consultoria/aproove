@@ -13,14 +13,12 @@ import { AgendaService } from "../../services/agenda.service";
 import { AgendaAtendimento } from "../../domain/entities/agenda-atendimento";
 import { PREFIXO_PERFIL_SISTEMA } from "../../config/layout";
 
-/** O par de radio buttons que escolhe a grade. */
-export type VisualizacaoAgenda = 'semana' | 'mes';
-
 /** Um dia da grade, com os atendimentos que caem nele. */
 export interface DiaAgenda {
   data: string;
   diaDoMes: number;
-  doPeriodo: boolean;
+  /** Abreviação do dia da semana, já resolvida aqui para o template não recalcular. */
+  nomeDoDia: string;
   hoje: boolean;
   atendimentos: AgendaAtendimento[];
 }
@@ -34,32 +32,65 @@ export interface DiaAgenda {
     CommonModule,
     FormsModule,
     RouterLink
-  ]
+  ],
+  /**
+   * A grade é a única parte da tela que o Bootstrap não resolve: sete colunas iguais não
+   * existem numa malha de doze, e `flex-fill` dimensiona pelo conteúdo — foi o que
+   * desalinhava as colunas quando um dia tinha mais atendimentos que os outros. Com
+   * `minmax(0, 1fr)` as sete trilhas têm largura fixa e independem do conteúdo, e o
+   * `min-width: 0` das células libera o `text-truncate` dos nomes longos.
+   */
+  styles: `
+    .agenda-semana {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .agenda-dia {
+      min-width: 0;
+    }
+
+    @media (min-width: 768px) {
+      .agenda-semana {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+      }
+
+      /* Altura mínima só na grade: empilhado no celular ela viraria uma sequência de
+         blocos vazios altos, e o dia sem atendimento não precisa de mais que o cabeçalho. */
+      .agenda-dia {
+        min-height: 11rem;
+      }
+    }
+  `
 })
 export class AgendaComponent implements OnInit {
 
   // Semana começa no domingo, como a grade.
-  protected readonly nomesDosDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  private readonly nomesDosDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   atendimentos: AgendaAtendimento[] = [];
-  semanas: DiaAgenda[][] = [];
 
-  /** Grade escolhida no par de radio buttons. */
-  visualizacao: VisualizacaoAgenda = 'mes';
+  /** Os sete dias exibidos, de domingo a sábado. */
+  dias: DiaAgenda[] = [];
+
+  /** Qualquer dia dentro da semana exibida. */
+  referencia: Date = new Date();
 
   /**
-   * Dia aberto a partir da grade do mês, em ISO.
+   * Dia aberto a partir da grade da semana, em ISO.
    *
-   * <p>Vive fora de {@link visualizacao} de propósito: os radios têm dois valores e
-   * precisam continuar coerentes enquanto o dia está aberto — quando se volta dele, a
-   * grade que reaparece é a mesma de antes.</p>
+   * <p>A célula da semana corta os nomes longos para as sete colunas caberem; o dia é
+   * onde eles aparecem inteiros. Enquanto está preenchido, a consulta e a navegação
+   * passam a ser de um dia só.</p>
    */
   diaSelecionado: string | null = null;
 
-  /** Qualquer dia dentro da semana ou do mês exibido. */
-  referencia: Date = new Date();
-
-  /** Preenchido só pelo diretor, para ver a agenda de outro fisioterapeuta. */
+  /**
+   * Login de quem se está consultando.
+   *
+   * <p>Nasce com o do usuário logado, para a tela abrir já na agenda de quem entrou. Só
+   * o diretor troca o valor; para os demais o backend força o próprio login.</p>
+   */
   responsavel = '';
 
   private agendaService = inject(AgendaService);
@@ -67,6 +98,7 @@ export class AgendaComponent implements OnInit {
   private spinnerService = inject(NgxSpinnerService);
 
   ngOnInit(): void {
+    this.responsavel = this.loginService.getUserLogin()?.login ?? '';
     this.carregar();
   }
 
@@ -76,20 +108,14 @@ export class AgendaComponent implements OnInit {
 
   /** Login mostrado no título: o digitado pelo diretor, ou o do próprio usuário. */
   get agendaDe(): string {
-    return this.isDiretor && this.responsavel.trim()
-      ? this.responsavel.trim()
-      : this.loginService.getUserLogin()?.login ?? '';
+    return this.responsavel.trim() || (this.loginService.getUserLogin()?.login ?? '');
   }
 
-  /** Título do período exibido, conforme a grade. */
+  /** Título do período exibido: o dia aberto, ou a semana. */
   get tituloPeriodo(): string {
     if (this.diaSelecionado) {
       return this.dataDoIso(this.diaSelecionado)
         .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    }
-
-    if (this.visualizacao === 'mes') {
-      return this.referencia.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
     }
 
     // Semana que atravessa dois meses precisa do mês nas duas pontas, senão "30 a 5"
@@ -102,27 +128,17 @@ export class AgendaComponent implements OnInit {
     return `${inicio} a ${fim}`;
   }
 
-  /** Rótulo dos botões de navegação, que andam de dia, semana ou mês. */
-  get passoDeNavegacao(): string {
-    if (this.diaSelecionado) return 'dia';
-    return this.visualizacao === 'semana' ? 'semana' : 'mês';
-  }
-
   get totalAtendimentos(): number {
     return this.atendimentos.length;
   }
 
-  /** Troca de grade pelo par de radio buttons: fecha o dia aberto e recarrega. */
-  trocarVisualizacao(): void {
-    this.diaSelecionado = null;
-    this.carregar();
+  /** Rótulo dos botões de navegação, que andam de dia ou de semana. */
+  get passoDeNavegacao(): string {
+    return this.diaSelecionado ? 'dia' : 'semana';
   }
 
   /**
-   * Abre a visualização do dia com todos os atendimentos dele.
-   *
-   * <p>Existe porque a célula da grade do mês não cabe a lista inteira: ela mostra um
-   * resumo, e o dia é onde se vê tudo.</p>
+   * Abre a visualização do dia, com os atendimentos dele por inteiro.
    *
    * @param data dia clicado, em ISO.
    */
@@ -131,7 +147,7 @@ export class AgendaComponent implements OnInit {
     this.carregar();
   }
 
-  /** Volta do dia para a grade de onde ele foi aberto, já no mês/semana daquele dia. */
+  /** Volta do dia para a semana em que ele cai. */
   fecharDia(): void {
     if (this.diaSelecionado) {
       this.referencia = this.dataDoIso(this.diaSelecionado);
@@ -182,7 +198,8 @@ export class AgendaComponent implements OnInit {
       .subscribe({
         next: atendimentos => {
           this.atendimentos = atendimentos;
-          this.montarSemanas(primeiro, ultimo);
+          // A tela do dia lê `atendimentos` direto: a grade só existe na semana.
+          this.dias = this.diaSelecionado ? [] : this.montarDias(primeiro, ultimo);
           this.spinnerService.hide();
         },
         // O httpErrorsInterceptor já mostra o erro; aqui só o estado local.
@@ -190,58 +207,38 @@ export class AgendaComponent implements OnInit {
       });
   }
 
-  /** Anda um passo para trás ou para a frente, na unidade da grade atual. */
+  /** Anda um passo para trás ou para a frente, na unidade da tela atual. */
   private andar(sentido: number): void {
     if (this.diaSelecionado) {
       const dia = this.dataDoIso(this.diaSelecionado);
       dia.setDate(dia.getDate() + sentido);
       this.diaSelecionado = this.iso(dia);
     }
-    else if (this.visualizacao === 'semana') {
+    else {
       this.referencia = new Date(this.referencia);
       this.referencia.setDate(this.referencia.getDate() + 7 * sentido);
-    }
-    else {
-      this.referencia = new Date(this.referencia.getFullYear(), this.referencia.getMonth() + sentido, 1);
     }
 
     this.carregar();
   }
 
-  /**
-   * Primeiro e último dia consultados, conforme a grade.
-   *
-   * <p>Na semana, de domingo a sábado. No mês, do domingo da semana do dia 1 ao sábado
-   * da semana do último dia, para as linhas ficarem completas. No dia, ele mesmo.</p>
-   */
+  /** Dia aberto, ou domingo e sábado da semana em que cai a {@link referencia}. */
   private limitesDoPeriodo(): { primeiro: Date; ultimo: Date } {
     if (this.diaSelecionado) {
-      return { primeiro: this.dataDoIso(this.diaSelecionado), ultimo: this.dataDoIso(this.diaSelecionado) };
+      const dia = this.dataDoIso(this.diaSelecionado);
+      return { primeiro: dia, ultimo: dia };
     }
 
-    if (this.visualizacao === 'semana') {
-      const primeiro = new Date(this.referencia);
-      primeiro.setDate(primeiro.getDate() - primeiro.getDay());
-
-      const ultimo = new Date(primeiro);
-      ultimo.setDate(ultimo.getDate() + 6);
-
-      return { primeiro, ultimo };
-    }
-
-    const inicioMes = new Date(this.referencia.getFullYear(), this.referencia.getMonth(), 1);
-    const fimMes = new Date(this.referencia.getFullYear(), this.referencia.getMonth() + 1, 0);
-
-    const primeiro = new Date(inicioMes);
+    const primeiro = new Date(this.referencia);
     primeiro.setDate(primeiro.getDate() - primeiro.getDay());
 
-    const ultimo = new Date(fimMes);
-    ultimo.setDate(ultimo.getDate() + (6 - ultimo.getDay()));
+    const ultimo = new Date(primeiro);
+    ultimo.setDate(ultimo.getDate() + 6);
 
     return { primeiro, ultimo };
   }
 
-  private montarSemanas(primeiro: Date, ultimo: Date): void {
+  private montarDias(primeiro: Date, ultimo: Date): DiaAgenda[] {
     const porData = new Map<string, AgendaAtendimento[]>();
     for (const atendimento of this.atendimentos) {
       const chave = String(atendimento.data).substring(0, 10);
@@ -249,34 +246,20 @@ export class AgendaComponent implements OnInit {
     }
 
     const hoje = this.iso(new Date());
-    const mesExibido = this.referencia.getMonth();
-    const semanas: DiaAgenda[][] = [];
-    let semana: DiaAgenda[] = [];
+    const dias: DiaAgenda[] = [];
 
     for (const data = new Date(primeiro); data <= ultimo; data.setDate(data.getDate() + 1)) {
       const chave = this.iso(data);
-      semana.push({
+      dias.push({
         data: chave,
         diaDoMes: data.getDate(),
-        // Só a grade do mês tem dias "de fora": na semana todos os sete pertencem ao
-        // período exibido, mesmo quando ela atravessa a virada do mês.
-        doPeriodo: this.visualizacao === 'mes' ? data.getMonth() === mesExibido : true,
+        nomeDoDia: this.nomesDosDias[data.getDay()] ?? '',
         hoje: chave === hoje,
         atendimentos: porData.get(chave) ?? []
       });
-
-      if (semana.length === 7) {
-        semanas.push(semana);
-        semana = [];
-      }
     }
 
-    // Sobra quando o período não fecha sete dias — o caso da visualização do dia.
-    if (semana.length) {
-      semanas.push(semana);
-    }
-
-    this.semanas = semanas;
+    return dias;
   }
 
   /** Data em ISO local — `toISOString()` converteria para UTC e poderia virar o dia. */

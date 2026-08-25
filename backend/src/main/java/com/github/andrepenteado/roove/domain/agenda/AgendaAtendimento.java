@@ -12,7 +12,7 @@ import java.time.LocalTime;
  * Uma ocorrência de atendimento na agenda de um fisioterapeuta.
  *
  * <p>Não é entidade e não tem tabela: é a expansão, no período consultado, das
- * contratações em aberto do fisioterapeuta. Por isso é um {@code record}, e não um
+ * contratações do fisioterapeuta vigentes nele. Por isso é um {@code record}, e não um
  * objeto de domínio — a regra do projeto de não criar DTO vale para os CRUDs, que
  * trafegam a própria entidade.</p>
  *
