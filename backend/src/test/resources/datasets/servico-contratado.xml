@@ -1,0 +1,76 @@
+<!--
+    Agenda de um fisioterapeuta com uma faixa já ocupada, para os testes da regra
+    "sem choque de horário" (.cruds/paciente.yaml).
+
+    O paciente 500 tem uma contratação SEMANAL de terça às 08:00, com serviço de 60
+    minutos: a faixa 08:00–09:00 de toda terça a partir de 05/01/2026 está tomada na
+    agenda de `usuario.teste`. Os pacientes 501 e 502 entram sem contratação nenhuma —
+    501 é do mesmo responsável e 502, de outro, que é o que separa "agenda cheia" de
+    "agenda de outra pessoa".
+-->
+<dataset>
+    <paciente
+        id="500"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+        nome="Paciente 500"
+        cpf="50050050055"
+        queixa_principal="Queixa paciente 500"
+        historia_molestia_pregressa="Moléstia paciente 500"
+        responsavel="usuario.teste"
+    />
+    <paciente
+        id="501"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+        nome="Paciente 501"
+        cpf="50150150155"
+        queixa_principal="Queixa paciente 501"
+        historia_molestia_pregressa="Moléstia paciente 501"
+        responsavel="usuario.teste"
+    />
+    <paciente
+        id="502"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+        nome="Paciente 502"
+        cpf="50250250255"
+        queixa_principal="Queixa paciente 502"
+        historia_molestia_pregressa="Moléstia paciente 502"
+        responsavel="outro.fisioterapeuta"
+    />
+
+    <servico
+        id="600"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+        nome="Fisioterapia Ortopédica"
+        valor="150.00"
+        duracao="60"
+        frequencia="1"
+        periodicidade="SEMANAL"
+    />
+    <!-- Duas ocorrências por semana: é o serviço que permite a contratação chocar
+         consigo mesma. -->
+    <servico
+        id="601"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+        nome="Pilates Clínico"
+        valor="200.00"
+        duracao="60"
+        frequencia="2"
+        periodicidade="SEMANAL"
+    />
+
+    <servico_contratado
+        id="700"
+        id_paciente="500"
+        fk_servico="600"
+        inicio_contratacao="2026-01-05"
+        frequencia="TERCA"
+        horarios="08:00"
+        data_cadastro="2026-01-01 08:00:00.0000"
+        usuario_cadastro="arquiteto"
+    />
+</dataset>

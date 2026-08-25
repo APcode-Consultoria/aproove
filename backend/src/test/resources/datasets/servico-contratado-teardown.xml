@@ -1,0 +1,12 @@
+<!--
+    Limpeza pós-teste do ServicoContratadoResourceTest. Ver o porquê em
+    exame-teardown.xml. Ordem igual à do dataset de carga: DELETE_ALL apaga na sequência
+    inversa, logo o pagamento sai antes da contratação, a contratação antes do serviço e
+    do paciente que ela referencia.
+-->
+<dataset>
+    <paciente/>
+    <servico/>
+    <servico_contratado/>
+    <pagamento/>
+</dataset>

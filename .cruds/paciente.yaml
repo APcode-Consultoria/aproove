@@ -9,9 +9,9 @@ projeto:
     - RooveApplication.PERFIL_FISIOTERAPEUTA:FISIOTERAPEUTA
     - RooveApplication.PERFIL_DIRETOR:DIRETOR
 
-# Regras de negócio e de tela que o contrato declarativo não cobre. As duas primeiras
-# valem no service do serviço contratado; a terceira é regra de tela, e vai para o
-# componente de cadastro do paciente.
+# Regras de negócio e de tela que o contrato declarativo não cobre. Cada uma diz, no
+# próprio texto, se vale no service (e em qual) ou se é regra de tela do componente de
+# cadastro do paciente.
 regras:
   - nome: valor contratado só pelo diretor
     prompt: >
@@ -80,6 +80,36 @@ regras:
       valor contratado. Contratação já encerrada não renova. A renovação é mensal
       independente da periodicidade do serviço, porque o dia de vencimento do paciente
       é um dia do mês.
+
+  - nome: sem choque de horário
+    prompt: >
+      Regra do service do serviço contratado. Ao incluir ou alterar uma contratação,
+      recusar quando algum atendimento dela cair sobre um atendimento que o
+      fisioterapeuta responsável pelo paciente já tem. A verificação é sobre as
+      ocorrências derivadas, e não sobre a coluna `frequencia`: dois valores de
+      frequência podem significar a mesma data sem se parecerem — o dia 15 de um serviço
+      MENSAL cai numa terça-feira em alguns meses, e é aí que ele choca com um SEMANAL de
+      terça. Quem deriva as ocorrências é o mesmo método que monta a agenda, para a
+      regra e a tela enxergarem os mesmos atendimentos.
+      Dois atendimentos chocam quando caem no mesmo dia e as faixas [início, fim) se
+      cruzam, com o fim derivado da `duracao` do serviço. Serviço sem duração cadastrada
+      vira um instante, e aí só o mesmo horário de início é choque. Atendimento sem
+      horário não choca com nada — a agenda o mostra como "sem horário" e não há faixa
+      que se possa afirmar ocupada. Verificar também a contratação contra ela mesma: os
+      N controles de frequência são preenchidos de uma vez e nada impede escolher duas
+      terças às 08:00 no mesmo serviço.
+      O responsável sai do paciente lido do banco, e a duração e a periodicidade saem do
+      serviço lido do banco: verificar com os números que vieram no payload seria
+      verificar com números escolhidos por quem está sendo verificado. A agenda
+      consultada inclui contratação com fim preenchido, senão toda contratação AVULSO —
+      que nasce fechada pela regra "contratação avulsa nasce fechada" — ficaria invisível
+      para a verificação.
+      Recorrência sem fim não tem como ser verificada até o infinito: a verificação olha
+      12 meses a partir do início da contratação, ou o fim dela quando é mais curto. É o
+      horizonte com que a clínica agenda; choque além disso só é checado quando a
+      contratação de lá for feita.
+      Erro de negócio (422), com o dia, o horário e o paciente do atendimento que já
+      ocupa a faixa, para quem contrata saber o que remarcar.
 
   - nome: ação pagar na aba de pagamentos
     prompt: >
