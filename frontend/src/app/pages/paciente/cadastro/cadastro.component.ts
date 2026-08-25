@@ -9,6 +9,7 @@ import { ServicoContratadoService } from '../../../services/servico-contratado.s
 import { PagamentoService } from '../../../services/pagamento.service';
 import {
   CadastroBaseComponent,
+  CampoMoedaComponent,
   DecoracaoMensagem,
   LoginService,
   Upload,
@@ -26,7 +27,7 @@ import { Pagamento } from "../../../domain/entities/pagamento";
 import { Periodicidade } from "../../../domain/enums/periodicidade";
 import { DiaSemana, DIAS_SEMANA, DIA_SEMANA_LABELS } from "../../../domain/enums/dia-semana";
 import { ConfigCrud, resolverPerfil } from "../../../config/perfis-crud";
-import { PERFIS_PACIENTE } from "../paciente.perfis";
+import { ACOES_LISTAS_PACIENTE } from "../paciente.perfis";
 import { CommonModule } from "@angular/common";
 import { NgxMaskDirective } from "ngx-mask";
 import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
@@ -41,18 +42,6 @@ import { PREFIXO_PERFIL_SISTEMA } from "../../../config/layout";
 export const MASCARA_CPF = "000.000.000-00";
 export const MASCARA_TELEFONE = "(00) 0000-0000||(00) 00000-0000";
 export const MASCARA_CEP = "00000-000";
-// Mascara de moeda do valor contratado. Declarada aqui, e nao importada do cadastro de
-// servico, para nao acoplar dois CRUDs por uma constante de template.
-//
-// No template ela vem acompanhada de `typeFromDecimals`, `leadZero` e `outputTransformFn`,
-// e os quatro juntos e que formam o campo de moeda: veja o comentario das constantes
-// homonimas no cadastro de servico, que descrevem a configuracao inteira.
-export const MASCARA_MOEDA = "separator.2";
-
-export function saidaMoeda(valor: string | number | undefined | null): unknown {
-  return valor === "" || valor === null || valor === undefined ? null : Number(valor);
-}
-
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.component.html',
@@ -63,7 +52,8 @@ export function saidaMoeda(valor: string | number | undefined | null): unknown {
     ReactiveFormsModule,
     FormsModule,
     RouterLink,
-    NgxMaskDirective
+    NgxMaskDirective,
+    CampoMoedaComponent
   ]
 })
 export class CadastroComponent extends CadastroBaseComponent<Paciente> {
@@ -73,8 +63,6 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   protected readonly mascaraCpf = MASCARA_CPF;
   protected readonly mascaraTelefone = MASCARA_TELEFONE;
   protected readonly mascaraCep = MASCARA_CEP;
-  protected readonly mascaraMoeda = MASCARA_MOEDA;
-  protected readonly saidaMoeda = saidaMoeda;
 
   protected readonly Periodicidade = Periodicidade;
   protected readonly diasSemana = DIAS_SEMANA;
@@ -229,9 +217,10 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
 
   protected loginService = inject(LoginService);
 
-  // `lista.acoes` de servicos_contratados varia por perfil (só o diretor exclui), então
-  // o CRUD ganha configuração por perfil resolvida na construção do componente.
-  protected readonly config: ConfigCrud = resolverPerfil(PERFIS_PACIENTE, this.loginService);
+  // `lista.acoes` de servicos_contratados e de pagamentos varia por perfil (só o diretor
+  // exclui), então essas duas listas ganham a configuração resolvida na construção do
+  // componente. O resto da tela não varia por perfil e não passa por aqui.
+  protected readonly config: ConfigCrud = resolverPerfil(ACOES_LISTAS_PACIENTE, this.loginService);
 
   private pacienteService = inject(PacienteService);
   private prontuarioService = inject(ProntuarioService);

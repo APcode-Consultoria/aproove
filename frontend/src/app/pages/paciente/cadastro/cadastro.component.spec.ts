@@ -104,9 +104,13 @@ describe('CadastroComponent', () => {
     incluir: vi.fn()
   };
 
+  // `hasRole` responde pelo `podeEditarValorContratado`; `hasAnyRole`, pelas ações das
+  // listas resolvidas em `perfis-crud`. Sem perfil nenhum, a tela nasce sem ações — que
+  // é o cenário destes testes, focados no formulário.
   const loginServiceMock = {
     getUserLogin: vi.fn(() => null),
-    hasRole: vi.fn(() => false)
+    hasRole: vi.fn(() => false),
+    hasAnyRole: vi.fn(() => false)
   };
 
   /** O `form` do CRUD é protected na base; nos testes acessamos por índice. */

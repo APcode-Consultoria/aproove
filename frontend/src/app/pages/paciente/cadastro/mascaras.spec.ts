@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { MASCARA_CEP, MASCARA_CPF, MASCARA_MOEDA, MASCARA_TELEFONE, saidaMoeda } from './cadastro.component';
+import { CampoMoedaComponent } from '@andre.penteado/ngx-apcore';
+import { MASCARA_CEP, MASCARA_CPF, MASCARA_TELEFONE } from './cadastro.component';
 
 /**
  * As máscaras do ngx-mask são validadores de diretiva: só existem com o template
@@ -17,14 +18,13 @@ import { MASCARA_CEP, MASCARA_CPF, MASCARA_MOEDA, MASCARA_TELEFONE, saidaMoeda }
  */
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, NgxMaskDirective],
+  imports: [ReactiveFormsModule, NgxMaskDirective, CampoMoedaComponent],
   template: `
     <form [formGroup]="form">
       <input formControlName="cpf" [mask]="mascaraCpf">
       <input formControlName="telefone" [mask]="mascaraTelefone">
       <input formControlName="cep" [mask]="mascaraCep">
-      <input id="moeda" formControlName="valor" [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
-             [typeFromDecimals]="true" [leadZero]="true" [outputTransformFn]="saidaMoeda">
+      <apcore-campo-moeda inputId="moeda" formControlName="valor"></apcore-campo-moeda>
     </form>
   `
 })
@@ -32,8 +32,6 @@ class CamposMascaradosHost {
   readonly mascaraCpf = MASCARA_CPF;
   readonly mascaraTelefone = MASCARA_TELEFONE;
   readonly mascaraCep = MASCARA_CEP;
-  readonly mascaraMoeda = MASCARA_MOEDA;
-  readonly saidaMoeda = saidaMoeda;
 
   cpf = new FormControl<string | null>(null);
   telefone = new FormControl<string | null>(null);
@@ -79,12 +77,15 @@ describe('Máscaras do cadastro de paciente', () => {
 });
 
 /**
- * O campo de moeda não é só a máscara `separator.2`: são ela, `typeFromDecimals`,
- * `leadZero` e `outputTransformFn` juntos. Sem o primeiro, o separador decimal tinha que
- * ser digitado, e quem digitava 15050 esperando R$ 150,50 gravava quinze mil e cinquenta
- * reais — ou trocava ponto por vírgula e recebia de volta um valor mil vezes maior. Sem o
- * último, o `leadZero` deixaria no FormControl a string '150.50', e o domínio declara
- * `moeda` como number. Estes testes protegem a combinação, não a constante isolada.
+ * O campo de moeda mora na ngx-apcore (`apcore-campo-moeda`), e não neste projeto: são
+ * quatro configurações do ngx-mask que só funcionam juntas, e repeti-las à mão em cada
+ * tela era a chance de errar uma delas. Sem `typeFromDecimals` o separador decimal tinha
+ * que ser digitado, e quem digitava 15050 esperando R$ 150,50 gravava quinze mil e
+ * cinquenta reais — ou trocava ponto por vírgula e recebia um valor mil vezes maior.
+ *
+ * Estes testes ficam aqui de propósito, mesmo o componente sendo de fora: eles protegem
+ * o comportamento de que este projeto depende, e é a atualização da biblioteca que
+ * poderia quebrá-lo sem ninguém perceber.
  */
 describe('Campo de moeda do cadastro de paciente', () => {
   function montar() {

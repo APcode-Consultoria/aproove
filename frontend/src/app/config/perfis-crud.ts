@@ -5,106 +5,59 @@
  */
 import { LoginService } from "@andre.penteado/ngx-apcore";
 
-/** Ações de CRUD liberadas para o usuário logado. */
-export interface AcoesCrud {
+/**
+ * Ações de uma lista e os perfis que executam cada uma: tradução literal de
+ * `lista.acoes` do YAML.
+ */
+export interface AcoesLista {
+  consultar: string[];
+  incluir: string[];
+  alterar: string[];
+  excluir: string[];
+}
+
+/** As mesmas quatro ações, já resolvidas para o usuário logado. */
+export interface AcoesPermitidas {
   consultar: boolean;
   incluir: boolean;
   alterar: boolean;
   excluir: boolean;
 }
 
-/** Configuração de um campo para o usuário logado. */
-export interface ConfigCampo {
-  exibeFormulario: boolean;
-  somenteLeitura: boolean;
-  exibeGrid: boolean;
-  exibeTitulo: boolean;
-  pesquisavel: boolean;
-}
-
-/** O que um perfil vê e pode fazer no CRUD. Uma entrada por perfil de `projeto.perfis`. */
-export interface PerfilCrud {
-  perfil: string;
-  acoes: AcoesCrud;
-  acoesCustomizadas: Record<string, boolean>;
-  campos: Record<string, ConfigCampo>;
-  listas: Record<string, AcoesCrud>;
-}
-
-/** Resultado da combinação dos perfis que o usuário logado possui. */
+/** O que o usuário logado pode fazer nas listas do CRUD. */
 export interface ConfigCrud {
-  acoes: AcoesCrud;
-  acoesCustomizadas: Record<string, boolean>;
-  campos: Record<string, ConfigCampo>;
-  listas: Record<string, AcoesCrud>;
+  listas: Record<string, AcoesPermitidas>;
 }
-
-const SEM_ACAO: AcoesCrud = { consultar: false, incluir: false, alterar: false, excluir: false };
-
-const CAMPO_OCULTO: ConfigCampo = {
-  exibeFormulario: false,
-  somenteLeitura: true,
-  exibeGrid: false,
-  exibeTitulo: false,
-  pesquisavel: false
-};
 
 /**
- * Combina os perfis do CRUD que o usuário logado possui. Perfis somam permissões: a ação existe
- * se qualquer perfil dele tiver, o campo aparece se qualquer perfil dele exibir, e o campo só é
- * somente leitura quando nenhum perfil dele está no `edicao` do campo.
+ * Resolve as ações das listas para o usuário logado.
  *
- * O mapa devolvido tem entrada para todos os campos e listas do CRUD, então consultar um nome
- * nunca devolve `undefined`.
+ * <p>Perfis somam permissões: a ação existe quando o usuário tem <b>qualquer</b> um dos
+ * perfis declarados para ela — que é exatamente o `hasAnyRole` do LoginService, e não
+ * um laço próprio.</p>
+ *
+ * <p>Só existe a fatia `listas` porque `lista.acoes` é a única configuração por perfil
+ * que os YAMLs deste projeto declaram. Nenhum deles tem `tabela.acoes`,
+ * `tabela.acoes-customizadas`, `por-perfil` ou `edicao`, e gerar mapas de ações e de
+ * campos com valores idênticos para todos os perfis era carregar 200 linhas para
+ * transportar dois booleanos. Quando um CRUD declarar uma dessas, a fatia
+ * correspondente entra aqui — a regra está em 06-frontend-rotas-menu-api.md.</p>
+ *
+ * @param listas ações declaradas para cada lista do CRUD.
+ * @param loginService serviço de login, fonte dos perfis do usuário.
+ * @return as ações de cada lista já reduzidas a booleanos.
  */
-export function resolverPerfil(perfis: PerfilCrud[], loginService: LoginService): ConfigCrud {
-  const meus = perfis.filter(perfilCrud => loginService.hasRole(perfilCrud.perfil));
+export function resolverPerfil(listas: Record<string, AcoesLista>, loginService: LoginService): ConfigCrud {
+  const resolvidas: Record<string, AcoesPermitidas> = {};
 
-  if (meus.length === 0) {
-    console.warn("Nenhum perfil do CRUD corresponde ao usuário logado: a tela ficará sem ações e sem campos");
-  }
-
-  const nomesCampos = new Set(perfis.flatMap(perfilCrud => Object.keys(perfilCrud.campos)));
-  const nomesListas = new Set(perfis.flatMap(perfilCrud => Object.keys(perfilCrud.listas)));
-
-  const campos: Record<string, ConfigCampo> = {};
-  for (const nome of nomesCampos) {
-    const configs = meus.map(perfilCrud => perfilCrud.campos[nome] ?? CAMPO_OCULTO);
-    const noFormulario = configs.filter(config => config.exibeFormulario);
-
-    campos[nome] = {
-      exibeFormulario: noFormulario.length > 0,
-      somenteLeitura: noFormulario.length === 0 || noFormulario.every(config => config.somenteLeitura),
-      exibeGrid: configs.some(config => config.exibeGrid),
-      exibeTitulo: configs.some(config => config.exibeTitulo),
-      pesquisavel: configs.some(config => config.pesquisavel)
+  for (const [nome, acoes] of Object.entries(listas)) {
+    resolvidas[nome] = {
+      consultar: loginService.hasAnyRole(acoes.consultar),
+      incluir: loginService.hasAnyRole(acoes.incluir),
+      alterar: loginService.hasAnyRole(acoes.alterar),
+      excluir: loginService.hasAnyRole(acoes.excluir)
     };
   }
 
-  const listas: Record<string, AcoesCrud> = {};
-  for (const nome of nomesListas) {
-    listas[nome] = somarAcoes(meus.map(perfilCrud => perfilCrud.listas[nome] ?? SEM_ACAO));
-  }
-
-  const nomesCustomizadas = new Set(perfis.flatMap(perfilCrud => Object.keys(perfilCrud.acoesCustomizadas)));
-  const acoesCustomizadas: Record<string, boolean> = {};
-  for (const nome of nomesCustomizadas) {
-    acoesCustomizadas[nome] = meus.some(perfilCrud => perfilCrud.acoesCustomizadas[nome] === true);
-  }
-
-  return {
-    acoes: somarAcoes(meus.map(perfilCrud => perfilCrud.acoes)),
-    acoesCustomizadas,
-    campos,
-    listas
-  };
-}
-
-function somarAcoes(acoes: AcoesCrud[]): AcoesCrud {
-  return {
-    consultar: acoes.some(acao => acao.consultar),
-    incluir: acoes.some(acao => acao.incluir),
-    alterar: acoes.some(acao => acao.alterar),
-    excluir: acoes.some(acao => acao.excluir)
-  };
+  return { listas: resolvidas };
 }
