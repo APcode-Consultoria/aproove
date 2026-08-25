@@ -15,17 +15,27 @@ CREATE TABLE IF NOT EXISTS Servico (
     -- NUMERIC com escala 2 fixa: dinheiro nunca em FLOAT/DOUBLE, que erra centavos
     -- em soma e comparacao.
     Valor                      NUMERIC(15,2) NULL,
+    -- Duracao, Frequencia e Periodicidade sao NOT NULL porque a agenda nao existe sem os
+    -- tres: a periodicidade diz o que os valores da frequencia da contratacao
+    -- significam, a frequencia diz quantos atendimentos ela abre e a duracao diz onde
+    -- cada um termina. Servico sem um deles ficaria cadastrado sem poder ser contratado
+    -- de verdade, e todo codigo que le a agenda teria que carregar um caminho para o
+    -- caso impossivel.
+    --
     -- Duracao do atendimento em minutos. E o que a agenda soma ao horario inicial da
     -- contratacao para derivar o horario final.
-    Duracao                    INTEGER       NULL,
+    Duracao                    INTEGER       NOT NULL,
     -- Quantas ocorrencias o servico tem dentro da periodicidade, e portanto quantos
     -- controles a aba de contratacao abre.
-    Frequencia                 INTEGER       NULL,
+    Frequencia                 INTEGER       NOT NULL,
     -- Enum gravado como texto (@Enumerated(EnumType.STRING)), nunca ordinal: a posicao
     -- da constante mudaria o significado dos registros ja gravados.
-    Periodicidade              TEXT          NULL,
+    Periodicidade              TEXT          NOT NULL,
     CONSTRAINT PK_Servico PRIMARY KEY (Id),
-    CONSTRAINT CK_Servico_Periodicidade CHECK (Periodicidade IS NULL OR Periodicidade IN ('AVULSO', 'SEMANAL', 'MENSAL'))
+    CONSTRAINT CK_Servico_Periodicidade CHECK (Periodicidade IN ('AVULSO', 'SEMANAL', 'MENSAL')),
+    -- Zero ou negativo passaria pelo NOT NULL e continuaria sem gerar atendimento.
+    CONSTRAINT CK_Servico_Duracao CHECK (Duracao > 0),
+    CONSTRAINT CK_Servico_Frequencia CHECK (Frequencia > 0)
 );
 
 CREATE INDEX IF NOT EXISTS IDX_Servico_Nome ON Servico (Nome);

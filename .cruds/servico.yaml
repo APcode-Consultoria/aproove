@@ -28,9 +28,14 @@ tabela:
       exibe-grid: true
       pesquisavel: contem
 
+    # Os tres obrigatorios juntos: sem periodicidade a frequencia da contratacao nao
+    # significa nada, sem frequencia a contratacao nao abre atendimento nenhum e sem
+    # duracao a agenda nao sabe onde o atendimento termina. Servico sem os tres ficaria
+    # cadastrado sem poder ser contratado de verdade.
     - nome: duracao
       tipo: inteiro
       label: Duração (em minutos)
+      obrigatorio: true
       colunas-layout: 4
 
     - nome: valor
@@ -42,11 +47,13 @@ tabela:
     - nome: frequencia
       tipo: inteiro
       label: Frequência
+      obrigatorio: true
       colunas-layout: 4*
 
     - nome: periodicidade
       tipo: texto
       label: Periodicidade
+      obrigatorio: true
       colunas-layout: 12*
       exibe-grid: true
       pesquisavel: exato

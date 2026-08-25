@@ -117,11 +117,9 @@ public class AgendaService {
         if (Objects.isNull(contratacao.getFrequencia()) || contratacao.getFrequencia().isBlank())
             return;
 
+        // Periodicidade e duracao do servico sao NOT NULL: nao ha caminho para o servico
+        // que nao diz o que a frequencia significa nem onde o atendimento termina.
         Periodicidade periodicidade = contratacao.getServico().getPeriodicidade();
-        if (Objects.isNull(periodicidade))
-            // Servico sem periodicidade nao diz o que os valores da frequencia
-            // significam, entao nao ha como derivar atendimento nenhum.
-            return;
 
         String[] valores = contratacao.getFrequencia().split(";");
         String[] horarios = Objects.isNull(contratacao.getHorarios()) ? new String[0] : contratacao.getHorarios().split(";");
@@ -246,17 +244,16 @@ public class AgendaService {
     /**
      * Soma a duração do serviço ao horário de início.
      *
+     * <p>A duração é obrigatória no serviço, então o término só falta quando a
+     * contratação não gravou o horário de início — e aí não há atendimento a situar no
+     * tempo, só um nome numa data.</p>
+     *
      * @param horario horário de início; nulo devolve nulo.
-     * @param duracao duração do serviço em minutos; nula ou não positiva devolve nulo.
-     * @return horário de término, ou {@code null} quando não há como derivá-lo. Preferir
-     *         nulo a devolver o próprio início: a tela sabe mostrar só o começo, mas um
-     *         término igual ao início seria informação errada.
+     * @param duracao duração do serviço em minutos.
+     * @return horário de término, ou {@code null} quando não há horário de início.
      */
     private LocalTime calcularHorarioFim(LocalTime horario, Integer duracao) {
-        if (Objects.isNull(horario) || Objects.isNull(duracao) || duracao <= 0)
-            return null;
-
-        return horario.plusMinutes(duracao);
+        return Objects.isNull(horario) ? null : horario.plusMinutes(duracao);
     }
 
     /**

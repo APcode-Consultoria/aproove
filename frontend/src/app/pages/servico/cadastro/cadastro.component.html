@@ -100,11 +100,14 @@
                 </div>
 
                 <div class="col-12 col-md-4">
-                  <label class="form-label fw-semibold" for="duracao">Duração (em minutos)</label>
+                  <label class="form-label fw-semibold required-label text-danger" for="duracao">
+                    Duração (em minutos) <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-regular fa-hourglass-half"></i></span>
                     <input id="duracao" type="number" name="duracao" formControlName="duracao"
-                           class="form-control" min="0" step="5">
+                           class="form-control" min="1" step="5" required>
+                    <div class="invalid-feedback">Duração é um campo obrigatório</div>
                   </div>
                   <div class="form-text">A agenda soma esta duração ao horário do atendimento.</div>
                 </div>
@@ -112,25 +115,23 @@
                 <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="valor">Valor da Inscrição</label>
                   <!--
-                    type="text" com a mascara do ngx-mask, nunca type="number": o number
-                    ignora a mascara e ainda mostra as setas de incremento, que nao fazem
-                    sentido em dinheiro.
+                    Campo de moeda da ngx-apcore: máscara, digitação pela direita, casas
+                    decimais completadas e saída como number vêm dele. Repetir essa
+                    configuração à mão em cada tela era a chance de errar um dos quatro
+                    ajustes, com o erro custando dinheiro trocado.
                   -->
-                  <div class="input-group has-validation">
-                    <span class="input-group-text">R$</span>
-                    <input id="valor" type="text" name="valor" formControlName="valor" class="form-control text-end"
-                           [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
-                           [typeFromDecimals]="true" [leadZero]="true"
-                           [outputTransformFn]="saidaMoeda" placeholder="0,00">
-                  </div>
+                  <apcore-campo-moeda inputId="valor" formControlName="valor"></apcore-campo-moeda>
                 </div>
 
                 <div class="col-12 col-md-4">
-                  <label class="form-label fw-semibold" for="frequencia">Frequência</label>
+                  <label class="form-label fw-semibold required-label text-danger" for="frequencia">
+                    Frequência <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-repeat"></i></span>
                     <input id="frequencia" type="number" name="frequencia"
-                           formControlName="frequencia" class="form-control" min="0" step="1">
+                           formControlName="frequencia" class="form-control" min="1" step="1" required>
+                    <div class="invalid-feedback">Frequência é um campo obrigatório</div>
                   </div>
                   <div class="form-text">Quantos atendimentos dentro da periodicidade escolhida.</div>
                 </div>
@@ -141,16 +142,19 @@
                     aponta para um controle unico. E um <span> mais role="radiogroup" com
                     aria-labelledby, e cada opcao mantem o proprio <label for>.
                   -->
-                  <span class="form-label fw-semibold d-block" id="rotulo-periodicidade">Periodicidade</span>
+                  <span class="form-label fw-semibold d-block required-label text-danger" id="rotulo-periodicidade">
+                    Periodicidade <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
+                  </span>
                   <div class="d-flex flex-wrap gap-3" role="radiogroup" aria-labelledby="rotulo-periodicidade">
                     @for (opcao of periodicidades; track opcao) {
                       <div class="form-check">
                         <input class="form-check-input" type="radio" name="periodicidade"
                                id="periodicidade_{{ opcao }}" [value]="opcao"
-                               formControlName="periodicidade">
+                               formControlName="periodicidade" required>
                         <label class="form-check-label" for="periodicidade_{{ opcao }}">{{ periodicidadeLabels[opcao] }}</label>
                       </div>
                     }
+                    <div class="invalid-feedback">Periodicidade é um campo obrigatório</div>
                   </div>
                 </div>
               </div>

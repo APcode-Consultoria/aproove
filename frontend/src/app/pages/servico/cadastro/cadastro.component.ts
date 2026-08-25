@@ -6,35 +6,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { CadastroBaseComponent } from "@andre.penteado/ngx-apcore";
+import { CadastroBaseComponent, CampoMoedaComponent } from "@andre.penteado/ngx-apcore";
 import { Observable } from "rxjs";
 import { CommonModule } from "@angular/common";
-import { NgxMaskDirective } from "ngx-mask";
 import { ServicoService } from '../../../services/servico.service';
 import { Servico } from "../../../domain/entities/servico";
 import { Periodicidade, PERIODICIDADE_LABELS } from "../../../domain/enums/periodicidade";
-
-// Mascara de moeda do ngx-mask, aplicada no template por binding. Fica aqui, e nao como
-// literal no HTML, para o campo do cadastro e qualquer outra tela usarem exatamente a
-// mesma configuracao.
-//
-// No template a mascara vem com `typeFromDecimals` e `leadZero`, e sao esses dois que
-// dao o comportamento de campo de moeda. Sem `typeFromDecimals` o separador decimal
-// precisava ser digitado, e digitar 15050 valia quinze mil e cinquenta; com ele os
-// digitos entram pela direita, como em caixa eletronico — 15050 vira 150,50 — e
-// pontos e virgulas digitados sao ignorados, entao nao ha como trocar um pelo outro.
-// `leadZero` completa as casas decimais, para um valor gravado como 1234.5 aparecer
-// 1.234,50 e nao 1.234,5.
-export const MASCARA_MOEDA = "separator.2";
-
-// Saida do campo de moeda, ligada em `outputTransformFn`. O ngx-mask entrega o valor
-// desmascarado como texto ('1234.56') e o `leadZero` o entrega sempre com as duas casas;
-// o dominio declara `moeda` como number. Sem esta conversao o FormControl guardaria
-// string e a entidade mentiria o proprio tipo. Campo vazio vira null, e nao 0: valor
-// nao informado nao e valor zero.
-export function saidaMoeda(valor: string | number | undefined | null): unknown {
-  return valor === "" || valor === null || valor === undefined ? null : Number(valor);
-}
 
 @Component({
   selector: 'roove-servico-cadastro',
@@ -46,15 +23,10 @@ export function saidaMoeda(valor: string | number | undefined | null): unknown {
     ReactiveFormsModule,
     FormsModule,
     RouterLink,
-    NgxMaskDirective
+    CampoMoedaComponent
   ]
 })
 export class CadastroComponent extends CadastroBaseComponent<Servico> {
-
-  protected readonly mascaraMoeda = MASCARA_MOEDA;
-  // Referencia estavel: `outputTransformFn` e input signal, e uma arrow nova a cada
-  // ciclo de deteccao seria uma troca de valor a cada ciclo.
-  protected readonly saidaMoeda = saidaMoeda;
 
   protected readonly periodicidades = Object.values(Periodicidade);
   protected readonly periodicidadeLabels = PERIODICIDADE_LABELS;
@@ -67,9 +39,11 @@ export class CadastroComponent extends CadastroBaseComponent<Servico> {
   usuarioUltimaAtualizacao = new FormControl(null);
   nome = new FormControl(null, Validators.required);
   valor = new FormControl(null);
-  duracao = new FormControl(null);
-  frequencia = new FormControl(null);
-  periodicidade = new FormControl(null);
+  // Duração, frequência e periodicidade são obrigatórias: sem as três o serviço não gera
+  // atendimento nenhum na agenda, e ficaria cadastrado sem poder ser contratado.
+  duracao = new FormControl(null, [Validators.required, Validators.min(1)]);
+  frequencia = new FormControl(null, [Validators.required, Validators.min(1)]);
+  periodicidade = new FormControl(null, Validators.required);
   protected readonly form = new FormGroup({
     id: this.id,
     dataCadastro: this.dataCadastro,

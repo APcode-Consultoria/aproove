@@ -24,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -215,10 +214,10 @@ public class ServicoContratadoService {
      * mostra.</p>
      *
      * <p>Dois atendimentos chocam quando caem no mesmo dia e as faixas
-     * {@code [início, fim)} se cruzam, com o fim derivado da {@code duracao} do serviço.
-     * Serviço sem duração cadastrada vira um instante, e aí só o mesmo horário de início
-     * é choque. Atendimento sem horário não choca com nada: a agenda o mostra como "sem
-     * horário" e não há faixa que se possa afirmar ocupada.</p>
+     * {@code [início, fim)} se cruzam, com o fim derivado da {@code duracao} do serviço —
+     * que é obrigatória, então toda faixa tem tamanho. Atendimento sem horário não choca
+     * com nada: a agenda o mostra como "sem horário" e não há faixa que se possa afirmar
+     * ocupada.</p>
      *
      * <p>Verifica também a contratação contra ela mesma: os N controles de frequência
      * são preenchidos de uma vez, e nada impede o usuário de escolher duas terças às
@@ -279,7 +278,7 @@ public class ServicoContratadoService {
                         ocupado.paciente(),
                         ocupado.servico(),
                         FORMATO_HORA.format(ocupado.horario()),
-                        FORMATO_HORA.format(fimDe(ocupado))
+                        FORMATO_HORA.format(ocupado.horarioFim())
                     ));
                 }
             }
@@ -303,9 +302,9 @@ public class ServicoContratadoService {
                         "Choque de horário em %s: os horários escolhidos para esta contratação se sobrepõem, das %s às %s e das %s às %s",
                         FORMATO_DATA.format(um.data()),
                         FORMATO_HORA.format(um.horario()),
-                        FORMATO_HORA.format(fimDe(um)),
+                        FORMATO_HORA.format(um.horarioFim()),
                         FORMATO_HORA.format(outro.horario()),
-                        FORMATO_HORA.format(fimDe(outro))
+                        FORMATO_HORA.format(outro.horarioFim())
                     ));
                 }
             }
@@ -353,27 +352,15 @@ public class ServicoContratadoService {
             return false;
 
         // Sem horário não há faixa a comparar. Melhor deixar passar do que recusar uma
-        // contratação por um atendimento que a agenda mostra como "sem horário".
+        // contratação por um atendimento que a agenda mostra como "sem horário". É o
+        // único caso de horário nulo: o término sempre acompanha o início, porque a
+        // duração do serviço é obrigatória.
         if (Objects.isNull(um.horario()) || Objects.isNull(outro.horario()))
             return false;
 
-        // Mesmo início é choque mesmo quando os dois serviços estão sem duração
-        // cadastrada e as duas faixas têm tamanho zero.
-        if (um.horario().equals(outro.horario()))
-            return true;
-
-        return um.horario().isBefore(fimDe(outro)) && outro.horario().isBefore(fimDe(um));
-    }
-
-    /**
-     * Fim do atendimento.
-     *
-     * @param atendimento atendimento derivado da agenda.
-     * @return o término derivado da duração do serviço; sem duração cadastrada, o
-     *         próprio início — o atendimento vira um instante em vez de uma faixa.
-     */
-    private LocalTime fimDe(AgendaAtendimento atendimento) {
-        return Objects.nonNull(atendimento.horarioFim()) ? atendimento.horarioFim() : atendimento.horario();
+        // Faixas de tamanho garantido, então o teste de interseção já cobre o início
+        // igual, sem precisar de caso à parte.
+        return um.horario().isBefore(outro.horarioFim()) && outro.horario().isBefore(um.horarioFim());
     }
 
     /**

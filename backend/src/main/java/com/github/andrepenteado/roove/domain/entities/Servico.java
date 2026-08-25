@@ -14,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -67,12 +69,23 @@ public class Servico implements Serializable {
 
     // Duracao do atendimento em minutos. E o que a agenda soma ao horario inicial da
     // contratacao para saber a que horas o atendimento termina.
+    //
+    // Os tres campos abaixo sao obrigatorios porque a agenda nao existe sem eles: a
+    // periodicidade diz o que os valores da frequencia significam, a frequencia diz
+    // quantos atendimentos a contratacao abre e a duracao diz onde cada um termina.
+    // Servico sem um deles nao gera atendimento nenhum — ficaria cadastrado sem poder
+    // ser contratado de verdade.
+    @NotNull(message = "Duração é um campo obrigatório")
+    @Positive(message = "Duração deve ser maior que zero")
     private Integer duracao;
 
+    @NotNull(message = "Frequência é um campo obrigatório")
+    @Positive(message = "Frequência deve ser maior que zero")
     private Integer frequencia;
 
     // STRING e nao ORDINAL: o ordinal grava a posicao da constante, e inserir um valor
     // no meio da lista mudaria o significado dos registros ja gravados.
+    @NotNull(message = "Periodicidade é um campo obrigatório")
     @Enumerated(EnumType.STRING)
     private Periodicidade periodicidade;
 
