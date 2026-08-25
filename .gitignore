@@ -3,6 +3,8 @@
 .docker/*.iml
 .jpb
 .specs/
+# Cache do vitest quando ele roda da raiz em vez de frontend/
+node_modules/
 ### Resíduo da migração para o Vault ###
 # Os Secrets desta app agora vêm do cofre, materializados pelo Vault Secrets
 # Operator (bloco `vault:` em .helm/values.*.yaml). O .helm/secret.yaml só
