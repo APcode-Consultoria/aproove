@@ -101,46 +101,82 @@
         }
       } @else {
         <!--
-          Grade da semana: sete colunas de largura idêntica, com o dia da semana dentro da
-          própria célula. O cabeçalho separado que existia antes era uma segunda linha
-          dimensionada por conta própria — bastava um dia com mais atendimentos que os
-          outros para o nome do dia deixar de bater com a coluna dele.
+          Grade da semana: uma coluna de horas e sete de dia, todas no mesmo grid, com
+          uma linha por bloco de 5 minutos. O rótulo aparece só na hora cheia — o bloco
+          é a régua, não a legenda —, e a altura de cada atendimento é a duração dele,
+          então o espaço vazio entre dois blocos é literalmente o horário livre.
         -->
-        <div class="agenda-semana">
-          @for (dia of dias; track dia.data) {
-            <div class="agenda-dia border-end border-bottom p-2" [class.bg-body-tertiary]="dia.hoje">
+        <div class="agenda-rolagem">
+          <div class="agenda-semana">
+            <!-- Linha 1: canto vazio sobre a coluna de horas, e os sete cabeçalhos. -->
+            <div class="border-end border-bottom"></div>
+            @for (dia of dias; track dia.data) {
               <!--
-                O cabeçalho da célula é que abre o dia, e não a célula inteira: os
-                atendimentos são links para o paciente e não podem virar área de clique
-                de outra coisa.
+                O cabeçalho é o único ponto de entrada para o dia. A semana não leva a
+                mais lugar nenhum: os nomes aqui saem cortados, e mandar direto para o
+                cadastro a partir de um nome que o usuário não terminou de ler é como
+                pedir para ele abrir o paciente errado.
               -->
               <button type="button"
-                      class="btn btn-link btn-sm text-decoration-none d-flex align-items-center gap-2 mb-2 p-0"
-                      [attr.aria-label]="'Ver o dia ' + (dia.data | date: 'dd/MM/yyyy') + ' por extenso'"
+                      class="border-0 border-end border-bottom text-start p-2"
+                      [class.bg-transparent]="!dia.hoje" [class.bg-body-tertiary]="dia.hoje"
+                      [attr.aria-label]="'Ver os atendimentos de ' + (dia.data | date: 'dd/MM/yyyy')"
                       (click)="abrirDia(dia.data)">
-                <span class="small fw-semibold text-secondary text-uppercase">{{ dia.nomeDoDia }}</span>
-                <span class="small fw-semibold"
-                      [class.badge]="dia.hoje"
-                      [class.rounded-pill]="dia.hoje"
-                      [class.text-bg-primary]="dia.hoje">{{ dia.diaDoMes }}</span>
+                <span class="d-flex align-items-center gap-2">
+                  <span class="small fw-semibold text-secondary text-uppercase">{{ dia.nomeDoDia }}</span>
+                  <span class="small fw-semibold"
+                        [class.badge]="dia.hoje"
+                        [class.rounded-pill]="dia.hoje"
+                        [class.text-bg-primary]="dia.hoje">{{ dia.diaDoMes }}</span>
+                </span>
               </button>
 
-              @for (atendimento of dia.atendimentos; track $index) {
+              @if (temSemHorario) {
                 <!--
-                  `d-block` + `text-truncate` em cada linha: o nome do paciente e o do
-                  serviço são livres e estouram a coluna se não forem cortados. O `title`
-                  dá o texto inteiro no hover, e o dia, por extenso.
+                  Linha 2, só quando existe: atendimento sem horário não tem onde cair na
+                  grade, e some se não tiver faixa própria. É a mesma ideia da linha de
+                  "dia inteiro" de um calendário.
                 -->
-                <a class="d-block text-decoration-none small mb-1 p-2 rounded bg-primary-subtle text-primary-emphasis"
-                   [routerLink]="['/paciente/cadastro', atendimento.idPaciente]"
-                   [title]="atendimento.paciente + ' — ' + atendimento.servico">
-                  <span class="fw-semibold d-block text-truncate">{{ faixaDeHorario(atendimento) }}</span>
-                  <span class="d-block text-truncate">{{ atendimento.paciente }}</span>
-                  <span class="d-block text-truncate opacity-75">{{ atendimento.servico }}</span>
-                </a>
+                <div class="border-end border-bottom p-1" style="grid-row: 2;"
+                     [style.grid-column]="$index + 2">
+                  @for (atendimento of dia.semHorario; track $index) {
+                    <span class="d-block small p-1 rounded bg-secondary-subtle text-secondary-emphasis text-truncate"
+                          [title]="atendimento.paciente + ' — ' + atendimento.servico + ' (sem horário)'">
+                      {{ atendimento.paciente }}
+                    </span>
+                  }
+                </div>
+              }
+            }
+
+            @if (temSemHorario) {
+              <span class="small text-secondary text-end pe-2 border-end border-bottom"
+                    style="grid-row: 2; grid-column: 1;">sem hora</span>
+            }
+
+            <!-- Coluna de horas: um rótulo por hora cheia, cada um cobrindo 12 blocos. -->
+            <div class="agenda-horas border-end" [style.grid-template-rows]="linhasDaGrade">
+              @for (hora of horas; track hora.rotulo) {
+                <span class="agenda-hora small text-secondary text-end pe-2" [style.grid-row]="hora.gridRow">
+                  {{ hora.rotulo }}
+                </span>
               }
             </div>
-          }
+
+            @for (dia of dias; track dia.data) {
+              <div class="agenda-coluna border-end" [style.grid-template-rows]="linhasDaGrade"
+                   [class.bg-body-tertiary]="dia.hoje">
+                @for (posicionado of dia.naGrade; track $index) {
+                  <span class="agenda-atendimento small p-1 rounded bg-primary-subtle text-primary-emphasis"
+                        [style.grid-row]="posicionado.gridRow"
+                        [title]="faixaDeHorario(posicionado.atendimento) + ' — ' + posicionado.atendimento.paciente + ' — ' + posicionado.atendimento.servico">
+                    <span class="d-block text-truncate fw-semibold">{{ posicionado.atendimento.paciente }}</span>
+                    <span class="d-block text-truncate opacity-75">{{ posicionado.atendimento.servico }}</span>
+                  </span>
+                }
+              </div>
+            }
+          </div>
         </div>
 
         @if (!totalAtendimentos) {

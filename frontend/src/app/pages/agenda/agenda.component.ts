@@ -13,6 +13,13 @@ import { AgendaService } from "../../services/agenda.service";
 import { AgendaAtendimento } from "../../domain/entities/agenda-atendimento";
 import { PREFIXO_PERFIL_SISTEMA } from "../../config/layout";
 
+/** Um atendimento já posicionado na grade de horas. */
+export interface AtendimentoNaGrade {
+  atendimento: AgendaAtendimento;
+  /** Valor do `grid-row`: linha inicial e quantos blocos ocupa. */
+  gridRow: string;
+}
+
 /** Um dia da grade, com os atendimentos que caem nele. */
 export interface DiaAgenda {
   data: string;
@@ -21,6 +28,16 @@ export interface DiaAgenda {
   nomeDoDia: string;
   hoje: boolean;
   atendimentos: AgendaAtendimento[];
+  /** Os que têm horário, posicionados na grade. */
+  naGrade: AtendimentoNaGrade[];
+  /** Os que não têm horário, exibidos numa faixa própria acima da grade. */
+  semHorario: AgendaAtendimento[];
+}
+
+/** Um rótulo da coluna de horas. */
+export interface RotuloHora {
+  rotulo: string;
+  gridRow: string;
 }
 
 @Component({
@@ -34,32 +51,62 @@ export interface DiaAgenda {
     RouterLink
   ],
   /**
-   * A grade é a única parte da tela que o Bootstrap não resolve: sete colunas iguais não
-   * existem numa malha de doze, e `flex-fill` dimensiona pelo conteúdo — foi o que
-   * desalinhava as colunas quando um dia tinha mais atendimentos que os outros. Com
-   * `minmax(0, 1fr)` as sete trilhas têm largura fixa e independem do conteúdo, e o
-   * `min-width: 0` das células libera o `text-truncate` dos nomes longos.
+   * A grade é a única parte da tela que o Bootstrap não resolve: oito colunas — a das
+   * horas e as sete dos dias — não existem numa malha de doze, e `flex-fill` dimensiona
+   * pelo conteúdo, que foi o que desalinhava as colunas quando um dia tinha mais
+   * atendimentos que os outros. Com `minmax(0, 1fr)` as sete trilhas de dia têm largura
+   * idêntica e independem do conteúdo, e o `min-width: 0` libera o `text-truncate`.
+   *
+   * <p>Cabeçalho, faixa de "sem horário" e grade são linhas do <b>mesmo</b> grid, e não
+   * grids irmãos: é o que garante que o nome do dia fique sobre a coluna dele, sem
+   * depender de os conteúdos terem a mesma largura.</p>
+   *
+   * <p>As linhas de hora são um `repeating-linear-gradient`, não elementos: são 13 traços
+   * por coluna, sete colunas, e desenhá-los como div custaria 91 nós de DOM para o que o
+   * fundo resolve sem nenhum.</p>
    */
   styles: `
-    .agenda-semana {
-      display: grid;
-      grid-template-columns: 1fr;
+    .agenda-rolagem {
+      overflow-x: auto;
     }
 
-    .agenda-dia {
+    .agenda-semana {
+      --agenda-altura-hora: 3.5rem;
+      --agenda-bloco: calc(var(--agenda-altura-hora) / 12);
+
+      display: grid;
+      /* A coluna de horas tem a largura do rótulo; as sete de dia dividem o resto. */
+      grid-template-columns: auto repeat(7, minmax(0, 1fr));
+      /* Abaixo disso as colunas ficam estreitas demais para um nome: passa a rolar. */
+      min-width: 46rem;
+    }
+
+    .agenda-semana > * {
       min-width: 0;
     }
 
-    @media (min-width: 768px) {
-      .agenda-semana {
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-      }
+    .agenda-coluna {
+      display: grid;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--bs-border-color) 0 1px,
+        transparent 1px var(--agenda-altura-hora)
+      );
+    }
 
-      /* Altura mínima só na grade: empilhado no celular ela viraria uma sequência de
-         blocos vazios altos, e o dia sem atendimento não precisa de mais que o cabeçalho. */
-      .agenda-dia {
-        min-height: 11rem;
-      }
+    .agenda-horas {
+      display: grid;
+    }
+
+    /* O rótulo encosta na linha da hora a que pertence, e não no meio da faixa. */
+    .agenda-hora {
+      transform: translateY(-0.5em);
+    }
+
+    .agenda-atendimento {
+      overflow: hidden;
+      /* Um respiro entre blocos vizinhos, para dois atendimentos seguidos não colarem. */
+      margin: 0 2px 1px 2px;
     }
   `
 })
@@ -68,10 +115,47 @@ export class AgendaComponent implements OnInit {
   // Semana começa no domingo, como a grade.
   private readonly nomesDosDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
+  /**
+   * Altura de um bloco da grade, em minutos.
+   *
+   * <p>Cinco, e não quinze: os serviços da clínica duram 50 minutos, que não é múltiplo
+   * de 15. Com blocos de 15 um atendimento de 50 minutos ocuparia 3,33 blocos e teria
+   * que ser arredondado — a grade passaria a mentir a duração. Cinco divide 50, 45, 30 e
+   * a hora cheia sem sobra.</p>
+   *
+   * <p>O rótulo continua só na hora cheia: o bloco é a régua, não a legenda.</p>
+   */
+  private readonly MINUTOS_POR_BLOCO = 5;
+
+  private readonly BLOCOS_POR_HORA = 60 / this.MINUTOS_POR_BLOCO;
+
+  /**
+   * Faixa exibida quando nada a empurra: o horário de funcionamento da clínica.
+   *
+   * <p>Existe para a semana vazia continuar mostrando os horários livres, que é o ponto
+   * da grade: sem atendimento nenhum não haveria de onde derivar as horas.</p>
+   *
+   * <p>A última hora é o <b>fim</b> da grade, não o último rótulo: com 21 a grade termina
+   * às 21:00 e o último rótulo é 20:00, porque a faixa das 20:00 é a última que ainda
+   * cabe um atendimento.</p>
+   */
+  private readonly PRIMEIRA_HORA_PADRAO = 7;
+
+  private readonly ULTIMA_HORA_PADRAO = 21;
+
   atendimentos: AgendaAtendimento[] = [];
 
   /** Os sete dias exibidos, de domingo a sábado. */
   dias: DiaAgenda[] = [];
+
+  /** Rótulos da coluna de horas, um por hora cheia da faixa exibida. */
+  horas: RotuloHora[] = [];
+
+  /** `grid-template-rows` da grade, com um bloco por {@link MINUTOS_POR_BLOCO} minutos. */
+  linhasDaGrade = '';
+
+  /** Verdadeiro quando algum dia da semana tem atendimento sem horário. */
+  temSemHorario = false;
 
   /** Qualquer dia dentro da semana exibida. */
   referencia: Date = new Date();
@@ -182,10 +266,7 @@ export class AgendaComponent implements OnInit {
       return 'Sem horário';
     }
 
-    const inicio = atendimento.horario.substring(0, 5);
-    return atendimento.horarioFim
-      ? `${inicio} – ${atendimento.horarioFim.substring(0, 5)}`
-      : inicio;
+    return `${atendimento.horario.substring(0, 5)} – ${atendimento.horarioFim.substring(0, 5)}`;
   }
 
   carregar(): void {
@@ -245,21 +326,96 @@ export class AgendaComponent implements OnInit {
       porData.set(chave, [...(porData.get(chave) ?? []), atendimento]);
     }
 
+    const { primeiraHora, ultimaHora } = this.faixaDeHoras();
+    this.montarColunaDeHoras(primeiraHora, ultimaHora);
+
     const hoje = this.iso(new Date());
     const dias: DiaAgenda[] = [];
 
     for (const data = new Date(primeiro); data <= ultimo; data.setDate(data.getDate() + 1)) {
       const chave = this.iso(data);
+      const doDia = porData.get(chave) ?? [];
+
       dias.push({
         data: chave,
         diaDoMes: data.getDate(),
         nomeDoDia: this.nomesDosDias[data.getDay()] ?? '',
         hoje: chave === hoje,
-        atendimentos: porData.get(chave) ?? []
+        atendimentos: doDia,
+        naGrade: doDia.filter(atendimento => !!atendimento.horario)
+          .map(atendimento => this.posicionar(atendimento, primeiraHora)),
+        semHorario: doDia.filter(atendimento => !atendimento.horario)
       });
     }
 
+    this.temSemHorario = dias.some(dia => dia.semHorario.length > 0);
+
     return dias;
+  }
+
+  /**
+   * Primeira e última hora cheia exibidas.
+   *
+   * <p>Parte da faixa padrão e a alarga para caber o que existe na semana — nunca
+   * encolhe: a grade serve tanto para ver o que está marcado quanto para enxergar o que
+   * está livre, e cortar as horas vazias tiraria metade da utilidade.</p>
+   */
+  private faixaDeHoras(): { primeiraHora: number; ultimaHora: number } {
+    let primeiraHora = this.PRIMEIRA_HORA_PADRAO;
+    let ultimaHora = this.ULTIMA_HORA_PADRAO;
+
+    for (const atendimento of this.atendimentos) {
+      if (!atendimento.horario) {
+        continue;
+      }
+
+      primeiraHora = Math.min(primeiraHora, Math.floor(this.minutosDoHorario(atendimento.horario) / 60));
+      ultimaHora = Math.max(ultimaHora, Math.ceil(this.minutosDoHorario(atendimento.horarioFim) / 60));
+    }
+
+    // A grade acaba na virada do dia, mesmo que a soma da duração tenha passado dela.
+    return { primeiraHora, ultimaHora: Math.min(ultimaHora, 24) };
+  }
+
+  private montarColunaDeHoras(primeiraHora: number, ultimaHora: number): void {
+    const horas: RotuloHora[] = [];
+
+    for (let hora = primeiraHora; hora < ultimaHora; hora++) {
+      const linha = (hora - primeiraHora) * this.BLOCOS_POR_HORA + 1;
+      horas.push({
+        rotulo: `${String(hora).padStart(2, '0')}:00`,
+        gridRow: `${linha} / span ${this.BLOCOS_POR_HORA}`
+      });
+    }
+
+    this.horas = horas;
+    this.linhasDaGrade = `repeat(${horas.length * this.BLOCOS_POR_HORA}, var(--agenda-bloco))`;
+  }
+
+  /**
+   * Coloca um atendimento na grade, do bloco em que começa ao em que termina.
+   *
+   * <p>Não há caminho para atendimento sem término: a duração do serviço é obrigatória,
+   * e o backend só deixa o horário final nulo quando o inicial também é — caso que já
+   * saiu daqui para a faixa de "sem hora". O `Math.max` cobre a única sobra possível,
+   * a soma da duração atravessando a meia-noite.</p>
+   */
+  private posicionar(atendimento: AgendaAtendimento, primeiraHora: number): AtendimentoNaGrade {
+    const deslocamento = primeiraHora * 60;
+    const inicio = this.minutosDoHorario(atendimento.horario) - deslocamento;
+    const fim = this.minutosDoHorario(atendimento.horarioFim) - deslocamento;
+    const blocos = Math.ceil((fim - inicio) / this.MINUTOS_POR_BLOCO);
+
+    return {
+      atendimento,
+      gridRow: `${Math.floor(inicio / this.MINUTOS_POR_BLOCO) + 1} / span ${Math.max(blocos, 1)}`
+    };
+  }
+
+  /** Converte 'HH:mm' ou 'HH:mm:ss' em minutos desde a meia-noite. */
+  private minutosDoHorario(horario: string): number {
+    const [hora, minuto] = horario.split(':').map(Number);
+    return hora * 60 + (minuto ?? 0);
   }
 
   /** Data em ISO local — `toISOString()` converteria para UTC e poderia virar o dia. */
