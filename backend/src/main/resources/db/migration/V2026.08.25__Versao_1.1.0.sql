@@ -4,10 +4,6 @@
 -- Gerado a partir de .cruds/servico.yaml e .cruds/paciente.yaml com ajuda da IA
 -- (Andre Penteado, 24/08/2026). Servico_Contratado vem depois de Servico no mesmo
 -- arquivo porque a FK depende dela.
---
--- A versao Flyway leva o sufixo ".1" porque V2026.08.24 ja foi usada pela versao 1.0.3:
--- o prefixo do arquivo e a chave de versao e nao pode repetir, mesmo com descricao
--- diferente. 2026.08.24.1 ordena depois de 2026.08.24, entao a sequencia se mantem.
 
 CREATE TABLE IF NOT EXISTS Servico (
     Id                         BIGSERIAL     NOT NULL,
@@ -101,6 +97,6 @@ CREATE INDEX IF NOT EXISTS IDX_Pagamento_IdPaciente ON Pagamento (Id_Paciente);
 -- um inteiro solto no cadastro. Manter os dois deixaria a agenda com duas fontes que
 -- podem divergir.
 --
--- O DROP vem nesta migration, e nao numa nova, porque a versao 1.0.4 ainda nao foi
+-- O DROP vem nesta migration, e nao numa nova, porque a versao 1.1.0 ainda nao foi
 -- para producao e e ela que introduz a contratacao que substitui a coluna.
 ALTER TABLE Paciente DROP COLUMN IF EXISTS Frequencia_Semanal;

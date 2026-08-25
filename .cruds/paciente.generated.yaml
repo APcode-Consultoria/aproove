@@ -6,7 +6,7 @@ status: criado
 perfis: [FISIOTERAPEUTA, DIRETOR]
 arquivos:
   - backend/pom.xml
-  - backend/src/main/resources/db/migration/V2026.08.24.1__Versao_1.0.4.sql
+  - backend/src/main/resources/db/migration/V2026.08.25__Versao_1.1.0.sql
   - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/ServicoContratado.java
   - backend/src/main/java/com/github/andrepenteado/roove/domain/entities/Pagamento.java
   - backend/src/main/java/com/github/andrepenteado/roove/domain/repositories/ServicoContratadoRepository.java
@@ -38,7 +38,7 @@ observacoes: >
   paciente é anterior à spec e não foi tocado. ServicoService.listar() passou a aceitar
   FISIOTERAPEUTA, para a aba popular o combo de serviços.
   O campo frequencia_semanal foi removido do contrato e a coluna correspondente é
-  derrubada pela migration 1.0.4: quem define quantos atendimentos o paciente tem, e
+  derrubada pela migration 1.1.0: quem define quantos atendimentos o paciente tem, e
   quando, passou a ser a frequência do serviço contratado.
   O enum DiaSemana nasce da regra "campos de frequência conforme o serviço", e não de um
   bloco `enum` de campo, porque não é coluna própria — os valores vivem dentro da coluna
