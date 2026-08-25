@@ -119,7 +119,9 @@
                   <div class="input-group has-validation">
                     <span class="input-group-text">R$</span>
                     <input id="valor" type="text" name="valor" formControlName="valor" class="form-control text-end"
-                           [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                           [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
+                           [typeFromDecimals]="true" [leadZero]="true"
+                           [outputTransformFn]="saidaMoeda" placeholder="0,00">
                   </div>
                 </div>
 

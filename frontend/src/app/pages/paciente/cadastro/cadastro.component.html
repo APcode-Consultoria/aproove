@@ -590,7 +590,9 @@
                       <input id="valorContratado" type="text" name="valorContratado" formControlName="valorContratado"
                              class="form-control text-end" [class.bg-body-secondary]="!podeEditarValorContratado"
                              [readonly]="!podeEditarValorContratado"
-                             [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                             [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
+                             [typeFromDecimals]="true" [leadZero]="true"
+                             [outputTransformFn]="saidaMoeda" placeholder="0,00">
                     </div>
                     @if (!podeEditarValorContratado) {
                       <div class="form-text">Somente o diretor edita o valor contratado.</div>
@@ -776,7 +778,9 @@
                           <span class="input-group-text">R$</span>
                           <input id="valorPago" type="text" name="valorPago" formControlName="valorPago"
                                  class="form-control text-end" required
-                                 [mask]="mascaraMoeda" thousandSeparator="." decimalMarker="," placeholder="0,00">
+                                 [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
+                                 [typeFromDecimals]="true" [leadZero]="true"
+                                 [outputTransformFn]="saidaMoeda" placeholder="0,00">
                           <div class="invalid-feedback">Valor pago é um campo obrigatório</div>
                         </div>
                       </div>

@@ -17,7 +17,24 @@ import { Periodicidade, PERIODICIDADE_LABELS } from "../../../domain/enums/perio
 // Mascara de moeda do ngx-mask, aplicada no template por binding. Fica aqui, e nao como
 // literal no HTML, para o campo do cadastro e qualquer outra tela usarem exatamente a
 // mesma configuracao.
+//
+// No template a mascara vem com `typeFromDecimals` e `leadZero`, e sao esses dois que
+// dao o comportamento de campo de moeda. Sem `typeFromDecimals` o separador decimal
+// precisava ser digitado, e digitar 15050 valia quinze mil e cinquenta; com ele os
+// digitos entram pela direita, como em caixa eletronico — 15050 vira 150,50 — e
+// pontos e virgulas digitados sao ignorados, entao nao ha como trocar um pelo outro.
+// `leadZero` completa as casas decimais, para um valor gravado como 1234.5 aparecer
+// 1.234,50 e nao 1.234,5.
 export const MASCARA_MOEDA = "separator.2";
+
+// Saida do campo de moeda, ligada em `outputTransformFn`. O ngx-mask entrega o valor
+// desmascarado como texto ('1234.56') e o `leadZero` o entrega sempre com as duas casas;
+// o dominio declara `moeda` como number. Sem esta conversao o FormControl guardaria
+// string e a entidade mentiria o proprio tipo. Campo vazio vira null, e nao 0: valor
+// nao informado nao e valor zero.
+export function saidaMoeda(valor: string | number | undefined | null): unknown {
+  return valor === "" || valor === null || valor === undefined ? null : Number(valor);
+}
 
 @Component({
   selector: 'roove-servico-cadastro',
@@ -35,6 +52,9 @@ export const MASCARA_MOEDA = "separator.2";
 export class CadastroComponent extends CadastroBaseComponent<Servico> {
 
   protected readonly mascaraMoeda = MASCARA_MOEDA;
+  // Referencia estavel: `outputTransformFn` e input signal, e uma arrow nova a cada
+  // ciclo de deteccao seria uma troca de valor a cada ciclo.
+  protected readonly saidaMoeda = saidaMoeda;
 
   protected readonly periodicidades = Object.values(Periodicidade);
   protected readonly periodicidadeLabels = PERIODICIDADE_LABELS;

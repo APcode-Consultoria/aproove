@@ -43,7 +43,15 @@ export const MASCARA_TELEFONE = "(00) 0000-0000||(00) 00000-0000";
 export const MASCARA_CEP = "00000-000";
 // Mascara de moeda do valor contratado. Declarada aqui, e nao importada do cadastro de
 // servico, para nao acoplar dois CRUDs por uma constante de template.
+//
+// No template ela vem acompanhada de `typeFromDecimals`, `leadZero` e `outputTransformFn`,
+// e os quatro juntos e que formam o campo de moeda: veja o comentario das constantes
+// homonimas no cadastro de servico, que descrevem a configuracao inteira.
 export const MASCARA_MOEDA = "separator.2";
+
+export function saidaMoeda(valor: string | number | undefined | null): unknown {
+  return valor === "" || valor === null || valor === undefined ? null : Number(valor);
+}
 
 @Component({
   selector: 'app-cadastro',
@@ -66,6 +74,7 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
   protected readonly mascaraTelefone = MASCARA_TELEFONE;
   protected readonly mascaraCep = MASCARA_CEP;
   protected readonly mascaraMoeda = MASCARA_MOEDA;
+  protected readonly saidaMoeda = saidaMoeda;
 
   protected readonly Periodicidade = Periodicidade;
   protected readonly diasSemana = DIAS_SEMANA;
@@ -461,6 +470,11 @@ export class CadastroComponent extends CadastroBaseComponent<Paciente> {
     this.frequencias.clear();
     this.horarios.clear();
     this.fimContratacaoAvulsa = null;
+
+    // O valor da contratação nasce do valor cadastrado no serviço. Vale mesmo para quem
+    // não é diretor, que vê o campo somente leitura: o service repõe o valor no
+    // backend, mas a tela precisa mostrar quanto vai ser cobrado antes de contratar.
+    this.valorContratado.setValue((this.servicoSelecionado?.valor ?? null) as any);
 
     // No avulso o início sai das datas escolhidas; limpar evita carregar para a nova
     // escolha o que foi digitado para a anterior.

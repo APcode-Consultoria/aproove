@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { MASCARA_CEP, MASCARA_CPF, MASCARA_TELEFONE } from './cadastro.component';
+import { MASCARA_CEP, MASCARA_CPF, MASCARA_MOEDA, MASCARA_TELEFONE, saidaMoeda } from './cadastro.component';
 
 /**
  * As máscaras do ngx-mask são validadores de diretiva: só existem com o template
  * renderizado, e o spec do CadastroComponent monta o componente sem template. Este host
- * reproduz apenas os três campos mascarados, com as mesmas constantes que a tela usa.
+ * reproduz apenas os campos mascarados, com as mesmas constantes e os mesmos atributos
+ * que a tela usa.
  *
  * O que estes testes protegem: um valor que não fecha a máscara invalida o FormGroup
  * inteiro, e o `gravar()` da base recusa a gravação com a mensagem genérica de dados
@@ -22,6 +23,8 @@ import { MASCARA_CEP, MASCARA_CPF, MASCARA_TELEFONE } from './cadastro.component
       <input formControlName="cpf" [mask]="mascaraCpf">
       <input formControlName="telefone" [mask]="mascaraTelefone">
       <input formControlName="cep" [mask]="mascaraCep">
+      <input id="moeda" formControlName="valor" [mask]="mascaraMoeda" thousandSeparator="." decimalMarker=","
+             [typeFromDecimals]="true" [leadZero]="true" [outputTransformFn]="saidaMoeda">
     </form>
   `
 })
@@ -29,11 +32,14 @@ class CamposMascaradosHost {
   readonly mascaraCpf = MASCARA_CPF;
   readonly mascaraTelefone = MASCARA_TELEFONE;
   readonly mascaraCep = MASCARA_CEP;
+  readonly mascaraMoeda = MASCARA_MOEDA;
+  readonly saidaMoeda = saidaMoeda;
 
   cpf = new FormControl<string | null>(null);
   telefone = new FormControl<string | null>(null);
   cep = new FormControl<string | null>(null);
-  form = new FormGroup({ cpf: this.cpf, telefone: this.telefone, cep: this.cep });
+  valor = new FormControl<any>(null);
+  form = new FormGroup({ cpf: this.cpf, telefone: this.telefone, cep: this.cep, valor: this.valor });
 }
 
 describe('Máscaras do cadastro de paciente', () => {
@@ -69,5 +75,97 @@ describe('Máscaras do cadastro de paciente', () => {
     expect(validar({ cpf: '0123456' }).get('cpf')?.hasError('mask')).toBe(true);
     expect(validar({ telefone: '113333444' }).get('telefone')?.hasError('mask')).toBe(true);
     expect(validar({ cep: '013101' }).get('cep')?.hasError('mask')).toBe(true);
+  });
+});
+
+/**
+ * O campo de moeda não é só a máscara `separator.2`: são ela, `typeFromDecimals`,
+ * `leadZero` e `outputTransformFn` juntos. Sem o primeiro, o separador decimal tinha que
+ * ser digitado, e quem digitava 15050 esperando R$ 150,50 gravava quinze mil e cinquenta
+ * reais — ou trocava ponto por vírgula e recebia de volta um valor mil vezes maior. Sem o
+ * último, o `leadZero` deixaria no FormControl a string '150.50', e o domínio declara
+ * `moeda` como number. Estes testes protegem a combinação, não a constante isolada.
+ */
+describe('Campo de moeda do cadastro de paciente', () => {
+  function montar() {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [CamposMascaradosHost],
+      providers: [provideNgxMask()]
+    });
+
+    const fixture = TestBed.createComponent(CamposMascaradosHost);
+    fixture.detectChanges();
+
+    return fixture;
+  }
+
+  /**
+   * Digita caractere a caractere no campo de moeda.
+   *
+   * <p>O `focus` inicial não é decoração: sem ele o ngx-mask engole a primeira tecla,
+   * porque ainda está no estado de escrita do valor inicial.</p>
+   */
+  function digitar(fixture: ReturnType<typeof montar>, texto: string): HTMLInputElement {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('#moeda');
+    input.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    for (const caractere of texto) {
+      input.value = input.value + caractere;
+      input.setSelectionRange(input.value.length, input.value.length);
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    }
+
+    return input;
+  }
+
+  it('preenche os centavos primeiro, da direita para a esquerda', () => {
+    const fixture = montar();
+    expect(digitar(fixture, '15050').value).toBe('150,50');
+    expect(fixture.componentInstance.valor.value).toBe(150.5);
+  });
+
+  it('ignora o ponto e a vírgula digitados, que não têm como trocar de papel', () => {
+    expect(digitar(montar(), '150.50').value).toBe('150,50');
+    expect(digitar(montar(), '150,50').value).toBe('150,50');
+  });
+
+  it('agrupa o milhar com ponto e separa os centavos com vírgula', () => {
+    const fixture = montar();
+    expect(digitar(fixture, '123456').value).toBe('1.234,56');
+    expect(fixture.componentInstance.valor.value).toBe(1234.56);
+  });
+
+  it('entrega um number ao FormControl, e não a string mascarada', () => {
+    const fixture = montar();
+    digitar(fixture, '123456');
+
+    expect(typeof fixture.componentInstance.valor.value).toBe('number');
+  });
+
+  it('completa as casas decimais do valor que chega do backend', () => {
+    const fixture = montar();
+    fixture.componentInstance.valor.setValue(1234.5);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#moeda').value).toBe('1.234,50');
+  });
+
+  it('devolve o campo vazio quando tudo é apagado', () => {
+    const fixture = montar();
+    const input = digitar(fixture, '15050');
+
+    while (input.value.length) {
+      input.value = input.value.slice(0, -1);
+      input.setSelectionRange(input.value.length, input.value.length);
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    }
+
+    expect(input.value).toBe('');
+    // Nulo, e não zero: valor não informado não é valor zero.
+    expect(fixture.componentInstance.valor.value).toBeNull();
   });
 });
