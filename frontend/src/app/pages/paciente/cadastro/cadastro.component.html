@@ -180,7 +180,8 @@
                   </label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                    <input id="nome" type="text" name="nome" formControlName="nome" class="form-control" required>
+                    <input id="nome" type="text" name="nome" formControlName="nome" class="form-control" required
+                           autocomplete="name">
                     <div class="invalid-feedback">Nome é um campo obrigatório</div>
                   </div>
                 </div>
@@ -194,16 +195,15 @@
                 </div>
                 <div class="col-12 col-md-7 col-lg-2">
                   <label class="form-label fw-semibold" for="dataNascimento">Nascimento</label>
-                  <div class="input-group">
-                    <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
-                    <input id="dataNascimento" type="date" name="dataNascimento" formControlName="dataNascimento" class="form-control">
-                  </div>
+                  <apcore-campo-data inputId="dataNascimento" formControlName="dataNascimento"
+                                    icone="fa-solid fa-calendar-day" autocomplete="bday"></apcore-campo-data>
                 </div>
                 <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="telefone">Telefone</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" [mask]="mascaraTelefone">
+                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" [mask]="mascaraTelefone"
+                           autocomplete="tel-national">
                     <div class="invalid-feedback">Telefone incompleto: informe DDD + número ou deixe em branco</div>
                   </div>
                 </div>
@@ -218,7 +218,7 @@
                   <label class="form-label fw-semibold" for="email">E-mail</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                    <input id="email" type="email" name="email" formControlName="email" class="form-control">
+                    <input id="email" type="email" name="email" formControlName="email" class="form-control" autocomplete="email">
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
@@ -243,7 +243,8 @@
                   <label class="form-label fw-semibold" for="profissao">Profissão</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-briefcase"></i></span>
-                    <input id="profissao" type="text" name="profissao" formControlName="profissao" class="form-control">
+                    <input id="profissao" type="text" name="profissao" formControlName="profissao" class="form-control"
+                           autocomplete="organization-title">
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
@@ -272,7 +273,8 @@
                   <label class="form-label fw-semibold" for="cep">CEP</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" [mask]="mascaraCep">
+                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" [mask]="mascaraCep"
+                           autocomplete="postal-code">
                     <button class="btn btn-outline-primary" type="button" (click)="consultaCep(cep.value)" [disabled]="!cep.value">Buscar</button>
                     <div class="invalid-feedback">CEP incompleto: informe os 8 dígitos ou deixe em branco</div>
                   </div>
@@ -281,7 +283,8 @@
                   <label class="form-label fw-semibold" for="logradouro">Logradouro</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-road"></i></span>
-                    <input id="logradouro" type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly>
+                    <input id="logradouro" type="text" name="logradouro" formControlName="logradouro" class="form-control" readonly
+                           autocomplete="address-line1">
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
@@ -290,19 +293,23 @@
                 </div>
                 <div class="col-12 col-md-5">
                   <label class="form-label fw-semibold" for="complemento">Complemento</label>
-                  <input id="complemento" type="text" name="complemento" formControlName="complemento" class="form-control">
+                  <input id="complemento" type="text" name="complemento" formControlName="complemento" class="form-control"
+                         autocomplete="address-line2">
                 </div>
                 <div class="col-12 col-md-4">
                   <label class="form-label fw-semibold" for="bairro">Bairro</label>
-                  <input id="bairro" type="text" name="bairro" formControlName="bairro" class="form-control" readonly>
+                  <input id="bairro" type="text" name="bairro" formControlName="bairro" class="form-control" readonly
+                         autocomplete="address-level3">
                 </div>
                 <div class="col-12 col-md-5">
                   <label class="form-label fw-semibold" for="cidade">Cidade</label>
-                  <input id="cidade" type="text" name="cidade" formControlName="cidade" class="form-control" readonly>
+                  <input id="cidade" type="text" name="cidade" formControlName="cidade" class="form-control" readonly
+                         autocomplete="address-level2">
                 </div>
                 <div class="col-12 col-md-2">
                   <label class="form-label fw-semibold" for="estado">UF</label>
-                  <input id="estado" type="text" name="estado" formControlName="estado" class="form-control" readonly>
+                  <input id="estado" type="text" name="estado" formControlName="estado" class="form-control" readonly
+                         autocomplete="address-level1">
                 </div>
               </div>
 
@@ -559,13 +566,10 @@
                       `disabled`, que sairia de `formServicoContratado.value` e chegaria
                       vazio ao backend.
                     -->
-                    <div class="input-group has-validation">
-                      <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
-                      <input id="inicioContratacao" type="date" name="inicioContratacao" formControlName="inicioContratacao"
-                             class="form-control" required
-                             [class.bg-body-secondary]="contratacaoAvulsa" [readonly]="contratacaoAvulsa">
-                      <div class="invalid-feedback">Início da contratação é um campo obrigatório</div>
-                    </div>
+                    <apcore-campo-data inputId="inicioContratacao" formControlName="inicioContratacao"
+                                      icone="fa-solid fa-calendar-day" [obrigatorio]="true"
+                                      mensagemObrigatorio="Início da contratação é um campo obrigatório"
+                                      [somenteLeitura]="contratacaoAvulsa"></apcore-campo-data>
                     @if (contratacaoAvulsa) {
                       <div class="form-text">
                         @if (fimContratacaoAvulsa) {
@@ -611,39 +615,51 @@
                     @for (controle of frequencias.controls; track $index) {
                       <div class="col-12 col-md-6 col-lg-4">
                         <label class="form-label small text-secondary" [for]="'frequencia_' + $index">{{ rotuloFrequencia($index) }}</label>
-                        <div class="input-group">
-                          @switch (servicoSelecionado?.periodicidade) {
-                            @case (Periodicidade.AVULSO) {
-                              <!--
-                                Sem recorrência: cada controle é a data do atendimento, e
-                                juntas elas fecham o período da contratação.
-                              -->
-                              <input [id]="'frequencia_' + $index" type="date" [formControlName]="$index"
-                                     class="form-control" required (change)="aoAlterarDataAvulsa()">
-                            }
-                            @case (Periodicidade.SEMANAL) {
+                        <!--
+                          O horário inicial fica no mesmo input-group da frequência porque é
+                          a mesma ocorrência: vão para colunas paralelas, na mesma ordem. O
+                          horário final não é digitado, sai da duração do serviço.
+
+                          Vem de um ng-template porque o dono do input-group muda com a
+                          periodicidade: no avulso o grupo é do apcore-campo-data e o horário
+                          entra nele projetado; nas demais, o grupo é do próprio template.
+                        -->
+                        <ng-template #horario>
+                          <span class="input-group-text"><i class="fa-regular fa-clock"></i></span>
+                          <input [id]="'horario_' + $index" type="time" class="form-control"
+                                 [formControl]="horariosControles[$index]" required
+                                 title="Horário inicial do atendimento" aria-label="Horário inicial do atendimento">
+                        </ng-template>
+                        @switch (servicoSelecionado?.periodicidade) {
+                          @case (Periodicidade.AVULSO) {
+                            <!--
+                              Sem recorrência: cada controle é a data do atendimento, e
+                              juntas elas fecham o período da contratação.
+                            -->
+                            <apcore-campo-data [inputId]="'frequencia_' + $index" [formControlName]="$index"
+                                              [obrigatorio]="true" (alterado)="aoAlterarDataAvulsa()">
+                              <ng-container [ngTemplateOutlet]="horario"></ng-container>
+                            </apcore-campo-data>
+                          }
+                          @case (Periodicidade.SEMANAL) {
+                            <div class="input-group">
                               <select [id]="'frequencia_' + $index" [formControlName]="$index" class="form-select" required>
                                 <option [ngValue]="null">Selecione</option>
                                 @for (dia of diasSemana; track dia) {
                                   <option [ngValue]="dia">{{ diaSemanaLabels[dia] }}</option>
                                 }
                               </select>
-                            }
-                            @default {
+                              <ng-container [ngTemplateOutlet]="horario"></ng-container>
+                            </div>
+                          }
+                          @default {
+                            <div class="input-group">
                               <input [id]="'frequencia_' + $index" type="number" [formControlName]="$index"
                                      class="form-control" min="1" max="31" step="1" required>
-                            }
+                              <ng-container [ngTemplateOutlet]="horario"></ng-container>
+                            </div>
                           }
-                          <!--
-                            O horário inicial fica no mesmo input-group porque é a mesma
-                            ocorrência: vão para colunas paralelas, na mesma ordem. O
-                            horário final não é digitado, sai da duração do serviço.
-                          -->
-                          <span class="input-group-text"><i class="fa-regular fa-clock"></i></span>
-                          <input [id]="'horario_' + $index" type="time" class="form-control"
-                                 [formControl]="horariosControles[$index]" required
-                                 [title]="'Horário inicial do atendimento'" aria-label="Horário inicial do atendimento">
-                        </div>
+                        }
                       </div>
                     }
                   </div>
@@ -755,12 +771,9 @@
                         <label class="form-label fw-semibold required-label text-danger" for="dataPagamento">
                           Data do pagamento <i class="fa-solid fa-circle-exclamation help-dot text-danger" title="Campo obrigatório"></i>
                         </label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
-                          <input id="dataPagamento" type="date" name="dataPagamento" formControlName="dataPagamento"
-                                 class="form-control" required>
-                          <div class="invalid-feedback">Data do pagamento é um campo obrigatório</div>
-                        </div>
+                        <apcore-campo-data inputId="dataPagamento" formControlName="dataPagamento"
+                                          icone="fa-solid fa-calendar-check" [obrigatorio]="true"
+                                          mensagemObrigatorio="Data do pagamento é um campo obrigatório"></apcore-campo-data>
                       </div>
 
                       <div class="col-12 col-md-6 col-lg-4">

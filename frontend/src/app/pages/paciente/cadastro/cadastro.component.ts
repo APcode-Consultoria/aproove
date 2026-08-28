@@ -9,6 +9,7 @@ import { ServicoContratadoService } from '../../../services/servico-contratado.s
 import { PagamentoService } from '../../../services/pagamento.service';
 import {
   CadastroBaseComponent,
+  CampoDataComponent,
   CampoMoedaComponent,
   DecoracaoMensagem,
   LoginService,
@@ -53,7 +54,8 @@ export const MASCARA_CEP = "00000-000";
     FormsModule,
     RouterLink,
     NgxMaskDirective,
-    CampoMoedaComponent
+    CampoMoedaComponent,
+    CampoDataComponent
   ]
 })
 export class CadastroComponent extends CadastroBaseComponent<Paciente> {

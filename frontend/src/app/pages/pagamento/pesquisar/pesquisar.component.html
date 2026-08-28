@@ -76,7 +76,13 @@
 
     <div class="card-body p-4">
       <div class="collapse filters-collapse" id="filtros-pesquisa-pagamentos">
-        <form class="row g-2 align-items-center border rounded bg-body-tertiary p-3 mb-4" (ngSubmit)="aplicarFiltro()">
+        <!--
+          O was-validated acende os campos de data recusados pelo validador; sem ele o
+          Pesquisar simplesmente não faria nada e o motivo ficaria invisível.
+        -->
+        <form #filtros="ngForm" class="row g-2 align-items-center border rounded bg-body-tertiary p-3 mb-4"
+              [class.was-validated]="filtros.submitted && filtros.invalid"
+              (ngSubmit)="aplicarFiltro(filtros)">
           <!--
             Os três switches são alternativas da mesma pergunta e somam entre si: nenhum
             marcado não filtra situação nenhuma. Sem <label> visível fora do próprio
@@ -103,12 +109,12 @@
           </div>
 
           <div class="col-12 col-md">
-            <input id="filtro-inicio" type="date" name="inicio" class="form-control"
-                   title="Vencimento de" aria-label="Vencimento de" [(ngModel)]="filtro.inicio">
+            <apcore-campo-data inputId="filtro-inicio" name="inicio" [(ngModel)]="filtro.inicio"
+                              titulo="Vencimento de" rotuloAcessivel="Vencimento de"></apcore-campo-data>
           </div>
           <div class="col-12 col-md">
-            <input id="filtro-fim" type="date" name="fim" class="form-control"
-                   title="Vencimento até" aria-label="Vencimento até" [(ngModel)]="filtro.fim">
+            <apcore-campo-data inputId="filtro-fim" name="fim" [(ngModel)]="filtro.fim"
+                              titulo="Vencimento até" rotuloAcessivel="Vencimento até"></apcore-campo-data>
           </div>
 
           <div class="col-6 col-md-auto">

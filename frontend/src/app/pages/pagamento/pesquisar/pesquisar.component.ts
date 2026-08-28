@@ -5,12 +5,12 @@
  */
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PesquisarBaseComponent } from "@andre.penteado/ngx-apcore";
+import { CampoDataComponent, PesquisarBaseComponent } from "@andre.penteado/ngx-apcore";
 import { PagamentoFiltro, PagamentoService } from "../../../services/pagamento.service";
 import { Pagamento } from "../../../domain/entities/pagamento";
 import { EMPTY, Observable } from "rxjs";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, NgForm } from "@angular/forms";
 
 @Component({
   selector: 'roove-pagamento-pesquisar',
@@ -20,7 +20,8 @@ import { FormsModule } from "@angular/forms";
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    CampoDataComponent
   ]
 })
 export class PesquisarComponent extends PesquisarBaseComponent<Pagamento> {
@@ -39,7 +40,16 @@ export class PesquisarComponent extends PesquisarBaseComponent<Pagamento> {
       : this.pagamentoService.listar();
   }
 
-  aplicarFiltro(): void {
+  /**
+   * Pesquisa com o filtro digitado. Data recusada pelo validador não vira parâmetro: o
+   * backend leria 2026-13-32 como período vazio e a tela devolveria "nenhum pagamento"
+   * sem dizer que o problema era a data.
+   */
+  aplicarFiltro(filtros: NgForm): void {
+    if (filtros.invalid) {
+      return;
+    }
+
     if (this.temFiltroPreenchido())
       console.info(`Pesquisar pagamentos com filtro ${JSON.stringify(this.filtro)}`);
     this.pesquisar();
