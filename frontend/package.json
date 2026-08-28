@@ -1,6 +1,6 @@
 {
   "name": "roove",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --serve-path /roove --configuration localhost",
@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "@andre.penteado/ngx-apcore": "^22.1.0",
+    "@andre.penteado/ngx-apcore": "^22.2.0",
     "@angular/animations": "^22.0.6",
     "@angular/common": "^22.0.6",
     "@angular/compiler": "^22.0.6",
