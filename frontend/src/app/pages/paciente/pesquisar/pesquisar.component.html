@@ -90,11 +90,11 @@
                    [(ngModel)]="filtro.nome">
           </div>
           <div class="col-12 col-md">
-            <input id="filtro-cpf" type="text" name="cpf" class="form-control" placeholder="CPF" aria-label="CPF"
+            <input id="filtro-cpf" type="text" inputmode="numeric" name="cpf" class="form-control" placeholder="CPF" aria-label="CPF"
                    [mask]="mascaraCpf" [validation]="false" [(ngModel)]="filtro.cpf">
           </div>
           <div class="col-12 col-md">
-            <input id="filtro-telefone" type="text" name="telefone" class="form-control" placeholder="Telefone" aria-label="Telefone"
+            <input id="filtro-telefone" type="text" inputmode="numeric" name="telefone" class="form-control" placeholder="Telefone" aria-label="Telefone"
                    [mask]="mascaraTelefone" [validation]="false" [(ngModel)]="filtro.telefone">
           </div>
           <div class="col-12 col-md">

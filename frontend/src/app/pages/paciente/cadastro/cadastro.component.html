@@ -189,7 +189,7 @@
                   <label class="form-label fw-semibold" for="cpf">CPF</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-address-card"></i></span>
-                    <input id="cpf" type="text" name="cpf" formControlName="cpf" class="form-control" [mask]="mascaraCpf">
+                    <input id="cpf" type="text" inputmode="numeric" name="cpf" formControlName="cpf" class="form-control" [mask]="mascaraCpf">
                     <div class="invalid-feedback">CPF incompleto: informe os 11 dígitos ou deixe em branco</div>
                   </div>
                 </div>
@@ -202,7 +202,7 @@
                   <label class="form-label fw-semibold" for="telefone">Telefone</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                    <input id="telefone" type="text" name="telefone" formControlName="telefone" class="form-control" [mask]="mascaraTelefone"
+                    <input id="telefone" type="text" inputmode="numeric" name="telefone" formControlName="telefone" class="form-control" [mask]="mascaraTelefone"
                            autocomplete="tel-national">
                     <div class="invalid-feedback">Telefone incompleto: informe DDD + número ou deixe em branco</div>
                   </div>
@@ -251,7 +251,7 @@
                   <label class="form-label fw-semibold" for="diaVencimento">Dia de vencimento</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
-                    <input id="diaVencimento" type="number" name="diaVencimento" formControlName="diaVencimento" class="form-control">
+                    <input id="diaVencimento" type="number" inputmode="numeric" name="diaVencimento" formControlName="diaVencimento" class="form-control">
                   </div>
                 </div>
               </div>
@@ -273,7 +273,7 @@
                   <label class="form-label fw-semibold" for="cep">CEP</label>
                   <div class="input-group has-validation">
                     <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input #cep id="cep" type="text" name="cep" formControlName="cep" class="form-control" [mask]="mascaraCep"
+                    <input #cep id="cep" type="text" inputmode="numeric" name="cep" formControlName="cep" class="form-control" [mask]="mascaraCep"
                            autocomplete="postal-code">
                     <button class="btn btn-outline-primary" type="button" (click)="consultaCep(cep.value)" [disabled]="!cep.value">Buscar</button>
                     <div class="invalid-feedback">CEP incompleto: informe os 8 dígitos ou deixe em branco</div>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="col-12 col-md-3">
                   <label class="form-label fw-semibold" for="numeroLogradouro">Número</label>
-                  <input id="numeroLogradouro" type="number" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
+                  <input id="numeroLogradouro" type="number" inputmode="numeric" name="numeroLogradouro" formControlName="numeroLogradouro" class="form-control">
                 </div>
                 <div class="col-12 col-md-5">
                   <label class="form-label fw-semibold" for="complemento">Complemento</label>
@@ -654,7 +654,7 @@
                           }
                           @default {
                             <div class="input-group">
-                              <input [id]="'frequencia_' + $index" type="number" [formControlName]="$index"
+                              <input [id]="'frequencia_' + $index" type="number" inputmode="numeric" [formControlName]="$index"
                                      class="form-control" min="1" max="31" step="1" required>
                               <ng-container [ngTemplateOutlet]="horario"></ng-container>
                             </div>

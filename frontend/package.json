@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "@andre.penteado/ngx-apcore": "^22.2.0",
+    "@andre.penteado/ngx-apcore": "^22.2.2",
     "@angular/animations": "^22.0.6",
     "@angular/common": "^22.0.6",
     "@angular/compiler": "^22.0.6",

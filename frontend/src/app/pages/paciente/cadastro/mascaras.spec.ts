@@ -78,7 +78,7 @@ describe('Máscaras do cadastro de paciente', () => {
 
 /**
  * O campo de moeda mora na ngx-apcore (`apcore-campo-moeda`), e não neste projeto: são
- * quatro configurações do ngx-mask que só funcionam juntas, e repeti-las à mão em cada
+ * cinco configurações do ngx-mask que só funcionam juntas, e repeti-las à mão em cada
  * tela era a chance de errar uma delas. Sem `typeFromDecimals` o separador decimal tinha
  * que ser digitado, e quem digitava 15050 esperando R$ 150,50 gravava quinze mil e
  * cinquenta reais — ou trocava ponto por vírgula e recebia um valor mil vezes maior.
@@ -121,6 +121,13 @@ describe('Campo de moeda do cadastro de paciente', () => {
 
     return input;
   }
+
+  it('abre o teclado numérico no celular, mesmo sendo um campo de texto', () => {
+    const input: HTMLInputElement = montar().nativeElement.querySelector('#moeda');
+
+    expect(input.type).toBe('text');
+    expect(input.getAttribute('inputmode')).toBe('numeric');
+  });
 
   it('preenche os centavos primeiro, da direita para a esquerda', () => {
     const fixture = montar();
